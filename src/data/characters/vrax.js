@@ -8,6 +8,8 @@ export const VRAX = {
   icon: '🦊',
   health: 300,
   max_health: 300,
+  wizard_mana: 0,
+  max_wizard_mana: 300,
   total_action_slots: 3,
   active_tag_pool: [],
   queue: [],

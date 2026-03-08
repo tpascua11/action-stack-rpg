@@ -11,7 +11,7 @@ import {
   FireChargeHandler,
   MomentumHandler, MomentumOnApply,
 } from '../handlers/injector_handlers';
-import { DamageHandler, HealHandler } from '../handlers/delivery_handlers';
+import { DamageHandler, HealHandler, RestoreManaHandler } from '../handlers/delivery_handlers';
 import { ComboStackHandler } from '../handlers/post_attack_handlers';
 import { SpeedBoostHandler, SpeedBoostOnApply } from '../handlers/speed_handlers';
 
@@ -52,6 +52,10 @@ export const battle_registry = {
   HEAL: {
     phase: 'DELIVERY',
     handler: HealHandler,
+  },
+  RESTORE_MANA: {
+    phase: 'DELIVERY',
+    handler: RestoreManaHandler,
   },
 
   // ── POST_ATTACK ──

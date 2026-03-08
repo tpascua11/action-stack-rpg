@@ -54,4 +54,37 @@ export const FIGHTER_CARDS = [
       target: [],
     },
   },
+  {
+    id: 'magic_charge',
+    name: 'Magic Charge',
+    speed: 100,
+    tag_type: ['WIZARD_PREP', 'SPELL', 'MAGIC', 'CHARGING'],
+    cost: {},
+    icon: '✨',
+    color: '#7c3aed',
+    desc: 'Charge next MAGIC attack by 20%. Restore 25 mana.',
+    tags: {
+      self: [
+        { tag_name: 'MAGIC_CHARGE', multiplier: 0.2, consume: true },
+        { tag_name: 'RESTORE_MANA', power: 25 },
+      ],
+      target: [],
+    },
+  },
+  {
+    id: 'flame_strike',
+    name: 'Flame Strike',
+    speed: 100,
+    tag_type: ['WIZARD_PREP', 'SPELL', 'MAGIC'],
+    cost: { WIZARD_MANA: 100 },
+    icon: '🔥',
+    color: '#ef4444',
+    desc: 'Strike target with fire for 150 damage.',
+    tags: {
+      self: [],
+      target: [
+        { tag_name: 'DAMAGE', type: 'FIRE', power: 150 },
+      ],
+    },
+  },
 ];

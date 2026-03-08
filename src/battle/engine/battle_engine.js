@@ -148,6 +148,7 @@ export function ExecuteAction(action, interaction_result, state) {
   // ── BUILD ──
   let payload = {
     type: action.payload_type,
+    tag_types: [...(action.tag_type || [])],
     damages: [],
     properties: [...(action.properties || [])],
     status_effects: [],

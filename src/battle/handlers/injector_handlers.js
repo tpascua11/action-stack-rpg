@@ -7,6 +7,7 @@
 
 export function MagicChargeHandler(payload, character, tag) {
   if (payload.type !== 'MAGIC') return { payload, consumed: false };
+  if (payload.tag_types?.includes('CHARGING')) return { payload, consumed: false };
   const boost = tag.multiplier * tag.stack_count;
   payload.damages.forEach(d => {
     d.power = Math.floor(d.power * (1 + boost));
