@@ -1,5 +1,5 @@
 // ============================================================
-//  ActionQueue — Right of Vrax, shows 3 action slots + execute button
+//  ActionQueue — Card-shaped slots to the right of Vrax
 // ============================================================
 
 export default function ActionQueue({ queue, totalSlots, onClearSlot, onExecute, isBattling, isResult }) {
@@ -8,43 +8,68 @@ export default function ActionQueue({ queue, totalSlots, onClearSlot, onExecute,
   );
 
   return (
-    <div className="w-48 flex flex-col items-start justify-center gap-3 pl-3">
-      <div className="text-[9px] text-gray-600 font-mono tracking-widest">ACTION QUEUE</div>
+    <div className="flex flex-col items-start gap-3">
 
-      {/* Slots */}
-      <div className="flex flex-col gap-2 w-full">
+      {/* Slots — horizontal row, same card size as Hand */}
+      <div className="flex flex-row gap-2">
         {Array.from({ length: totalSlots }).map((_, i) => {
           const slot = queue[i];
           return (
             <div
               key={i}
               onClick={() => slot && !isBattling && onClearSlot(i)}
-              className={`relative w-full h-14 rounded-lg border flex items-center gap-2 px-2
-                transition-all duration-200 cursor-pointer
+              className={`relative w-32 flex flex-col overflow-hidden rounded-lg border
+                transition-all duration-200 shadow-lg
                 ${slot
-                  ? 'border-[#ffd700]/60 bg-[#ffd700]/5 hover:bg-[#ffd700]/10'
-                  : 'border-white/10 bg-white/5'
+                  ? 'cursor-pointer border-[#ffd700]/70 shadow-[0_0_14px_rgba(255,215,0,0.2)] hover:scale-105 hover:border-[#ffd700]'
+                  : 'border-dashed border-white/20'
                 }`}
+              style={{ background: slot ? '#fff' : 'rgba(255,255,255,0.03)' }}
             >
-              {/* Slot label */}
-              <div className="absolute -top-2 left-2 bg-[#0f0f1a] px-1 text-[8px] font-mono text-gray-500">
-                SLOT {i + 1} {PENALTIES[i] > 0 ? `−${PENALTIES[i]}%` : ''}
+              {/* Banner */}
+              <div className="py-1 text-center text-[9px] font-bold tracking-widest font-body truncate px-1"
+                style={{ background: slot ? slot.color : 'rgba(255,255,255,0.06)', color: slot ? '#fff' : '#6b7280' }}>
+                {slot ? slot.tag_type.filter(t => t !== 'WIZARD_PREP').join(' · ') : `SLOT ${i + 1}`}
               </div>
 
-              {slot ? (
-                <>
-                  <span className="text-xl">{slot.icon}</span>
-                  <div className="flex flex-col">
-                    <span className="text-[10px] font-bold text-white font-body">{slot.name}</span>
-                    <span className="text-[10px] text-[#ffd700] font-mono">{slot.calc_speed} SPD</span>
-                  </div>
-                </>
-              ) : (
-                <div className="flex items-center gap-2 opacity-30">
-                  <span className="text-lg">＋</span>
-                  <span className="text-[10px] font-mono text-gray-500">empty</span>
+              {/* Icon */}
+              <div className="flex items-center justify-center py-3 text-3xl border-b"
+                style={{ background: slot ? '#f3f4f6' : 'rgba(255,255,255,0.03)', borderColor: slot ? '#e5e7eb' : 'rgba(255,255,255,0.06)', opacity: slot ? 1 : 0.3 }}>
+                {slot ? slot.icon : '＋'}
+              </div>
+
+              {/* Stats */}
+              <div className="flex justify-around py-1 text-[10px] font-bold"
+                style={{ background: slot ? '#e5e7eb' : 'rgba(255,255,255,0.04)' }}>
+                {slot ? (
+                  <>
+                    <span style={{ color: '#4da6ff' }}>BASE {slot.speed}</span>
+                    <span style={{ color: '#ffd700' }}>{slot.calc_speed} SPD</span>
+                  </>
+                ) : (
+                  <span style={{ color: '#4b5563' }}>
+                    {PENALTIES[i] > 0 ? `−${PENALTIES[i]}% SPD` : '— SPD'}
+                  </span>
+                )}
+              </div>
+
+              {/* Name + Desc */}
+              <div className="flex flex-col items-center px-1 py-2 flex-1">
+                <div className="text-[11px] font-bold font-body tracking-wide"
+                  style={{ color: slot ? '#1f2937' : '#374151', opacity: slot ? 1 : 0.35 }}>
+                  {slot ? slot.name : 'empty'}
                 </div>
-              )}
+                <div className="text-[9px] text-center mt-1 leading-tight"
+                  style={{ color: slot ? '#6b7280' : 'transparent' }}>
+                  {slot ? slot.desc : '.'}
+                </div>
+              </div>
+
+              {/* Slot number badge */}
+              <div className="absolute top-1 right-1 w-4 h-4 rounded-full bg-black/20 flex items-center justify-center
+                text-[8px] font-mono" style={{ color: slot ? '#fff' : '#6b7280' }}>
+                {i + 1}
+              </div>
             </div>
           );
         })}

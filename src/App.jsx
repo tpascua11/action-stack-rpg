@@ -229,23 +229,29 @@ export default function App() {
       {/* BOTTOM — Player Zone */}
       <div className="flex-1 flex flex-col overflow-hidden">
 
-        {/* Center row: Tags | Vrax | Queue */}
-        <div className="flex items-center justify-center gap-0 py-4 flex-shrink-0">
-          {/* LEFT — Active tag pool */}
-          <TagPool tags={player.active_tag_pool} />
+        {/* Center row: Buff Column | Character Column | Slot Column */}
+        <div className="flex items-center justify-center py-4 flex-shrink-0">
 
-          {/* CENTER — Vrax portrait */}
+          {/* LEFT — Buff column (fixed width, right-aligned so buffs hug the gap) */}
+          <div style={{ width: '340px', paddingRight: '60px', display: 'flex', justifyContent: 'flex-end' }}>
+            <TagPool tags={player.active_tag_pool} />
+          </div>
+
+          {/* CENTER — Character column */}
           <VraxPortrait player={player} />
 
-          {/* RIGHT — Action queue */}
-          <ActionQueue
-            queue={player.queue}
-            totalSlots={player.total_action_slots}
-            onClearSlot={handleClearSlot}
-            onExecute={handleExecute}
-            isBattling={gs.phase === 'BATTLE'}
-            isResult={gs.phase === 'RESULT'}
-          />
+          {/* RIGHT — Slot column (fixed width, left-aligned so slots hug the gap) */}
+          <div style={{ width: '340px', paddingLeft: '60px', display: 'flex', justifyContent: 'flex-start' }}>
+            <ActionQueue
+              queue={player.queue}
+              totalSlots={player.total_action_slots}
+              onClearSlot={handleClearSlot}
+              onExecute={handleExecute}
+              isBattling={gs.phase === 'BATTLE'}
+              isResult={gs.phase === 'RESULT'}
+            />
+          </div>
+
         </div>
 
         {/* BOTTOM — Hand */}
