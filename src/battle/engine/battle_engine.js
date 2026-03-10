@@ -103,12 +103,27 @@ function runPhaseImbue(tag_pool, payload) {
   return { tag_pool: remaining, payload };
 }
 
-function runPhaseInject(tag_pool, payload, character) {
+function runPhaseInjectMult(tag_pool, payload, character) {
   const remaining = [];
   for (const tag of tag_pool) {
     const entry = battle_registry[tag.tag_name];
-    if (entry?.phases?.includes('INJECT')) {
-      const result = entry.handlers['INJECT'](payload, character, tag);
+    if (entry?.phases?.includes('INJECT_MULT')) {
+      const result = entry.handlers['INJECT_MULT'](payload, character, tag);
+      payload = result.payload;
+      if (!result.consumed) remaining.push(tag);
+    } else {
+      remaining.push(tag);
+    }
+  }
+  return { tag_pool: remaining, payload };
+}
+
+function runPhaseInjectFlat(tag_pool, payload, character) {
+  const remaining = [];
+  for (const tag of tag_pool) {
+    const entry = battle_registry[tag.tag_name];
+    if (entry?.phases?.includes('INJECT_FLAT')) {
+      const result = entry.handlers['INJECT_FLAT'](payload, character, tag);
       payload = result.payload;
       if (!result.consumed) remaining.push(tag);
     } else {
@@ -168,10 +183,15 @@ export function ExecuteAction(action, interaction_result, state) {
     }
   }
 
-  // ── INJECT ──
-  const injectResult = runPhaseInject(owner.active_tag_pool, payload, owner);
-  owner.active_tag_pool = injectResult.tag_pool;
-  payload = injectResult.payload;
+  // ── INJECT_MULT ──
+  const injectMultResult = runPhaseInjectMult(owner.active_tag_pool, payload, owner);
+  owner.active_tag_pool = injectMultResult.tag_pool;
+  payload = injectMultResult.payload;
+
+  // ── INJECT_FLAT ──
+  const injectFlatResult = runPhaseInjectFlat(owner.active_tag_pool, payload, owner);
+  owner.active_tag_pool = injectFlatResult.tag_pool;
+  payload = injectFlatResult.payload;
 
   // ── DELIVERY ──
   let total_damage = 0;
@@ -184,15 +204,15 @@ export function ExecuteAction(action, interaction_result, state) {
   // ── SELF TAGS ──
   for (const tag of (action.tags?.self || [])) {
     const entry = battle_registry[tag.tag_name];
-    if (entry?.onApply) {
-      owner.active_tag_pool = addTagToPool(owner.active_tag_pool, tag);
-      logs.push({ msg: `✨ ${owner.name} gains ${tag.tag_name}`, type: 'buff' });
-    } else if (entry?.phases?.includes('DELIVERY')) {
+    if (entry?.phases?.includes('DELIVERY')) {
       const result = entry.handlers['DELIVERY'](payload, owner, tag);
       payload = result.payload || payload;
       if (tag.tag_name === 'HEAL') {
         logs.push({ msg: `💖 ${owner.name} heals for ${tag.power} HP`, type: 'heal' });
       }
+    } else {
+      owner.active_tag_pool = addTagToPool(owner.active_tag_pool, tag);
+      logs.push({ msg: `✨ ${owner.name} gains ${tag.tag_name}`, type: 'buff' });
     }
   }
 

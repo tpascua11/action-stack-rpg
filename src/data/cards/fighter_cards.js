@@ -72,6 +72,22 @@ export const FIGHTER_CARDS = [
     },
   },
   {
+    id: 'fuel_to_the_flames',
+    name: 'Fuel to the Flames',
+    speed: 100,
+    tag_type: ['WIZARD_PREP', 'SPELL', 'MAGIC', 'CHARGING'],
+    cost: {},
+    icon: '🔥',
+    color: '#f97316',
+    desc: 'Add +50 flat damage to next FIRE attack.',
+    tags: {
+      self: [
+        { tag_name: 'FUEL_TO_THE_FLAMES', flat: 50 },
+      ],
+      target: [],
+    },
+  },
+  {
     id: 'flame_strike',
     name: 'Flame Strike',
     speed: 100,

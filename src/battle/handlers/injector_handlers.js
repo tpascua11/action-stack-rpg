@@ -42,6 +42,24 @@ export function MomentumHandler(payload, character, tag) {
   return { payload, consumed: false }; // State — not consumed, resets END_OF_TURN
 }
 
+export function FuelToTheFlamesOnApply(pool, tag) {
+  const existing = pool.find(t => t.tag_name === 'FUEL_TO_THE_FLAMES');
+  if (existing) {
+    existing.flat += tag.flat;
+  } else {
+    pool.push({ ...tag });
+  }
+}
+
+export function FuelToTheFlamesHandler(payload, character, tag) {
+  const hasFireDamage = payload.damages.some(d => d.element === 'FIRE');
+  if (!hasFireDamage) return { payload, consumed: false };
+  payload.damages.forEach(d => {
+    if (d.element === 'FIRE') d.power += tag.flat;
+  });
+  return { payload, consumed: true };
+}
+
 export function MomentumOnApply(pool, tag) {
   const existing = pool.find(t => t.tag_name === 'MOMENTUM');
   if (existing) {

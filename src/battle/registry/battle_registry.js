@@ -10,6 +10,7 @@ import { FireImbueHandler, IceImbueHandler } from '../handlers/imbue_handlers';
 import {
   MagicChargeHandler, MagicChargeOnApply,
   FireChargeHandler,
+  FuelToTheFlamesHandler, FuelToTheFlamesOnApply,
   MomentumHandler, MomentumOnApply,
 } from '../handlers/injector_handlers';
 import { DamageHandler, HealHandler, RestoreManaHandler } from '../handlers/delivery_handlers';
@@ -32,26 +33,35 @@ export const battle_registry = {
     },
   },
 
-  // ── INJECT ──
+  // ── INJECT_MULT ──
   MAGIC_CHARGE: {
-    phases: ['INJECT'],
+    phases: ['INJECT_MULT'],
     onApply: MagicChargeOnApply,
     handlers: {
-      INJECT: MagicChargeHandler,
+      INJECT_MULT: MagicChargeHandler,
     },
   },
   FIRE_CHARGE: {
-    phases: ['INJECT'],
+    phases: ['INJECT_MULT'],
     handlers: {
-      INJECT: FireChargeHandler,
+      INJECT_MULT: FireChargeHandler,
     },
   },
   MOMENTUM: {
-    phases: ['INJECT'],
+    phases: ['INJECT_MULT'],
     reset: 'END_OF_TURN',
     onApply: MomentumOnApply,
     handlers: {
-      INJECT: MomentumHandler,
+      INJECT_MULT: MomentumHandler,
+    },
+  },
+
+  // ── INJECT_FLAT ──
+  FUEL_TO_THE_FLAMES: {
+    phases: ['INJECT_FLAT'],
+    onApply: FuelToTheFlamesOnApply,
+    handlers: {
+      INJECT_FLAT: FuelToTheFlamesHandler,
     },
   },
 
