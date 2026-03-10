@@ -1,7 +1,8 @@
 // ============================================================
 //  BATTLE REGISTRY
-//  Maps tag_name → { phase, onApply?, handler }
-//  This is the single source of truth for all battle tag logic.
+//  Maps tag_name → { phases, reset?, onApply?, handlers }
+//  phases   — array of pipeline phases this tag hooks into
+//  handlers — map of phase → handler function
 //  To add a new tag: import its handler and register it here.
 // ============================================================
 
@@ -19,56 +20,76 @@ export const battle_registry = {
 
   // ── IMBUE ──
   FIRE_IMBUE: {
-    phase: 'IMBUE',
-    handler: FireImbueHandler,
+    phases: ['IMBUE'],
+    handlers: {
+      IMBUE: FireImbueHandler,
+    },
   },
   ICE_IMBUE: {
-    phase: 'IMBUE',
-    handler: IceImbueHandler,
+    phases: ['IMBUE'],
+    handlers: {
+      IMBUE: IceImbueHandler,
+    },
   },
 
   // ── INJECT ──
   MAGIC_CHARGE: {
-    phase: 'INJECT',
+    phases: ['INJECT'],
     onApply: MagicChargeOnApply,
-    handler: MagicChargeHandler,
+    handlers: {
+      INJECT: MagicChargeHandler,
+    },
   },
   FIRE_CHARGE: {
-    phase: 'INJECT',
-    handler: FireChargeHandler,
+    phases: ['INJECT'],
+    handlers: {
+      INJECT: FireChargeHandler,
+    },
   },
   MOMENTUM: {
-    phase: 'INJECT',
+    phases: ['INJECT'],
     reset: 'END_OF_TURN',
     onApply: MomentumOnApply,
-    handler: MomentumHandler,
+    handlers: {
+      INJECT: MomentumHandler,
+    },
   },
 
   // ── DELIVERY ──
   DAMAGE: {
-    phase: 'DELIVERY',
-    handler: DamageHandler,
+    phases: ['DELIVERY'],
+    handlers: {
+      DELIVERY: DamageHandler,
+    },
   },
   HEAL: {
-    phase: 'DELIVERY',
-    handler: HealHandler,
+    phases: ['DELIVERY'],
+    handlers: {
+      DELIVERY: HealHandler,
+    },
   },
   RESTORE_MANA: {
-    phase: 'DELIVERY',
-    handler: RestoreManaHandler,
+    phases: ['DELIVERY'],
+    handlers: {
+      DELIVERY: RestoreManaHandler,
+    },
   },
 
   // ── POST_ATTACK ──
   COMBO_STACK: {
-    phase: 'POST_ATTACK',
-    handler: ComboStackHandler,
+    phases: ['POST_ATTACK'],
+    handlers: {
+      POST_ATTACK: ComboStackHandler,
+    },
   },
 
   // ── SPEED_CALC ──
   SPEED_BOOST: {
-    phase: 'SPEED_CALC',
+    phases: ['SPEED_CALC'],
     reset: 'TICK_TURN',
     onApply: SpeedBoostOnApply,
-    handler: SpeedBoostHandler,
+    handlers: {
+      SPEED_CALC: SpeedBoostHandler,
+    },
   },
 };

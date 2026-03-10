@@ -40,8 +40,8 @@ export function SpeedCheckAllAvailableActions(characters) {
     // Apply SPEED_CALC tags
     for (const tag of character.active_tag_pool) {
       const entry = battle_registry[tag.tag_name];
-      if (entry?.phase === 'SPEED_CALC') {
-        entry.handler(action, character, tag);
+      if (entry?.phases?.includes('SPEED_CALC')) {
+        entry.handlers['SPEED_CALC'](action, character, tag);
       }
     }
     actions.push({ ...action, owner_id: character.id, owner_name: character.name });
@@ -94,8 +94,8 @@ function runPhaseImbue(tag_pool, payload) {
   const remaining = [];
   for (const tag of tag_pool) {
     const entry = battle_registry[tag.tag_name];
-    if (entry?.phase === 'IMBUE') {
-      payload = entry.handler(payload, null, tag);
+    if (entry?.phases?.includes('IMBUE')) {
+      payload = entry.handlers['IMBUE'](payload, null, tag);
     } else {
       remaining.push(tag);
     }
@@ -107,8 +107,8 @@ function runPhaseInject(tag_pool, payload, character) {
   const remaining = [];
   for (const tag of tag_pool) {
     const entry = battle_registry[tag.tag_name];
-    if (entry?.phase === 'INJECT') {
-      const result = entry.handler(payload, character, tag);
+    if (entry?.phases?.includes('INJECT')) {
+      const result = entry.handlers['INJECT'](payload, character, tag);
       payload = result.payload;
       if (!result.consumed) remaining.push(tag);
     } else {
@@ -121,8 +121,8 @@ function runPhaseInject(tag_pool, payload, character) {
 function runPhasePostAttack(tag_pool, payload, character, hit_result) {
   for (const tag of tag_pool) {
     const entry = battle_registry[tag.tag_name];
-    if (entry?.phase === 'POST_ATTACK') {
-      entry.handler(payload, character, tag, hit_result);
+    if (entry?.phases?.includes('POST_ATTACK')) {
+      entry.handlers['POST_ATTACK'](payload, character, tag, hit_result);
     }
   }
   return tag_pool;
@@ -162,8 +162,8 @@ export function ExecuteAction(action, interaction_result, state) {
   // ── BUILD DAMAGES from card target tags ──
   for (const tag of (action.tags?.target || [])) {
     const entry = battle_registry[tag.tag_name];
-    if (entry?.phase === 'DELIVERY') {
-      const result = entry.handler(payload, owner, tag);
+    if (entry?.phases?.includes('DELIVERY')) {
+      const result = entry.handlers['DELIVERY'](payload, owner, tag);
       payload = result.payload;
     }
   }
@@ -187,8 +187,8 @@ export function ExecuteAction(action, interaction_result, state) {
     if (entry?.onApply) {
       owner.active_tag_pool = addTagToPool(owner.active_tag_pool, tag);
       logs.push({ msg: `✨ ${owner.name} gains ${tag.tag_name}`, type: 'buff' });
-    } else if (entry?.phase === 'DELIVERY') {
-      const result = entry.handler(payload, owner, tag);
+    } else if (entry?.phases?.includes('DELIVERY')) {
+      const result = entry.handlers['DELIVERY'](payload, owner, tag);
       payload = result.payload || payload;
       if (tag.tag_name === 'HEAL') {
         logs.push({ msg: `💖 ${owner.name} heals for ${tag.power} HP`, type: 'heal' });
