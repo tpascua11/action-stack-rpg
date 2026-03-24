@@ -2,16 +2,7 @@
 //  TagPool — Card-shaped active buff/debuff tags left of Vrax
 // ============================================================
 
-const TAG_DISPLAY = {
-  MAGIC_CHARGE:       { icon: '✨', color: '#7c3aed' },
-  MOMENTUM:           { icon: '💨', color: '#ff6b35' },
-  FIRE_CHARGE:        { icon: '🔥', color: '#ef4444' },
-  SPEED_BOOST:        { icon: '⚡', color: '#eab308' },
-  COMBO_STACK:        { icon: '⚔️',  color: '#6b7280' },
-  FORWARD_INITIATIVE: { icon: '🎯', color: '#22c55e' },
-};
-
-const DEFAULT = { icon: '🔮', color: '#4da6ff' };
+import { ui_registry, UI_DEFAULT } from '../battle/registry/ui_registry';
 
 export default function TagPool({ tags }) {
   if (tags.length === 0) {
@@ -23,7 +14,8 @@ export default function TagPool({ tags }) {
   return (
     <div className="flex flex-row gap-2">
       {tags.map((tag, i) => {
-        const display = TAG_DISPLAY[tag.tag_name] || DEFAULT;
+        const display = ui_registry[tag.tag_name] || UI_DEFAULT;
+        const description = display.describe(tag);
         return (
           <div
             key={i}
@@ -41,18 +33,13 @@ export default function TagPool({ tags }) {
               {display.icon}
             </div>
 
-            {/* Stats */}
-            <div className="flex flex-col items-center px-1 py-2 flex-1">
-              {tag.stack_count > 0 && (
-                <div className="text-[11px] font-bold font-mono" style={{ color: display.color }}>
-                  ×{tag.stack_count} stacks
-                </div>
-              )}
+            {/* Description */}
+            <div className="flex flex-col items-center px-1 py-2 flex-1 gap-1">
+              <div className="text-[10px] font-bold font-mono text-center leading-tight" style={{ color: display.color }}>
+                {description}
+              </div>
               {tag.duration && (
                 <div className="text-[9px] text-[#ffd700] font-mono">{tag.duration}T left</div>
-              )}
-              {!tag.stack_count && !tag.duration && (
-                <div className="text-[9px] text-gray-400 font-mono">active</div>
               )}
             </div>
           </div>

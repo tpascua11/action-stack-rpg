@@ -1,0 +1,81 @@
+// ============================================================
+//  UI REGISTRY
+//  Maps tag_name → { icon, color, describe(tag) }
+//  describe(tag) returns a human-readable string for display.
+//  This registry is UI-only — battle logic never touches it.
+// ============================================================
+
+export const ui_registry = {
+
+  MAGIC_CHARGE: {
+    icon: '✨',
+    color: '#7c3aed',
+    describe: (tag) => {
+      const pct = Math.round(tag.multiplier * tag.stack_count * 100);
+      return `+${pct}% next MAGIC hit`;
+    },
+  },
+
+  MOMENTUM: {
+    icon: '💨',
+    color: '#ff6b35',
+    describe: (tag) => {
+      const pct = Math.round(tag.multiplier * tag.stack_count * 100);
+      return `+${pct}% PHYSICAL damage`;
+    },
+  },
+
+  FIRE_CHARGE: {
+    icon: '🔥',
+    color: '#ef4444',
+    describe: (tag) => {
+      const pct = Math.round(tag.multiplier * 100);
+      return `+${pct}% next FIRE hit`;
+    },
+  },
+
+  FUEL_TO_THE_FLAMES: {
+    icon: '🌋',
+    color: '#f97316',
+    describe: (tag) => `+${tag.flat} flat FIRE damage`,
+  },
+
+  SPEED_BOOST: {
+    icon: '⚡',
+    color: '#eab308',
+    describe: (tag) => `+${tag.amount} speed`,
+  },
+
+  COMBO_STACK: {
+    icon: '⚔️',
+    color: '#6b7280',
+    describe: (tag) => {
+      const n = tag.stack_count || 0;
+      return `${n} hit${n !== 1 ? 's' : ''} combo`;
+    },
+  },
+
+  FORWARD_INITIATIVE: {
+    icon: '🎯',
+    color: '#22c55e',
+    describe: (tag) => {
+      const n = tag.stack_count || 0;
+      return `+${n} action slot${n !== 1 ? 's' : ''}`;
+    },
+  },
+
+  FIRE_IMBUE: {
+    icon: '🔥',
+    color: '#dc2626',
+    describe: () => 'Next hit becomes FIRE',
+  },
+
+  ICE_IMBUE: {
+    icon: '❄️',
+    color: '#38bdf8',
+    describe: () => 'Next hit becomes ICE',
+  },
+
+};
+
+export const UI_DEFAULT = { icon: '🔮', color: '#4da6ff', describe: () => 'active' };
