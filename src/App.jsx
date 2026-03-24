@@ -1,5 +1,6 @@
 import { useReducer, useEffect, useRef } from 'react';
-import { VRAX, STONE_GOLEM } from './data/characters/vrax';
+import { VRAX } from './data/characters/vrax';
+import { EMBER_WITCH } from './data/characters/enemies';
 import { FIGHTER_CARDS } from './data/cards/fighter_cards';
 import {
   calcSpeed,
@@ -20,15 +21,16 @@ import Hand from './components/Hand';
 
 // ── BUILD INITIAL STATE ──
 function buildInitialState() {
-  const golem = JSON.parse(JSON.stringify(STONE_GOLEM));
+  const witch1 = { ...JSON.parse(JSON.stringify(EMBER_WITCH)), id: 'ember_witch_1' };
+  const witch2 = { ...JSON.parse(JSON.stringify(EMBER_WITCH)), id: 'ember_witch_2' };
   const vrax = JSON.parse(JSON.stringify(VRAX));
   return {
     phase: 'QUEUE_SETUP',  // QUEUE_SETUP | BATTLE | RESULT
     turn: 1,
     result: null,          // WIN | LOSS
-    characters: [vrax, golem],
+    characters: [vrax, witch1, witch2],
     logs: [{ msg: '⚔️  System Ready. Queue your actions and execute.', type: 'info' }],
-    enemyShaking: false,
+    shakingEnemyId: null,
   };
 }
 
@@ -55,11 +57,12 @@ function battleReducer(state, action) {
       const slotIndex = player.queue.length;
       if (slotIndex >= player.total_action_slots) return state;
       const card = action.card;
+      const firstEnemy = chars.find(c => !c.is_player && c.health > 0);
       player.queue.push({
         ...card,
         owner_id: 'vrax',
         owner_name: 'VRAX',
-        target_id: 'golem',
+        target_id: firstEnemy.id,
         payload_type: card.tag_type.includes('MAGIC') ? 'MAGIC' : 'PHYSICAL',
         calc_speed: calcSpeed(card.speed, slotIndex, player.total_action_slots),
         priority_flag: null,
@@ -81,8 +84,7 @@ function battleReducer(state, action) {
 
     case 'START_BATTLE': {
       const chars = JSON.parse(JSON.stringify(state.characters));
-      const enemy = chars.find(c => c.id === 'golem');
-      enemy.queue = buildEnemyQueue(enemy);
+      chars.filter(c => !c.is_player).forEach(e => { e.queue = buildEnemyQueue(e); });
       return {
         ...state,
         characters: chars,
@@ -98,7 +100,7 @@ function battleReducer(state, action) {
       if (sorted.length === 0) {
         const { newState: cleanedState, logs: cleanLogs } = TurnResultCleanup({ ...state });
         const player = cleanedState.characters.find(c => c.id === 'vrax');
-        const enemy = cleanedState.characters.find(c => c.id === 'golem');
+        const allEnemiesDead = cleanedState.characters.filter(c => !c.is_player).every(e => e.health <= 0);
 
         if (player.health <= 0) {
           return {
@@ -108,7 +110,7 @@ function battleReducer(state, action) {
             logs: [...state.logs, ...cleanLogs, { msg: '💀 VRAX HAS FALLEN.', type: 'dmg' }],
           };
         }
-        if (enemy.health <= 0) {
+        if (allEnemiesDead) {
           return {
             ...cleanedState,
             phase: 'RESULT',
@@ -152,18 +154,19 @@ function battleReducer(state, action) {
       }
 
       // Check if enemy was hit for shake animation
-      const enemyWasTarget = actionA.target_id === 'golem' && resultA !== 'NULLIFY';
+      const targetChar = state.characters.find(c => c.id === actionA.target_id);
+      const enemyWasHit = targetChar && !targetChar.is_player && resultA !== 'NULLIFY';
 
       return {
         ...newState,
         phase: 'BATTLE',
         logs: [...state.logs, ...newLogs],
-        enemyShaking: enemyWasTarget,
+        shakingEnemyId: enemyWasHit ? actionA.target_id : null,
       };
     }
 
     case 'STOP_SHAKE':
-      return { ...state, enemyShaking: false };
+      return { ...state, shakingEnemyId: null };
 
     case 'RESET':
       return buildInitialState();
@@ -179,7 +182,7 @@ export default function App() {
   const battleTimerRef = useRef(null);
 
   const player = gs.characters.find(c => c.id === 'vrax');
-  const enemy = gs.characters.find(c => c.id === 'golem');
+  const enemies = gs.characters.filter(c => !c.is_player);
 
   // Drive battle loop with timed steps
   useEffect(() => {
@@ -192,10 +195,10 @@ export default function App() {
 
   // Stop shake animation
   useEffect(() => {
-    if (!gs.enemyShaking) return;
+    if (!gs.shakingEnemyId) return;
     const t = setTimeout(() => dispatch({ type: 'STOP_SHAKE' }), 350);
     return () => clearTimeout(t);
-  }, [gs.enemyShaking]);
+  }, [gs.shakingEnemyId]);
 
   function handleCardClick(card) {
     if (gs.phase !== 'QUEUE_SETUP') return;
@@ -221,7 +224,7 @@ export default function App() {
     <div className="w-screen h-screen flex flex-col overflow-hidden bg-[#0f0f1a]">
 
       {/* TOP — Enemy Zone */}
-      <EnemyZone enemy={enemy} isShaking={gs.enemyShaking} />
+      <EnemyZone enemies={enemies} shakingEnemyId={gs.shakingEnemyId} />
 
       {/* MIDDLE — Battle Log */}
       <BattleLog logs={gs.logs} turn={gs.turn} />
