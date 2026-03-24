@@ -95,7 +95,9 @@ function runPhaseImbue(tag_pool, payload) {
   for (const tag of tag_pool) {
     const entry = battle_registry[tag.tag_name];
     if (entry?.phases?.includes('IMBUE')) {
-      payload = entry.handlers['IMBUE'](payload, null, tag);
+      const result = entry.handlers['IMBUE'](payload, null, tag);
+      payload = result.payload;
+      if (!result.consumed) remaining.push(tag);
     } else {
       remaining.push(tag);
     }
@@ -160,6 +162,12 @@ export function ExecuteAction(action, interaction_result, state) {
   if (!owner || !target) return { newState, logs };
   if (owner.health <= 0) return { newState, logs };
 
+  // Retarget if original target is already dead
+  const resolvedTarget = target.health > 0
+    ? target
+    : newState.characters.find(c => c.id !== action.owner_id && c.health > 0) ?? null;
+  const retargeted = resolvedTarget && resolvedTarget.id !== target.id;
+
   // ── BUILD ──
   let payload = {
     type: action.payload_type,
@@ -194,11 +202,16 @@ export function ExecuteAction(action, interaction_result, state) {
   payload = injectFlatResult.payload;
 
   // ── DELIVERY ──
+  if (retargeted) logs.push({ msg: `🔀 ${action.name} retargeted to ${resolvedTarget.name}`, type: 'info' });
   let total_damage = 0;
-  for (const dmg of payload.damages) {
-    target.health = Math.max(0, target.health - dmg.power);
-    total_damage += dmg.power;
-    logs.push({ msg: `⚔️ ${owner.name} uses ${action.name} → ${target.name} takes ${dmg.power} ${dmg.element} dmg`, type: 'dmg' });
+  if (resolvedTarget) {
+    for (const dmg of payload.damages) {
+      resolvedTarget.health = Math.max(0, resolvedTarget.health - dmg.power);
+      total_damage += dmg.power;
+      logs.push({ msg: `⚔️ ${owner.name} uses ${action.name} → ${resolvedTarget.name} takes ${dmg.power} ${dmg.element} dmg`, type: 'dmg' });
+    }
+  } else {
+    logs.push({ msg: `💨 ${owner.name} uses ${action.name} — no targets remaining`, type: 'info' });
   }
 
   // ── SELF TAGS ──
