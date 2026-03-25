@@ -28,33 +28,36 @@ export default function ActionQueue({ queue, totalSlots, onClearSlot, onExecute,
                 border: `2px ${slot ? 'solid' : 'dashed'} ${borderColor}`,
                 borderRadius: '3px',
                 boxShadow: slot ? `0 0 10px ${slot.color}55, inset 0 0 6px ${slot.color}11` : 'none',
+                isolation: 'isolate',
               }}
             >
               {/* Header strip */}
-              <div className="flex items-center justify-center px-1 flex-shrink-0"
-                style={{ background: slot ? slot.color : 'rgba(255,255,255,0.04)', height: '1.3rem' }}>
-                <span className="text-[8px] font-bold font-mono tracking-widest truncate uppercase"
+              <div className="relative flex-shrink-0"
+                style={{ background: slot ? slot.color : 'rgba(255,255,255,0.04)', height: '1.3rem', overflow: 'visible', zIndex: 2 }}>
+                <span className="absolute inset-x-0 top-0 px-1 pt-[3px] text-[8px] font-bold font-mono tracking-widest uppercase text-center leading-tight"
                   style={{ color: slot ? '#fff' : '#4b5563' }}>
                   {slot ? slot.name : `SLOT ${i + 1}`}
                 </span>
               </div>
 
               {/* Art area */}
-              <div className="relative flex-1 overflow-hidden flex items-center justify-center"
+              <div className="relative flex-1"
                 style={{ background: slot ? 'transparent' : 'rgba(255,255,255,0.02)' }}>
-                {slot ? (
-                  <>
-                    {slot.image
-                      ? <img src={slot.image} alt={slot.name} className="w-full h-full object-contain" />
-                      : <span className="text-3xl">{slot.icon}</span>
-                    }
-                    {/* Scanlines */}
-                    <div className="absolute inset-0 pointer-events-none"
-                      style={{ background: 'repeating-linear-gradient(0deg, rgba(0,0,0,0.18) 0px, rgba(0,0,0,0.18) 1px, transparent 1px, transparent 3px)' }} />
-                  </>
-                ) : (
-                  <span className="text-2xl" style={{ color: '#ffffff11' }}>＋</span>
-                )}
+                <div className="absolute inset-0 overflow-hidden flex items-center justify-center">
+                  {slot ? (
+                    <>
+                      {slot.image
+                        ? <img src={slot.image} alt={slot.name} className="w-full h-full object-contain" />
+                        : <span className="text-3xl">{slot.icon}</span>
+                      }
+                      {/* Scanlines */}
+                      <div className="absolute inset-0 pointer-events-none"
+                        style={{ background: 'repeating-linear-gradient(0deg, rgba(0,0,0,0.18) 0px, rgba(0,0,0,0.18) 1px, transparent 1px, transparent 3px)' }} />
+                    </>
+                  ) : (
+                    <span className="text-2xl" style={{ color: '#ffffff11' }}>＋</span>
+                  )}
+                </div>
               </div>
 
               {/* Footer strip */}

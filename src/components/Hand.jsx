@@ -37,25 +37,28 @@ export default function Hand({ cards, queue, totalSlots, onCardClick, disabled }
                 borderColor: isDisabled ? '#374151' : card.color,
                 boxShadow: isDisabled ? 'none' : `0 0 10px ${card.color}55, inset 0 0 6px ${card.color}11`,
                 borderRadius: '3px',
+                isolation: 'isolate',
               }}
             >
               {/* Header strip — name */}
-              <div className="flex items-center justify-center px-1 flex-shrink-0"
-                style={{ background: card.color, height: '1.3rem' }}>
-                <span className="text-[8px] font-bold font-mono text-white tracking-widest truncate uppercase">
+              <div className="relative flex-shrink-0"
+                style={{ background: card.color, height: '1.3rem', overflow: 'visible', zIndex: 2 }}>
+                <span className="absolute inset-x-0 top-0 px-1 pt-[3px] text-[8px] font-bold font-mono text-white tracking-widest uppercase text-center leading-tight">
                   {card.name}
                 </span>
               </div>
 
               {/* Art area */}
-              <div className="relative flex-1 overflow-hidden">
-                {card.image
-                  ? <img src={card.image} alt={card.name} className="w-full h-full object-contain" />
-                  : <div className="w-full h-full flex items-center justify-center text-3xl">{card.icon}</div>
-                }
-                {/* Scanlines */}
-                <div className="absolute inset-0 pointer-events-none"
-                  style={{ background: 'repeating-linear-gradient(0deg, rgba(0,0,0,0.18) 0px, rgba(0,0,0,0.18) 1px, transparent 1px, transparent 3px)' }} />
+              <div className="relative flex-1">
+                <div className="absolute inset-0 overflow-hidden">
+                  {card.image
+                    ? <img src={card.image} alt={card.name} className="w-full h-full object-contain" />
+                    : <div className="w-full h-full flex items-center justify-center text-3xl">{card.icon}</div>
+                  }
+                  {/* Scanlines */}
+                  <div className="absolute inset-0 pointer-events-none"
+                    style={{ background: 'repeating-linear-gradient(0deg, rgba(0,0,0,0.18) 0px, rgba(0,0,0,0.18) 1px, transparent 1px, transparent 3px)' }} />
+                </div>
               </div>
 
               {/* Footer strip — speed */}
