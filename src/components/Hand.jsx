@@ -23,45 +23,48 @@ export default function Hand({ cards, queue, totalSlots, onCardClick, disabled }
             <div
               key={card.id}
               onClick={() => !isDisabled && onCardClick(card)}
-              className={`group relative overflow-visible rounded-lg border
-                transition-all duration-200 shadow-lg
+              className={`group relative overflow-visible flex flex-col border-2
+                transition-all duration-200
                 ${isDisabled
                   ? 'opacity-40 cursor-not-allowed border-gray-700'
-                  : 'cursor-pointer border-gray-600 hover:-translate-y-8 hover:scale-110 hover:border-[#ffd700] hover:z-50'
+                  : 'cursor-pointer hover:-translate-y-8 hover:scale-110 hover:z-50'
                 }`}
               style={{
                 marginLeft: idx > 0 ? '-18px' : '0',
                 width: '5.5rem',
                 height: '8.25rem',
-            }}
+                background: '#09090f',
+                borderColor: isDisabled ? '#374151' : card.color,
+                boxShadow: isDisabled ? 'none' : `0 0 10px ${card.color}55, inset 0 0 6px ${card.color}11`,
+                borderRadius: '3px',
+              }}
             >
-              {/* Art fills entire card */}
-              <div className="absolute inset-0 rounded-lg overflow-hidden"
-                style={{ background: `linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)), ${card.color}`, borderBottom: `2px solid ${card.color}` }}>
-                {card.image
-                  ? <div className="w-full h-full flex items-center justify-center">
-                      <img src={card.image} alt={card.name} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
-                    </div>
-                  : <div className="w-full h-full flex items-center justify-center text-3xl">{card.icon}</div>
-                }
+              {/* Header strip — name */}
+              <div className="flex items-center justify-center px-1 flex-shrink-0"
+                style={{ background: card.color, height: '1.3rem' }}>
+                <span className="text-[8px] font-bold font-mono text-white tracking-widest truncate uppercase">
+                  {card.name}
+                </span>
               </div>
 
-              {/* Overlay UI */}
-              <div className="absolute inset-0 flex flex-col justify-between pointer-events-none">
-                {/* Speed — top left */}
-                <div className="flex justify-start p-1">
-                  <span className="text-[10px] font-bold font-mono text-white bg-black/50 rounded px-1">
-                    {wouldSpeed !== null && !isDisabled ? wouldSpeed : card.speed}
-                  </span>
-                </div>
+              {/* Art area */}
+              <div className="relative flex-1 overflow-hidden">
+                {card.image
+                  ? <img src={card.image} alt={card.name} className="w-full h-full object-contain" />
+                  : <div className="w-full h-full flex items-center justify-center text-3xl">{card.icon}</div>
+                }
+                {/* Scanlines */}
+                <div className="absolute inset-0 pointer-events-none"
+                  style={{ background: 'repeating-linear-gradient(0deg, rgba(0,0,0,0.18) 0px, rgba(0,0,0,0.18) 1px, transparent 1px, transparent 3px)' }} />
+              </div>
 
-                {/* Name — bottom */}
-                <div className="px-1 pb-1"
-                  style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.75) 0%, transparent 100%)' }}>
-                  <div className="text-center text-[10px] font-bold text-white font-body tracking-wide truncate">
-                    {card.name}
-                  </div>
-                </div>
+              {/* Footer strip — speed */}
+              <div className="flex items-center justify-between px-1 flex-shrink-0"
+                style={{ background: '#0d0d1a', borderTop: `1px solid ${card.color}55`, height: '1.1rem' }}>
+                <span className="text-[7px] font-mono text-gray-500 tracking-widest">SPD</span>
+                <span className="text-[9px] font-bold font-mono" style={{ color: card.color }}>
+                  {wouldSpeed !== null && !isDisabled ? wouldSpeed : card.speed}
+                </span>
               </div>
 
               {/* Tooltip */}
@@ -70,7 +73,6 @@ export default function Hand({ cards, queue, totalSlots, onCardClick, disabled }
                   w-44 rounded-lg border border-gray-600 shadow-xl z-[100]
                   opacity-0 group-hover:opacity-100 transition-opacity duration-150"
                   style={{ background: '#1a1a2e' }}>
-                  {/* Colour bar */}
                   <div className="h-1 rounded-t-lg" style={{ background: card.color }} />
                   <div className="px-3 py-2 flex flex-col gap-1">
                     <div className="text-[11px] font-bold text-white font-body">{card.name}</div>
