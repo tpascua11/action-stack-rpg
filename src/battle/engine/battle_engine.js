@@ -234,7 +234,7 @@ export function ExecuteAction(action, interaction_result, state) {
   // ── POST_ATTACK ──
   owner.active_tag_pool = runPhasePostAttack(owner.active_tag_pool, payload, owner, hit_result);
 
-  return { newState, logs };
+  return { newState, logs, actualTargetId: resolvedTarget?.id ?? null };
 }
 
 // ── ACTION CLEANUP ──

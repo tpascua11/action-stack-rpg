@@ -140,7 +140,7 @@ function battleReducer(state, action) {
       if (interactionLog) newLogs.push(interactionLog);
 
       // Execute actionA
-      const { newState: afterExec, logs: execLogs } = ExecuteAction(actionA, resultA, newState);
+      const { newState: afterExec, logs: execLogs, actualTargetId } = ExecuteAction(actionA, resultA, newState);
       newState = afterExec;
       newLogs.push(...execLogs);
 
@@ -153,15 +153,15 @@ function battleReducer(state, action) {
         newLogs.push({ msg: `💨 "${actionB.name}" was nullified`, type: 'clash' });
       }
 
-      // Check if enemy was hit for shake animation
-      const targetChar = state.characters.find(c => c.id === actionA.target_id);
+      // Check if enemy was hit for shake animation — use actual (possibly retargeted) target
+      const targetChar = actualTargetId ? state.characters.find(c => c.id === actualTargetId) : null;
       const enemyWasHit = targetChar && !targetChar.is_player && resultA !== 'NULLIFY';
 
       return {
         ...newState,
         phase: 'BATTLE',
         logs: [...state.logs, ...newLogs],
-        shakingEnemyId: enemyWasHit ? actionA.target_id : null,
+        shakingEnemyId: enemyWasHit ? actualTargetId : null,
       };
     }
 
