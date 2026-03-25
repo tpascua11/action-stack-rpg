@@ -19,7 +19,9 @@ export default function BattleQueue({ characters, phase, onToggleLog, logOpen })
     )
     .sort((a, b) => b.calc_speed - a.calc_speed);
 
-  const allActions = phase === 'BATTLE' ? [...firstActions, ...remainingActions] : [];
+  const allActions = phase === 'BATTLE'
+    ? [...firstActions, ...remainingActions].sort((a, b) => b.calc_speed - a.calc_speed)
+    : [];
 
   return (
     <div

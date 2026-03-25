@@ -93,6 +93,23 @@ export const FIGHTER_CARDS = [
     },
   },
   {
+    id: 'speed_up',
+    name: 'Speed Up',
+    speed: 200,
+    tag_type: ['PHYSICAL'],
+    cost: {},
+    icon: '💨',
+    image: require('../../asssets/FOX_SUMMURAI/fox_summurai_9.png'),
+    color: '#38bdf8',
+    desc: 'Boost the speed of your next action by 50.',
+    tags: {
+      self: [
+        { tag_name: 'SPEED_BOOST', amount: 150 },
+      ],
+      target: [],
+    },
+  },
+  {
     id: 'flame_strike',
     name: 'Flame Strike',
     speed: 100,

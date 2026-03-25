@@ -15,7 +15,7 @@ import {
 } from '../handlers/injector_handlers';
 import { DamageHandler, HealHandler, RestoreManaHandler } from '../handlers/delivery_handlers';
 import { ComboStackHandler } from '../handlers/post_attack_handlers';
-import { SpeedBoostHandler, SpeedBoostOnApply } from '../handlers/speed_handlers';
+import { SpeedBoostHandler, SpeedBoostImbueHandler, SpeedBoostOnApply } from '../handlers/speed_handlers';
 
 export const battle_registry = {
 
@@ -95,11 +95,11 @@ export const battle_registry = {
 
   // ── SPEED_CALC ──
   SPEED_BOOST: {
-    phases: ['SPEED_CALC'],
-    reset: 'TICK_TURN',
+    phases: ['SPEED_CALC', 'IMBUE'],
     onApply: SpeedBoostOnApply,
     handlers: {
       SPEED_CALC: SpeedBoostHandler,
+      IMBUE: SpeedBoostImbueHandler,
     },
   },
 };
