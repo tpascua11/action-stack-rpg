@@ -62,7 +62,7 @@ export default function ActionQueue({ queue, totalSlots, onClearSlot, onExecute,
                 style={{ background: '#0d0d1a', borderTop: `1px solid ${slot ? slot.color + '55' : '#ffffff11'}`, height: '1.1rem' }}>
                 <span className="text-[11px] font-bold font-mono"
                   style={{ color: slot ? slot.color : '#4b5563' }}>
-                  {slot ? slot.calc_speed : (PENALTIES[i] > 0 ? `−${PENALTIES[i]}%` : '—')}
+                  {slot ? `SPD ${slot.calc_speed}` : (PENALTIES[i] > 0 ? `−${PENALTIES[i]}%` : '—')}
                 </span>
               </div>
             </div>
