@@ -1,4 +1,4 @@
-import { useReducer, useEffect, useRef } from 'react';
+import { useReducer, useEffect, useRef, useState } from 'react';
 import { VRAX } from './data/characters/vrax';
 import { EMBER_WITCH } from './data/characters/enemies';
 import { FIGHTER_CARDS } from './data/cards/fighter_cards';
@@ -14,6 +14,7 @@ import {
 
 import EnemyZone from './components/EnemyZone';
 import BattleLog from './components/BattleLog';
+import BattleQueue from './components/BattleQueue';
 import TagPool from './components/TagPool';
 import VraxPortrait from './components/VraxPortrait';
 import ActionQueue from './components/ActionQueue';
@@ -179,6 +180,7 @@ function battleReducer(state, action) {
 // ── APP ──
 export default function App() {
   const [gs, dispatch] = useReducer(battleReducer, null, buildInitialState);
+  const [logOpen, setLogOpen] = useState(false);
   const battleTimerRef = useRef(null);
 
   const player = gs.characters.find(c => c.id === 'vrax');
@@ -226,8 +228,13 @@ export default function App() {
       {/* TOP — Enemy Zone */}
       <EnemyZone enemies={enemies} shakingEnemyId={gs.shakingEnemyId} />
 
-      {/* MIDDLE — Battle Log */}
-      <BattleLog logs={gs.logs} turn={gs.turn} />
+      {/* MIDDLE — Battle Queue Row */}
+      <BattleQueue
+        characters={gs.characters}
+        phase={gs.phase}
+        onToggleLog={() => setLogOpen(o => !o)}
+        logOpen={logOpen}
+      />
 
       {/* BOTTOM — Player Zone */}
       <div className="flex-1 flex flex-col overflow-hidden">
@@ -266,6 +273,14 @@ export default function App() {
           disabled={gs.phase !== 'QUEUE_SETUP'}
         />
       </div>
+
+      {/* FLOATING — Battle Log modal */}
+      <BattleLog
+        logs={gs.logs}
+        turn={gs.turn}
+        isOpen={logOpen}
+        onClose={() => setLogOpen(false)}
+      />
     </div>
   );
 }
