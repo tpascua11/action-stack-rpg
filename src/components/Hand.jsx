@@ -59,10 +59,9 @@ export default function Hand({ cards, queue, totalSlots, onCardClick, disabled }
               </div>
 
               {/* Footer strip — speed */}
-              <div className="flex items-center justify-between px-1 flex-shrink-0"
+              <div className="flex items-center justify-center flex-shrink-0"
                 style={{ background: '#0d0d1a', borderTop: `1px solid ${card.color}55`, height: '1.1rem' }}>
-                <span className="text-[7px] font-mono text-gray-500 tracking-widest">SPD</span>
-                <span className="text-[9px] font-bold font-mono" style={{ color: card.color }}>
+                <span className="text-[11px] font-bold font-mono" style={{ color: card.color }}>
                   {wouldSpeed !== null && !isDisabled ? wouldSpeed : card.speed}
                 </span>
               </div>

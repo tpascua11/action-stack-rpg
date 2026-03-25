@@ -14,61 +14,56 @@ export default function ActionQueue({ queue, totalSlots, onClearSlot, onExecute,
       <div className="flex flex-row gap-2">
         {Array.from({ length: totalSlots }).map((_, i) => {
           const slot = queue[i];
+          const borderColor = slot ? slot.color : '#ffffff22';
           return (
             <div
               key={i}
               onClick={() => slot && !isBattling && onClearSlot(i)}
-              className={`relative w-32 flex flex-col overflow-hidden rounded-lg border
-                transition-all duration-200 shadow-lg
-                ${slot
-                  ? 'cursor-pointer border-[#ffd700]/70 shadow-[0_0_14px_rgba(255,215,0,0.2)] hover:scale-105 hover:border-[#ffd700]'
-                  : 'border-dashed border-white/20'
-                }`}
-              style={{ background: slot ? '#fff' : 'rgba(255,255,255,0.03)' }}
+              className={`relative flex flex-col overflow-visible transition-all duration-200
+                ${slot ? 'cursor-pointer hover:scale-105 hover:-translate-y-1' : 'border-dashed'}`}
+              style={{
+                width: '5.5rem',
+                height: '8.25rem',
+                background: '#09090f',
+                border: `2px ${slot ? 'solid' : 'dashed'} ${borderColor}`,
+                borderRadius: '3px',
+                boxShadow: slot ? `0 0 10px ${slot.color}55, inset 0 0 6px ${slot.color}11` : 'none',
+              }}
             >
-              {/* Banner */}
-              <div className="py-1 text-center text-[9px] font-bold tracking-widest font-body truncate px-1"
-                style={{ background: slot ? slot.color : 'rgba(255,255,255,0.06)', color: slot ? '#fff' : '#6b7280' }}>
-                {slot ? slot.tag_type.filter(t => t !== 'WIZARD_PREP').join(' · ') : `SLOT ${i + 1}`}
+              {/* Header strip */}
+              <div className="flex items-center justify-center px-1 flex-shrink-0"
+                style={{ background: slot ? slot.color : 'rgba(255,255,255,0.04)', height: '1.3rem' }}>
+                <span className="text-[8px] font-bold font-mono tracking-widest truncate uppercase"
+                  style={{ color: slot ? '#fff' : '#4b5563' }}>
+                  {slot ? slot.name : `SLOT ${i + 1}`}
+                </span>
               </div>
 
-              {/* Icon */}
-              <div className="flex items-center justify-center py-3 text-3xl border-b"
-                style={{ background: slot ? '#f3f4f6' : 'rgba(255,255,255,0.03)', borderColor: slot ? '#e5e7eb' : 'rgba(255,255,255,0.06)', opacity: slot ? 1 : 0.3 }}>
-                {slot ? slot.icon : '＋'}
-              </div>
-
-              {/* Stats */}
-              <div className="flex justify-around py-1 text-[10px] font-bold"
-                style={{ background: slot ? '#e5e7eb' : 'rgba(255,255,255,0.04)' }}>
+              {/* Art area */}
+              <div className="relative flex-1 overflow-hidden flex items-center justify-center"
+                style={{ background: slot ? 'transparent' : 'rgba(255,255,255,0.02)' }}>
                 {slot ? (
                   <>
-                    <span style={{ color: '#4da6ff' }}>BASE {slot.speed}</span>
-                    <span style={{ color: '#ffd700' }}>{slot.calc_speed} SPD</span>
+                    {slot.image
+                      ? <img src={slot.image} alt={slot.name} className="w-full h-full object-contain" />
+                      : <span className="text-3xl">{slot.icon}</span>
+                    }
+                    {/* Scanlines */}
+                    <div className="absolute inset-0 pointer-events-none"
+                      style={{ background: 'repeating-linear-gradient(0deg, rgba(0,0,0,0.18) 0px, rgba(0,0,0,0.18) 1px, transparent 1px, transparent 3px)' }} />
                   </>
                 ) : (
-                  <span style={{ color: '#4b5563' }}>
-                    {PENALTIES[i] > 0 ? `−${PENALTIES[i]}% SPD` : '— SPD'}
-                  </span>
+                  <span className="text-2xl" style={{ color: '#ffffff11' }}>＋</span>
                 )}
               </div>
 
-              {/* Name + Desc */}
-              <div className="flex flex-col items-center px-1 py-2 flex-1">
-                <div className="text-[11px] font-bold font-body tracking-wide"
-                  style={{ color: slot ? '#1f2937' : '#374151', opacity: slot ? 1 : 0.35 }}>
-                  {slot ? slot.name : 'empty'}
-                </div>
-                <div className="text-[9px] text-center mt-1 leading-tight"
-                  style={{ color: slot ? '#6b7280' : 'transparent' }}>
-                  {slot ? slot.desc : '.'}
-                </div>
-              </div>
-
-              {/* Slot number badge */}
-              <div className="absolute top-1 right-1 w-4 h-4 rounded-full bg-black/20 flex items-center justify-center
-                text-[8px] font-mono" style={{ color: slot ? '#fff' : '#6b7280' }}>
-                {i + 1}
+              {/* Footer strip */}
+              <div className="flex items-center justify-center flex-shrink-0"
+                style={{ background: '#0d0d1a', borderTop: `1px solid ${slot ? slot.color + '55' : '#ffffff11'}`, height: '1.1rem' }}>
+                <span className="text-[11px] font-bold font-mono"
+                  style={{ color: slot ? slot.color : '#4b5563' }}>
+                  {slot ? slot.calc_speed : (PENALTIES[i] > 0 ? `−${PENALTIES[i]}%` : '—')}
+                </span>
               </div>
             </div>
           );
