@@ -21,7 +21,7 @@ export default function BattleLog({ logs, turn }) {
   }, [logs]);
 
   return (
-    <div className="h-[14%] bg-[#1a1a2e] border-b border-white/10 flex flex-col px-4 py-1">
+    <div className="h-[18%] bg-[#1a1a2e] border-b border-white/10 flex flex-col px-4 py-1">
       <div className="text-[9px] text-gray-600 font-mono tracking-widest mb-1">
         BATTLE LOG — T{turn}
       </div>

@@ -4,7 +4,7 @@
 
 export default function EnemyZone({ enemies, shakingEnemyId }) {
   return (
-    <div className="h-[22%] flex items-center justify-center gap-6 border-b border-red-900/30"
+    <div className="h-[28%] flex items-center justify-center gap-6 border-b border-red-900/30"
       style={{ background: 'radial-gradient(circle at center, #2a1520 0%, #0f0f1a 100%)' }}>
 
       {enemies.map(enemy => {
