@@ -30,16 +30,20 @@ export default function Hand({ cards, queue, totalSlots, onCardClick, disabled }
                   : 'cursor-pointer border-gray-600 hover:-translate-y-8 hover:scale-110 hover:border-[#ffd700] hover:z-50'
                 }`}
               style={{
-                background: '#fff',
                 marginLeft: idx > 0 ? '-18px' : '0',
                 width: '5.5rem',
                 height: '8.25rem',
             }}
             >
               {/* Art fills entire card */}
-              <div className="absolute inset-0 flex items-center justify-center text-3xl rounded-lg"
-                style={{ background: card.color + '33' }}>
-                {card.icon}
+              <div className="absolute inset-0 rounded-lg overflow-hidden"
+                style={{ background: `linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)), ${card.color}`, borderBottom: `2px solid ${card.color}` }}>
+                {card.image
+                  ? <div className="w-full h-full flex items-center justify-center">
+                      <img src={card.image} alt={card.name} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                    </div>
+                  : <div className="w-full h-full flex items-center justify-center text-3xl">{card.icon}</div>
+                }
               </div>
 
               {/* Overlay UI */}
