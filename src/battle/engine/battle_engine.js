@@ -35,6 +35,7 @@ export function SpeedCheckAllAvailableActions(characters) {
     if (character.health <= 0) continue;
     if (!character.queue || character.queue.length === 0) continue;
     const action = deepClone(character.queue[0]);
+    if (!action) continue;
     if (action.priority_flag === 'SKIP') continue;
 
     // Apply SPEED_CALC tags

@@ -57,12 +57,14 @@ function battleReducer(state, action) {
     case 'ADD_TO_QUEUE': {
       const chars = JSON.parse(JSON.stringify(state.characters));
       const player = chars.find(c => c.id === 'vrax');
-      const slotIndex = player.queue.length;
-      if (slotIndex >= player.total_action_slots) return state;
+      const filledCount = player.queue.filter(Boolean).length;
+      if (filledCount >= player.total_action_slots) return state;
+      const nullIdx = player.queue.findIndex(s => !s);
+      const slotIndex = nullIdx !== -1 ? nullIdx : player.queue.length;
       const card = action.card;
       const lastTarget = chars.find(c => c.id === state.lastTargetId && c.health > 0);
       const target = lastTarget ?? chars.find(c => !c.is_player && c.health > 0);
-      player.queue.push({
+      player.queue[slotIndex] = {
         ...card,
         owner_id: 'vrax',
         owner_name: 'VRAX',
@@ -70,24 +72,21 @@ function battleReducer(state, action) {
         payload_type: card.tag_type.includes('MAGIC') ? 'MAGIC' : 'PHYSICAL',
         calc_speed: calcSpeed(card.speed, slotIndex),
         priority_flag: null,
-      });
+      };
       return { ...state, characters: chars, lastTargetId: target.id };
     }
 
     case 'CLEAR_SLOT': {
       const chars = JSON.parse(JSON.stringify(state.characters));
       const player = chars.find(c => c.id === 'vrax');
-      player.queue.splice(action.index, 1);
-      // Recalculate speeds after removal
-      player.queue = player.queue.map((a, i) => ({
-        ...a,
-        calc_speed: calcSpeed(a.speed, i),
-      }));
+      player.queue[action.index] = null;
       return { ...state, characters: chars };
     }
 
     case 'START_BATTLE': {
       const chars = JSON.parse(JSON.stringify(state.characters));
+      const battlePlayer = chars.find(c => c.id === 'vrax');
+      battlePlayer.queue = battlePlayer.queue.filter(Boolean);
       chars.filter(c => !c.is_player).forEach(e => { e.queue = buildEnemyQueue(e); });
       return {
         ...state,
@@ -252,7 +251,7 @@ export default function App() {
 
   function handleCardClick(card) {
     if (gs.phase !== 'QUEUE_SETUP') return;
-    if (player.queue.length >= player.total_action_slots) return;
+    if (player.queue.filter(Boolean).length >= player.total_action_slots) return;
     dispatch({ type: 'ADD_TO_QUEUE', card });
   }
 

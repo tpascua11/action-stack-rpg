@@ -5,7 +5,9 @@
 import { calcSpeed } from '../battle/engine/battle_engine';
 
 export default function Hand({ cards, queue, totalSlots, onCardClick, disabled }) {
-  const nextSlotIndex = queue.length < totalSlots ? queue.length : -1;
+  const filledCount = queue.filter(Boolean).length;
+  const nullIdx = queue.findIndex(s => !s);
+  const nextSlotIndex = filledCount >= totalSlots ? -1 : (nullIdx !== -1 ? nullIdx : queue.length);
 
   return (
     <div className="flex-1 flex flex-col border-t border-white/10"
