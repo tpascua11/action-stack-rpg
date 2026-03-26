@@ -20,12 +20,17 @@ import VraxPortrait from './components/VraxPortrait';
 import ActionQueue from './components/ActionQueue';
 import Hand from './components/Hand';
 
+// ── CURRENT ENCOUNTER ──
+const CURRENT_ENCOUNTER = [EMBER_WITCH, EMBER_WITCH];
+
 // ── BUILD INITIAL STATE ──
-function buildInitialState() {
-  const witch1 = { ...JSON.parse(JSON.stringify(EMBER_WITCH)), id: 'ember_witch_1' };
-  const witch2 = { ...JSON.parse(JSON.stringify(EMBER_WITCH)), id: 'ember_witch_2' };
+function buildInitialState(enemies = CURRENT_ENCOUNTER) {
+  const builtEnemies = enemies.map((def, i) => ({
+    ...JSON.parse(JSON.stringify(def)),
+    id: `${def.id}_${i + 1}`,
+  }));
   const vrax = JSON.parse(JSON.stringify(VRAX));
-  const characters = [vrax, witch1, witch2];
+  const characters = [vrax, ...builtEnemies];
   return {
     phase: 'QUEUE_SETUP',  // QUEUE_SETUP | BATTLE | RESULT
     turn: 1,
@@ -184,7 +189,7 @@ function battleReducer(state, action) {
       return { ...state, shakingEnemyId: null };
 
     case 'RESET':
-      return buildInitialState();
+      return buildInitialState(CURRENT_ENCOUNTER);
 
     default:
       return state;
