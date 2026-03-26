@@ -3,9 +3,7 @@
 // ============================================================
 
 export default function ActionQueue({ queue, totalSlots, onClearSlot, onExecute, isBattling, isResult }) {
-  const PENALTIES = Array.from({ length: totalSlots }, (_, i) =>
-    Math.round((i / totalSlots) * 100)
-  );
+  const PENALTIES = Array.from({ length: totalSlots }, (_, i) => i * 20);
 
   return (
     <div className="flex flex-col items-start gap-3">
@@ -65,7 +63,7 @@ export default function ActionQueue({ queue, totalSlots, onClearSlot, onExecute,
                 style={{ background: '#0d0d1a', borderTop: `1px solid ${slot ? slot.color + '55' : '#ffffff11'}`, height: '1.1rem' }}>
                 <span className="text-[11px] font-bold font-mono"
                   style={{ color: slot ? slot.color : '#4b5563' }}>
-                  {slot ? `SPD ${slot.calc_speed}` : (PENALTIES[i] > 0 ? `−${PENALTIES[i]}%` : '—')}
+                  {slot ? `SPD ${slot.calc_speed}` : (PENALTIES[i] > 0 ? `−${PENALTIES[i]} SPD` : '—')}
                 </span>
               </div>
             </div>

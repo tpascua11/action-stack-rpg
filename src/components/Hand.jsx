@@ -15,7 +15,7 @@ export default function Hand({ cards, queue, totalSlots, onCardClick, disabled }
       <div className="flex-1 flex items-end justify-center px-4 pb-3">
         {cards.map((card, idx) => {
           const wouldSpeed = nextSlotIndex >= 0
-            ? calcSpeed(card.speed, nextSlotIndex, totalSlots)
+            ? calcSpeed(card.speed, nextSlotIndex)
             : null;
           const isDisabled = disabled || nextSlotIndex === -1;
 

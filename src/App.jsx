@@ -43,7 +43,7 @@ function buildEnemyQueue(enemy) {
     owner_name: enemy.name,
     target_id: 'vrax',
     payload_type: act.payload_type || 'PHYSICAL',
-    calc_speed: calcSpeed(act.speed, i, enemy.total_action_slots),
+    calc_speed: calcSpeed(act.speed, i),
     priority_flag: null,
   }));
 }
@@ -65,7 +65,7 @@ function battleReducer(state, action) {
         owner_name: 'VRAX',
         target_id: firstEnemy.id,
         payload_type: card.tag_type.includes('MAGIC') ? 'MAGIC' : 'PHYSICAL',
-        calc_speed: calcSpeed(card.speed, slotIndex, player.total_action_slots),
+        calc_speed: calcSpeed(card.speed, slotIndex),
         priority_flag: null,
       });
       return { ...state, characters: chars };
@@ -78,7 +78,7 @@ function battleReducer(state, action) {
       // Recalculate speeds after removal
       player.queue = player.queue.map((a, i) => ({
         ...a,
-        calc_speed: calcSpeed(a.speed, i, player.total_action_slots),
+        calc_speed: calcSpeed(a.speed, i),
       }));
       return { ...state, characters: chars };
     }

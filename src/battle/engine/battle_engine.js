@@ -8,8 +8,8 @@ import { battle_registry } from '../registry/battle_registry';
 
 // ── HELPERS ──
 
-export function calcSpeed(base_speed, slot_index, total_action_slots) {
-  return Math.floor(base_speed * (1 - slot_index / total_action_slots));
+export function calcSpeed(base_speed, slot_index) {
+  return base_speed - slot_index * 20;
 }
 
 export function addTagToPool(pool, tag) {
