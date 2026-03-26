@@ -7,20 +7,28 @@ import { SpeedCheckAllAvailableActions } from '../battle/engine/battle_engine';
 const ENEMY_COLOR = '#e94560';
 
 export default function BattleQueue({ characters, phase, onToggleLog, logOpen }) {
-  // First action of each character with SPEED_CALC tags applied (accurate order)
+  // First action of each character with SPEED_CALC tags applied (accurate speeds)
   const firstActions = SpeedCheckAllAvailableActions(characters).map(action => ({
     ...action,
     _char: characters.find(c => c.id === action.owner_id),
+    _queueIndex: 0,
   }));
-  // Remaining actions (index 1+) sorted by stored calc_speed
-  const remainingActions = characters
-    .flatMap(char =>
-      (char.queue || []).slice(1).map(action => ({ ...action, _char: char }))
-    )
-    .sort((a, b) => b.calc_speed - a.calc_speed);
+  // Remaining actions (index 1+) with queue position tracked
+  const remainingActions = characters.flatMap(char =>
+    (char.queue || []).slice(1).map((action, i) => ({
+      ...action,
+      _char: char,
+      _queueIndex: i + 1,
+    }))
+  );
 
   const allActions = phase === 'BATTLE'
-    ? [...firstActions, ...remainingActions].sort((a, b) => b.calc_speed - a.calc_speed)
+    ? [...firstActions, ...remainingActions].sort((a, b) => {
+        // Same character: always preserve queue order
+        if (a.owner_id === b.owner_id) return a._queueIndex - b._queueIndex;
+        // Different characters: highest speed first
+        return b.calc_speed - a.calc_speed;
+      })
     : [];
 
   return (
