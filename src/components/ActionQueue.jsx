@@ -17,7 +17,7 @@ export default function ActionQueue({ queue, totalSlots, enemies, retargetingSlo
             <div key={i} className="relative flex flex-col overflow-visible" style={{ width: '5.5rem' }}>
 
               {/* Target box */}
-              {slot && !isBattling && (() => {
+              {slot && !isBattling && slot.tags?.target?.length > 0 && (() => {
                 const target = enemies.find(e => e.id === slot.target_id);
                 const enemyNum = enemies.findIndex(e => e.id === slot.target_id) + 1;
                 return (
