@@ -2,7 +2,7 @@
 //  EnemyZone — Top section showing enemy cards with HP bars
 // ============================================================
 
-export default function EnemyZone({ enemies, shakingEnemyId }) {
+export default function EnemyZone({ enemies, shakingEnemyId, selectedTargetId, phase, onSelectTarget }) {
   return (
     <div className="h-[28%] flex items-center justify-center gap-6 border-b border-red-900/30"
       style={{ background: 'radial-gradient(circle at center, #2a1520 0%, #0f0f1a 100%)' }}>
@@ -11,13 +11,25 @@ export default function EnemyZone({ enemies, shakingEnemyId }) {
         const hpPct = Math.max(0, (enemy.health / enemy.max_health) * 100);
         const isDead = enemy.health <= 0;
         const isShaking = shakingEnemyId === enemy.id;
+        const isSelected = selectedTargetId === enemy.id && !isDead;
+        const isSelectable = phase === 'QUEUE_SETUP' && !isDead;
 
         return (
-          <div key={enemy.id} className={`flex flex-col items-center gap-2 transition-opacity duration-500 ${isDead ? 'opacity-30' : 'opacity-100'}`}>
+          <div
+            key={enemy.id}
+            className={`flex flex-col items-center gap-2 transition-opacity duration-500 ${isDead ? 'opacity-30' : 'opacity-100'} ${isSelectable ? 'cursor-pointer' : ''}`}
+            onClick={() => isSelectable && onSelectTarget(enemy.id)}
+          >
 
             {/* Enemy Card */}
-            <div className={`w-28 bg-white rounded-lg border-2 border-[#e94560] flex flex-col items-center overflow-hidden
-              shadow-[0_0_20px_rgba(233,69,96,0.3)] ${isShaking ? 'animate-shake' : ''}`}>
+            <div className={`w-28 bg-white rounded-lg border-2 flex flex-col items-center overflow-hidden ${isShaking ? 'animate-shake' : ''}`}
+              style={{
+                borderColor: isSelected ? '#ff0030' : '#e94560',
+                boxShadow: isSelected
+                  ? '0 0 28px rgba(255,0,48,0.8), 0 0 8px rgba(255,0,48,0.5)'
+                  : '0 0 20px rgba(233,69,96,0.3)',
+              }}
+            >
               <div className="w-full bg-[#e94560] py-1 text-center text-[10px] font-bold text-white tracking-widest font-body">
                 ENEMY
               </div>

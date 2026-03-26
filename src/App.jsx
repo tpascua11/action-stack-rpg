@@ -25,13 +25,15 @@ function buildInitialState() {
   const witch1 = { ...JSON.parse(JSON.stringify(EMBER_WITCH)), id: 'ember_witch_1' };
   const witch2 = { ...JSON.parse(JSON.stringify(EMBER_WITCH)), id: 'ember_witch_2' };
   const vrax = JSON.parse(JSON.stringify(VRAX));
+  const characters = [vrax, witch1, witch2];
   return {
     phase: 'QUEUE_SETUP',  // QUEUE_SETUP | BATTLE | RESULT
     turn: 1,
     result: null,          // WIN | LOSS
-    characters: [vrax, witch1, witch2],
+    characters,
     logs: [{ msg: '⚔️  System Ready. Queue your actions and execute.', type: 'info' }],
     shakingEnemyId: null,
+    lastTargetId: characters.find(c => !c.is_player && c.health > 0)?.id ?? null,
   };
 }
 
@@ -58,17 +60,18 @@ function battleReducer(state, action) {
       const slotIndex = player.queue.length;
       if (slotIndex >= player.total_action_slots) return state;
       const card = action.card;
-      const firstEnemy = chars.find(c => !c.is_player && c.health > 0);
+      const lastTarget = chars.find(c => c.id === state.lastTargetId && c.health > 0);
+      const target = lastTarget ?? chars.find(c => !c.is_player && c.health > 0);
       player.queue.push({
         ...card,
         owner_id: 'vrax',
         owner_name: 'VRAX',
-        target_id: firstEnemy.id,
+        target_id: target.id,
         payload_type: card.tag_type.includes('MAGIC') ? 'MAGIC' : 'PHYSICAL',
         calc_speed: calcSpeed(card.speed, slotIndex),
         priority_flag: null,
       });
-      return { ...state, characters: chars };
+      return { ...state, characters: chars, lastTargetId: target.id };
     }
 
     case 'CLEAR_SLOT': {
@@ -166,6 +169,22 @@ function battleReducer(state, action) {
       };
     }
 
+    case 'SELECT_TARGET':
+      return { ...state, lastTargetId: action.targetId };
+
+    case 'RETARGET_SLOT': {
+      const chars = JSON.parse(JSON.stringify(state.characters));
+      const player = chars.find(c => c.id === 'vrax');
+      const slot = player.queue[action.index];
+      if (!slot) return state;
+      const aliveEnemies = chars.filter(c => !c.is_player && c.health > 0);
+      if (aliveEnemies.length <= 1) return state;
+      const currentIdx = aliveEnemies.findIndex(e => e.id === slot.target_id);
+      const nextEnemy = aliveEnemies[(currentIdx + 1) % aliveEnemies.length];
+      player.queue[action.index] = { ...slot, target_id: nextEnemy.id };
+      return { ...state, characters: chars, lastTargetId: nextEnemy.id };
+    }
+
     case 'STOP_SHAKE':
       return { ...state, shakingEnemyId: null };
 
@@ -202,6 +221,16 @@ export default function App() {
     return () => clearTimeout(t);
   }, [gs.shakingEnemyId]);
 
+  function handleSelectTarget(targetId) {
+    if (gs.phase !== 'QUEUE_SETUP') return;
+    dispatch({ type: 'SELECT_TARGET', targetId });
+  }
+
+  function handleRetargetSlot(index) {
+    if (gs.phase !== 'QUEUE_SETUP') return;
+    dispatch({ type: 'RETARGET_SLOT', index });
+  }
+
   function handleCardClick(card) {
     if (gs.phase !== 'QUEUE_SETUP') return;
     if (player.queue.length >= player.total_action_slots) return;
@@ -226,7 +255,13 @@ export default function App() {
     <div className="w-screen h-screen flex flex-col overflow-hidden bg-[#0f0f1a]">
 
       {/* TOP — Enemy Zone */}
-      <EnemyZone enemies={enemies} shakingEnemyId={gs.shakingEnemyId} />
+      <EnemyZone
+        enemies={enemies}
+        shakingEnemyId={gs.shakingEnemyId}
+        selectedTargetId={gs.lastTargetId}
+        phase={gs.phase}
+        onSelectTarget={handleSelectTarget}
+      />
 
       {/* MIDDLE — Battle Queue Row */}
       <BattleQueue
@@ -255,7 +290,9 @@ export default function App() {
             <ActionQueue
               queue={player.queue}
               totalSlots={player.total_action_slots}
+              enemies={enemies}
               onClearSlot={handleClearSlot}
+              onRetargetSlot={handleRetargetSlot}
               onExecute={handleExecute}
               isBattling={gs.phase === 'BATTLE'}
               isResult={gs.phase === 'RESULT'}
