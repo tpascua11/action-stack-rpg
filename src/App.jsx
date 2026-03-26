@@ -177,12 +177,8 @@ function battleReducer(state, action) {
       const player = chars.find(c => c.id === 'vrax');
       const slot = player.queue[action.index];
       if (!slot) return state;
-      const aliveEnemies = chars.filter(c => !c.is_player && c.health > 0);
-      if (aliveEnemies.length <= 1) return state;
-      const currentIdx = aliveEnemies.findIndex(e => e.id === slot.target_id);
-      const nextEnemy = aliveEnemies[(currentIdx + 1) % aliveEnemies.length];
-      player.queue[action.index] = { ...slot, target_id: nextEnemy.id };
-      return { ...state, characters: chars, lastTargetId: nextEnemy.id };
+      player.queue[action.index] = { ...slot, target_id: action.targetId };
+      return { ...state, characters: chars, lastTargetId: action.targetId };
     }
 
     case 'STOP_SHAKE':
@@ -200,6 +196,8 @@ function battleReducer(state, action) {
 export default function App() {
   const [gs, dispatch] = useReducer(battleReducer, null, buildInitialState);
   const [logOpen, setLogOpen] = useState(false);
+  const [retargetingSlot, setRetargetingSlot] = useState(null);
+  const [lineCoords, setLineCoords] = useState(null);
   const battleTimerRef = useRef(null);
 
   const player = gs.characters.find(c => c.id === 'vrax');
@@ -221,14 +219,33 @@ export default function App() {
     return () => clearTimeout(t);
   }, [gs.shakingEnemyId]);
 
-  function handleSelectTarget(targetId) {
+  useEffect(() => {
+    if (retargetingSlot === null) { setLineCoords(null); return; }
+    const boxEl = document.querySelector(`[data-retarget-slot="${retargetingSlot}"]`);
+    const enemyEl = gs.lastTargetId ? document.querySelector(`[data-enemy-id="${gs.lastTargetId}"]`) : null;
+    if (!boxEl || !enemyEl) { setLineCoords(null); return; }
+    const b = boxEl.getBoundingClientRect();
+    const e = enemyEl.getBoundingClientRect();
+    setLineCoords({
+      x1: b.left + b.width / 2,
+      y1: b.top,
+      x2: e.left + e.width / 2,
+      y2: e.bottom,
+    });
+  }, [retargetingSlot, gs.lastTargetId]);
+
+  function handleEnemyClick(targetId) {
     if (gs.phase !== 'QUEUE_SETUP') return;
-    dispatch({ type: 'SELECT_TARGET', targetId });
+    if (retargetingSlot !== null) {
+      dispatch({ type: 'RETARGET_SLOT', index: retargetingSlot, targetId });
+    } else {
+      dispatch({ type: 'SELECT_TARGET', targetId });
+    }
   }
 
-  function handleRetargetSlot(index) {
+  function handleRetargetBoxClick(index) {
     if (gs.phase !== 'QUEUE_SETUP') return;
-    dispatch({ type: 'RETARGET_SLOT', index });
+    setRetargetingSlot(prev => prev === index ? null : index);
   }
 
   function handleCardClick(card) {
@@ -252,7 +269,33 @@ export default function App() {
   }
 
   return (
-    <div className="w-screen h-screen flex flex-col overflow-hidden bg-[#0f0f1a]">
+    <div className="w-screen h-screen flex flex-col overflow-hidden bg-[#0f0f1a]" onClick={() => setRetargetingSlot(null)}>
+
+      {/* Retarget line overlay */}
+      {lineCoords && (() => {
+        const { x1, y1, x2, y2 } = lineCoords;
+        return (
+          <svg className="fixed inset-0 pointer-events-none" style={{ zIndex: 40 }} width="100%" height="100%">
+            <defs>
+              <filter id="comet-glow">
+                <feGaussianBlur stdDeviation="3" result="blur"/>
+                <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+            </defs>
+
+            {/* Track */}
+            <line x1={x1} y1={y1} x2={x2} y2={y2} stroke="#4da6ff" strokeWidth="0.5" opacity="0.15"/>
+
+            {/* Comet tail — wide blurred streak */}
+            <line x1={x1} y1={y1} x2={x2} y2={y2}
+              stroke="#4da6ff" strokeWidth="4" opacity="0.4"
+              strokeDasharray="500 600" filter="url(#comet-glow)"
+              style={{ animation: 'cometTravel 2s linear infinite' }}
+            />
+
+          </svg>
+        );
+      })()}
 
       {/* TOP — Enemy Zone */}
       <EnemyZone
@@ -260,7 +303,8 @@ export default function App() {
         shakingEnemyId={gs.shakingEnemyId}
         selectedTargetId={gs.lastTargetId}
         phase={gs.phase}
-        onSelectTarget={handleSelectTarget}
+        retargetingSlot={retargetingSlot}
+        onSelectTarget={handleEnemyClick}
       />
 
       {/* MIDDLE — Battle Queue Row */}
@@ -292,7 +336,8 @@ export default function App() {
               totalSlots={player.total_action_slots}
               enemies={enemies}
               onClearSlot={handleClearSlot}
-              onRetargetSlot={handleRetargetSlot}
+              retargetingSlot={retargetingSlot}
+              onRetargetBoxClick={handleRetargetBoxClick}
               onExecute={handleExecute}
               isBattling={gs.phase === 'BATTLE'}
               isResult={gs.phase === 'RESULT'}

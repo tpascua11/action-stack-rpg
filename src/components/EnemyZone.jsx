@@ -18,11 +18,11 @@ export default function EnemyZone({ enemies, shakingEnemyId, selectedTargetId, p
           <div
             key={enemy.id}
             className={`flex flex-col items-center gap-2 transition-opacity duration-500 ${isDead ? 'opacity-30' : 'opacity-100'} ${isSelectable ? 'cursor-pointer' : ''}`}
-            onClick={() => isSelectable && onSelectTarget(enemy.id)}
+            onClick={e => { if (!isSelectable) return; e.stopPropagation(); onSelectTarget(enemy.id); }}
           >
 
             {/* Enemy Card */}
-            <div className={`w-28 bg-white rounded-lg border-2 flex flex-col items-center overflow-hidden ${isShaking ? 'animate-shake' : ''}`}
+            <div data-enemy-id={enemy.id} className={`w-28 bg-white rounded-lg border-2 flex flex-col items-center overflow-hidden ${isShaking ? 'animate-shake' : ''}`}
               style={{
                 borderColor: isSelected ? '#ff0030' : '#e94560',
                 boxShadow: isSelected

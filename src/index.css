@@ -34,6 +34,18 @@ body::after {
   z-index: 9999;
 }
 
+/* Comet */
+@keyframes cometTravel {
+  from { stroke-dashoffset: 600; }
+  to   { stroke-dashoffset: -500; }
+}
+
+/* Pulsing border */
+@keyframes pulseBorder {
+  0%, 100% { stroke: rgba(77,166,255,0.4); }
+  50%       { stroke: rgba(77,166,255,1); }
+}
+
 /* Scrollbar */
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }

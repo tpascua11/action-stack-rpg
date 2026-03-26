@@ -2,7 +2,7 @@
 //  ActionQueue — Card-shaped slots to the right of Vrax
 // ============================================================
 
-export default function ActionQueue({ queue, totalSlots, enemies, onClearSlot, onRetargetSlot, onExecute, isBattling, isResult }) {
+export default function ActionQueue({ queue, totalSlots, enemies, retargetingSlot, onRetargetBoxClick, onClearSlot, onExecute, isBattling, isResult }) {
   const PENALTIES = Array.from({ length: totalSlots }, (_, i) => i * 20);
 
   return (
@@ -23,18 +23,29 @@ export default function ActionQueue({ queue, totalSlots, enemies, onClearSlot, o
                 return (
                   <div
                     className="absolute left-0 right-0 flex flex-col items-center cursor-pointer group"
+                    data-retarget-slot={i}
                     style={{ top: '-5rem', zIndex: 10, height: '4rem' }}
-                    onClick={e => { e.stopPropagation(); onRetargetSlot(i); }}
+                    onClick={e => { e.stopPropagation(); onRetargetBoxClick(i); }}
                   >
-                    <div className="w-full flex flex-col items-center transition-all duration-150 group-hover:brightness-125 group-hover:-translate-y-[2px]"
+                    <div className="relative w-full flex flex-col items-center transition-all duration-150 group-hover:brightness-125 group-hover:-translate-y-[2px]"
                       style={{
                         background: '#0d0d1a',
-                        border: '1px solid #e9456066',
+                        border: retargetingSlot === i ? 'none' : '1px solid #e9456066',
                         borderBottom: 'none',
                         borderRadius: '3px 3px 0 0',
                         height: '100%',
+                        boxShadow: retargetingSlot === i ? '0 0 12px rgba(77,166,255,0.5)' : 'none',
                       }}
                     >
+                      {/* Marching ants border */}
+                      {retargetingSlot === i && (
+                        <svg className="absolute inset-0 pointer-events-none" width="100%" height="100%" style={{ borderRadius: '3px 3px 0 0', overflow: 'visible' }}>
+                          <rect x="1" y="1" width="calc(100% - 2px)" height="calc(100% - 2px)"
+                            fill="none" stroke="#4da6ff" strokeWidth="2"
+                            style={{ animation: 'pulseBorder 1.2s ease-in-out infinite' }}
+                          />
+                        </svg>
+                      )}
                       {/* Enemy # label */}
                       <div className="w-full text-center py-[2px]"
                         style={{ background: '#e94560', borderRadius: '2px 2px 0 0' }}>
