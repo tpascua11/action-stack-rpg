@@ -34,10 +34,14 @@ body::after {
   z-index: 9999;
 }
 
-/* Comet */
-@keyframes cometTravel {
-  from { stroke-dashoffset: 600; }
-  to   { stroke-dashoffset: -500; }
+/* Electric arc */
+@keyframes electricA {
+  from { stroke-dashoffset: 0; }
+  to   { stroke-dashoffset: -80; }
+}
+@keyframes electricB {
+  from { stroke-dashoffset: 0; }
+  to   { stroke-dashoffset: -60; }
 }
 
 /* Pulsing border */

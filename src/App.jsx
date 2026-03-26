@@ -219,10 +219,12 @@ export default function App() {
     return () => clearTimeout(t);
   }, [gs.shakingEnemyId]);
 
+  const slotTargetId = retargetingSlot !== null ? player.queue[retargetingSlot]?.target_id ?? null : null;
+
   useEffect(() => {
-    if (retargetingSlot === null) { setLineCoords(null); return; }
+    if (retargetingSlot === null || !slotTargetId) { setLineCoords(null); return; }
     const boxEl = document.querySelector(`[data-retarget-slot="${retargetingSlot}"]`);
-    const enemyEl = gs.lastTargetId ? document.querySelector(`[data-enemy-id="${gs.lastTargetId}"]`) : null;
+    const enemyEl = document.querySelector(`[data-enemy-id="${slotTargetId}"]`);
     if (!boxEl || !enemyEl) { setLineCoords(null); return; }
     const b = boxEl.getBoundingClientRect();
     const e = enemyEl.getBoundingClientRect();
@@ -232,7 +234,7 @@ export default function App() {
       x2: e.left + e.width / 2,
       y2: e.bottom,
     });
-  }, [retargetingSlot, gs.lastTargetId]);
+  }, [retargetingSlot, slotTargetId]);
 
   function handleEnemyClick(targetId) {
     if (gs.phase !== 'QUEUE_SETUP') return;
@@ -277,20 +279,28 @@ export default function App() {
         return (
           <svg className="fixed inset-0 pointer-events-none" style={{ zIndex: 40 }} width="100%" height="100%">
             <defs>
-              <filter id="comet-glow">
-                <feGaussianBlur stdDeviation="3" result="blur"/>
+              <filter id="arc-glow">
+                <feGaussianBlur stdDeviation="2.5" result="blur"/>
                 <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
               </filter>
             </defs>
 
             {/* Track */}
-            <line x1={x1} y1={y1} x2={x2} y2={y2} stroke="#4da6ff" strokeWidth="0.5" opacity="0.15"/>
+            <line x1={x1} y1={y1} x2={x2} y2={y2} stroke="#4da6ff" strokeWidth="0.5" opacity="0.12"/>
 
-            {/* Comet tail — wide blurred streak */}
+            {/* Arc A — wide, slow, irregular */}
             <line x1={x1} y1={y1} x2={x2} y2={y2}
-              stroke="#4da6ff" strokeWidth="4" opacity="0.4"
-              strokeDasharray="500 600" filter="url(#comet-glow)"
-              style={{ animation: 'cometTravel 2s linear infinite' }}
+              stroke="#4da6ff" strokeWidth="3" opacity="0.5"
+              strokeDasharray="10 5 2 8 14 3 6 4"
+              filter="url(#arc-glow)"
+              style={{ animation: 'electricA 0.6s linear infinite' }}
+            />
+
+            {/* Arc B — thin, faster, different rhythm */}
+            <line x1={x1} y1={y1} x2={x2} y2={y2}
+              stroke="#a0d4ff" strokeWidth="1.2" opacity="0.9"
+              strokeDasharray="3 11 8 4 2 9 5 6"
+              style={{ animation: 'electricB 0.4s linear infinite' }}
             />
 
           </svg>
