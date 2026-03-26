@@ -92,7 +92,7 @@ function battleReducer(state, action) {
       const chars = JSON.parse(JSON.stringify(state.characters));
       const battlePlayer = chars.find(c => c.id === 'vrax');
       battlePlayer.queue = battlePlayer.queue.filter(Boolean);
-      chars.filter(c => !c.is_player).forEach(e => { e.queue = buildEnemyQueue(e); });
+      chars.filter(c => !c.is_player && c.health > 0).forEach(e => { e.queue = buildEnemyQueue(e); });
       return {
         ...state,
         characters: chars,
@@ -160,6 +160,16 @@ function battleReducer(state, action) {
         newState = ActionCleanup(actionB, newState);
         newLogs.push({ msg: `💨 "${actionB.name}" was nullified`, type: 'clash' });
       }
+
+      // Purge queued actions from newly dead enemies (keep GHOST-tagged actions)
+      newState = {
+        ...newState,
+        characters: newState.characters.map(c => {
+          if (c.is_player || c.health > 0) return c;
+          const remaining = c.queue.filter(a => a?.properties?.includes('GHOST'));
+          return { ...c, queue: remaining };
+        }),
+      };
 
       // Check if enemy was hit for shake animation — use actual (possibly retargeted) target
       const targetChar = actualTargetId ? state.characters.find(c => c.id === actualTargetId) : null;
