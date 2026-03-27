@@ -1,7 +1,8 @@
 import { useReducer, useEffect, useRef, useState } from 'react';
-import { VRAX } from './data/characters/vrax';
 import { EMBER_WITCH } from './data/characters/enemies';
-import { FIGHTER_CARDS } from './data/cards/fighter_cards';
+import { FIGHTER } from './data/classes/fighter';
+import { buildPlayer } from './data/player';
+import { CLASS_REGISTRY } from './data/classes/class_registry';
 import {
   calcSpeed,
   addTagToPool,
@@ -29,7 +30,7 @@ function buildInitialState(enemies = CURRENT_ENCOUNTER) {
     ...JSON.parse(JSON.stringify(def)),
     id: `${def.id}_${i + 1}`,
   }));
-  const vrax = JSON.parse(JSON.stringify(VRAX));
+  const vrax = buildPlayer(FIGHTER, { id: 'vrax', name: 'VRAX', portrait: null });
   const characters = [vrax, ...builtEnemies];
   return {
     phase: 'QUEUE_SETUP',  // QUEUE_SETUP | BATTLE | RESULT
@@ -72,7 +73,7 @@ function battleReducer(state, action) {
       player.queue[slotIndex] = {
         ...card,
         owner_id: 'vrax',
-        owner_name: 'VRAX',
+        owner_name: player.name,
         target_id: target.id,
         payload_type: card.tag_type.includes('MAGIC') ? 'MAGIC' : 'PHYSICAL',
         calc_speed: calcSpeed(card.speed, slotIndex),
@@ -216,6 +217,7 @@ export default function App() {
 
   const player = gs.characters.find(c => c.id === 'vrax');
   const enemies = gs.characters.filter(c => !c.is_player);
+  const { ResourceBar } = CLASS_REGISTRY[player.class_id] ?? {};
 
   // Drive battle loop with timed steps
   useEffect(() => {
@@ -372,11 +374,13 @@ export default function App() {
 
         {/* BOTTOM — Hand */}
         <Hand
-          cards={FIGHTER_CARDS}
+          cards={player.cards}
           queue={player.queue}
           totalSlots={player.total_action_slots}
           onCardClick={handleCardClick}
           disabled={gs.phase !== 'QUEUE_SETUP'}
+          resource={player.resource}
+          ResourceBar={ResourceBar}
         />
       </div>
 

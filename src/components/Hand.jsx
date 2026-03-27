@@ -4,7 +4,7 @@
 
 import { calcSpeed } from '../battle/engine/battle_engine';
 
-export default function Hand({ cards, queue, totalSlots, onCardClick, disabled }) {
+export default function Hand({ cards, queue, totalSlots, onCardClick, disabled, resource, ResourceBar }) {
   const filledCount = queue.filter(Boolean).length;
   const nullIdx = queue.findIndex(s => !s);
   const nextSlotIndex = filledCount >= totalSlots ? -1 : (nullIdx !== -1 ? nullIdx : queue.length);
@@ -23,13 +23,10 @@ export default function Hand({ cards, queue, totalSlots, onCardClick, disabled }
 
         {/* MIDDLE — resource bar */}
         <div className="flex-1 flex items-center justify-center px-6">
-          <div className="relative w-full h-5 bg-gray-700/60 rounded-full overflow-hidden">
-            <div className="h-full rounded-full transition-all duration-500"
-              style={{ width: '70%', background: 'linear-gradient(90deg,#7c3aed,#a78bfa)' }} />
-            <span className="absolute inset-0 flex items-center justify-center text-[10px] font-mono text-white drop-shadow">
-              70 / 100 MP
-            </span>
-          </div>
+          {ResourceBar && resource
+            ? <ResourceBar current={resource.current} max={resource.max} />
+            : <div className="w-full h-5 rounded-full bg-gray-700/60" />
+          }
         </div>
 
         {/* RIGHT — options */}

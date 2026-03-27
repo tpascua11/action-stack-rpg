@@ -3,6 +3,7 @@
 // ============================================================
 
 import { FIGHTER_CARDS } from '../cards/fighter_cards';
+import WizardResourceBar from '../../components/resources/WizardResourceBar';
 
 // Placeholder — wizard will get its own card set later
 const WIZARD_CARDS = FIGHTER_CARDS;
@@ -21,4 +22,5 @@ export const WIZARD = {
     { tag_name: 'MANA_REGEN', amount: 40 },
   ],
   cards: WIZARD_CARDS,
+  ResourceBar: WizardResourceBar,
 };

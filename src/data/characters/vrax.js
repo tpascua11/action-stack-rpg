@@ -6,6 +6,7 @@ export const VRAX = {
   id: 'vrax',
   name: 'VRAX',
   icon: '🦊',
+  class_id: 'fighter',
   health: 300,
   max_health: 300,
   wizard_mana: 0,
