@@ -48,3 +48,11 @@ Do this before the registry grows much larger.
 - [ ] Character select screen (name input, class pick, portrait pick)
 - [ ] Move STONE_GOLEM out of `vrax.js` into `enemies.js` (it's in the wrong file)
 - [ ] Wizard gets its own card set (currently borrows FIGHTER_CARDS as placeholder)
+
+## Planned Changes — Resource System
+- [ ] Add battle log message when GAIN_RESOURCE fires (e.g. "VRAX gains 1 BATTLE SPIRIT")
+      Currently Focus Spirit fires silently — only HEAL has a special log entry.
+
+## Design Decisions — Speed & Slots
+- Enemies ARE affected by the slot speed penalty (`calcSpeed(act.speed, i)`). This is intentional.
+  Their actions get progressively slower the later they appear in base_actions, same as the player.

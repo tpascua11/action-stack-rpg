@@ -5,6 +5,7 @@ import { buildPlayer } from './data/player';
 import { CLASS_REGISTRY } from './data/classes/class_registry';
 import {
   calcSpeed,
+  effectiveResourceAtExecution,
   addTagToPool,
   SpeedCheckAllAvailableActions,
   InteractionCheck,
@@ -69,14 +70,11 @@ function battleReducer(state, action) {
       const nullIdx = player.queue.findIndex(s => !s);
       const slotIndex = nullIdx !== -1 ? nullIdx : player.queue.length;
       const card = action.card;
-      // Check affordability against current minus already-planned costs
+      // Legal if resources available at execution time (slots before this one) cover the cost
       for (const [resourceType, amount] of Object.entries(card.cost ?? {})) {
-        const res = player.resources?.[resourceType];
-        if (!res) return state;
-        const alreadyPlanned = player.queue.filter(Boolean).reduce(
-          (sum, s) => sum + (s.cost?.[resourceType] ?? 0), 0
-        );
-        if (res.current - alreadyPlanned < amount) return state;
+        if (!player.resources?.[resourceType]) return state;
+        const effective = effectiveResourceAtExecution(resourceType, slotIndex, player.queue, player.resources);
+        if (effective < amount) return state;
       }
       const lastTarget = chars.find(c => c.id === state.lastTargetId && c.health > 0);
       const target = lastTarget ?? chars.find(c => !c.is_player && c.health > 0);
@@ -96,6 +94,20 @@ function battleReducer(state, action) {
       const chars = JSON.parse(JSON.stringify(state.characters));
       const player = chars.find(c => c.id === 'vrax');
       player.queue[action.index] = null;
+      // Cascade: remove any cards that are now illegal after this removal
+      let changed = true;
+      while (changed) {
+        changed = false;
+        for (let i = 0; i < player.queue.length; i++) {
+          const slot = player.queue[i];
+          if (!slot) continue;
+          const illegal = Object.entries(slot.cost ?? {}).some(([resourceType, amount]) => {
+            const effective = effectiveResourceAtExecution(resourceType, i, player.queue, player.resources, i);
+            return effective < amount;
+          });
+          if (illegal) { player.queue[i] = null; changed = true; }
+        }
+      }
       return { ...state, characters: chars };
     }
 

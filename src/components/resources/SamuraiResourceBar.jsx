@@ -15,12 +15,19 @@ const RAY_POINTS = [
   '4.9,4.9 8.3,6.6 6.6,8.3',
 ];
 
-// state: 'filled' | 'planned' | 'empty'
+// state: 'filled' | 'planned' | 'gain' | 'gain-planned' | 'empty'
 function AztecSun({ state }) {
   const c =
-    state === 'filled' ? 'white' :
-    state === 'planned' ? 'white' :
+    state === 'filled'       ? 'white' :
+    state === 'planned'      ? 'white' :
+    state === 'gain'         ? '#f97316' :
+    state === 'gain-planned' ? '#f97316' :
     'rgba(255,255,255,0.15)';
+
+  const anim =
+    state === 'planned'      ? 'spiritPlanned 0.8s ease-in-out infinite' :
+    state === 'gain-planned' ? 'spiritPlanned 0.8s ease-in-out infinite' :
+    undefined;
 
   return (
     <svg
@@ -28,7 +35,7 @@ function AztecSun({ state }) {
       width="100%"
       height="100%"
       fill={c}
-      style={state === 'planned' ? { animation: 'spiritPlanned 0.8s ease-in-out infinite' } : undefined}
+      style={anim ? { animation: anim } : undefined}
     >
       {RAY_POINTS.map((pts, i) => <polygon key={i} points={pts} />)}
       <circle cx="12" cy="12" r="5" fill="none" stroke={c} strokeWidth="1.2" />
@@ -37,12 +44,22 @@ function AztecSun({ state }) {
   );
 }
 
-export default function SamuraiResourceBar({ resources, planned = {} }) {
+export default function SamuraiResourceBar({ resources, planned = {}, plannedGain = {} }) {
   const { current = 0, max = 10 } = resources?.BATTLE_SPIRIT ?? {};
-  const plannedAmount = Math.min(planned.BATTLE_SPIRIT ?? 0, current);
+  const plannedAmount = planned.BATTLE_SPIRIT ?? 0;
+  const gainAmount = Math.min(plannedGain.BATTLE_SPIRIT ?? 0, max - current);
 
-  // Pips: [0, current-planned) = filled, [current-planned, current) = planned, [current, max) = empty
-  const freeFilled = current - plannedAmount;
+  // How much of the gain is being consumed to cover costs that exceed current resource
+  const gainUsedAsCost = Math.min(gainAmount, Math.max(0, plannedAmount - current));
+  const solidGain = gainAmount - gainUsedAsCost;
+  const freeFilled = Math.max(0, current - plannedAmount);
+
+  // Pip regions:
+  // [0, freeFilled)                        = filled (solid white)
+  // [freeFilled, current)                  = planned spend (pulsing white)
+  // [current, current+solidGain)           = gain not consumed (solid orange)
+  // [current+solidGain, current+gainAmount) = gain used as cost (pulsing orange)
+  // [current+gainAmount, max)              = empty
 
   return (
     <>
@@ -56,8 +73,10 @@ export default function SamuraiResourceBar({ resources, planned = {} }) {
         <div className="relative flex" style={{ gap: '3px', zIndex: 0 }}>
           {Array.from({ length: max }, (_, i) => {
             const state =
-              i < freeFilled ? 'filled' :
-              i < current ? 'planned' :
+              i < freeFilled                  ? 'filled' :
+              i < current                     ? 'planned' :
+              i < current + solidGain         ? 'gain' :
+              i < current + gainAmount        ? 'gain-planned' :
               'empty';
             return (
               <div key={i} style={{ width: '30px', height: '30px', flexShrink: 0 }}>

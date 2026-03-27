@@ -13,6 +13,25 @@ export function calcSpeed(base_speed, slot_index) {
   return base_speed - slot_index * 20;
 }
 
+// Returns the resource level available when the card at `mySlotIndex` executes.
+// Player cards always execute in slot order, so only slots before mySlotIndex count.
+// Pass skipIndex to exclude a specific slot (e.g. during cascade validation).
+export function effectiveResourceAtExecution(resourceType, mySlotIndex, queue, resources, skipIndex = -1) {
+  let effect = resources?.[resourceType]?.current ?? 0;
+  for (let i = 0; i < mySlotIndex; i++) {
+    if (i === skipIndex) continue;
+    const slot = queue[i];
+    if (!slot) continue;
+    effect -= slot.cost?.[resourceType] ?? 0;
+    for (const tag of slot.tags?.self ?? []) {
+      if (tag.tag_name === 'GAIN_RESOURCE' && tag.resource_type === resourceType) {
+        effect += tag.power ?? 0;
+      }
+    }
+  }
+  return effect;
+}
+
 export function addTagToPool(pool, tag) {
   const entry = battle_registry[tag.tag_name];
   if (entry?.onApply) {

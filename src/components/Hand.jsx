@@ -2,7 +2,7 @@
 //  Hand — Bottom section showing available cards to play
 // ============================================================
 
-import { calcSpeed } from '../battle/engine/battle_engine';
+import { calcSpeed, effectiveResourceAtExecution } from '../battle/engine/battle_engine';
 
 export default function Hand({ cards, queue, totalSlots, onCardClick, disabled, resources, ResourceBar }) {
   const filledCount = queue.filter(Boolean).length;
@@ -17,6 +17,18 @@ export default function Hand({ cards, queue, totalSlots, onCardClick, disabled, 
       planned[type] = (planned[type] ?? 0) + amount;
     }
   }
+
+  // Sum GAIN_RESOURCE self-tags of queued cards to get planned gains per resource
+  const plannedGain = {};
+  for (const slot of queue) {
+    if (!slot) continue;
+    for (const tag of slot.tags?.self ?? []) {
+      if (tag.tag_name === 'GAIN_RESOURCE' && tag.resource_type) {
+        plannedGain[tag.resource_type] = (plannedGain[tag.resource_type] ?? 0) + (tag.power ?? 0);
+      }
+    }
+  }
+
 
   return (
     <div className="h-[35%] flex-shrink-0 flex flex-col border-t border-white/10"
@@ -33,7 +45,7 @@ export default function Hand({ cards, queue, totalSlots, onCardClick, disabled, 
         {/* MIDDLE — resource bar */}
         <div className="flex-1 flex items-center justify-center px-6">
           {ResourceBar && resources
-            ? <ResourceBar resources={resources} planned={planned} />
+            ? <ResourceBar resources={resources} planned={disabled ? {} : planned} plannedGain={disabled ? {} : plannedGain} />
             : <div className="w-full h-5 rounded-full bg-gray-700/60" />
           }
         </div>
@@ -51,8 +63,8 @@ export default function Hand({ cards, queue, totalSlots, onCardClick, disabled, 
           const wouldSpeed = nextSlotIndex >= 0
             ? calcSpeed(card.speed, nextSlotIndex)
             : null;
-          const canAfford = Object.entries(card.cost ?? {}).every(
-            ([type, amount]) => (resources?.[type]?.current ?? 0) - (planned[type] ?? 0) >= amount
+          const canAfford = nextSlotIndex >= 0 && Object.entries(card.cost ?? {}).every(
+            ([type, amount]) => effectiveResourceAtExecution(type, nextSlotIndex, queue, resources) >= amount
           );
           const isDisabled = disabled || nextSlotIndex === -1 || !canAfford;
 
@@ -125,7 +137,7 @@ export default function Hand({ cards, queue, totalSlots, onCardClick, disabled, 
                   <div className="text-[10px] text-gray-300 leading-tight mt-1">{card.desc}</div>
                   <div className="text-[9px] text-[#4da6ff] font-mono mt-1">BASE SPD {card.speed}</div>
                   {Object.entries(card.cost ?? {}).map(([type, amount]) => {
-                    const free = (resources?.[type]?.current ?? 0) - (planned[type] ?? 0);
+                    const free = nextSlotIndex >= 0 ? effectiveResourceAtExecution(type, nextSlotIndex, queue, resources) : 0;
                     const hasEnough = free >= amount;
                     return (
                       <div key={type} className={`text-[9px] font-mono mt-1 ${hasEnough ? 'text-yellow-400' : 'text-red-400'}`}>
