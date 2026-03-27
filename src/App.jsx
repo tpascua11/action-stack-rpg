@@ -1,6 +1,6 @@
 import { useReducer, useEffect, useRef, useState } from 'react';
 import { EMBER_WITCH } from './data/characters/enemies';
-import { FIGHTER } from './data/classes/fighter';
+import { SAMURAI } from './data/classes/samurai';
 import { buildPlayer } from './data/player';
 import { CLASS_REGISTRY } from './data/classes/class_registry';
 import {
@@ -30,7 +30,7 @@ function buildInitialState(enemies = CURRENT_ENCOUNTER) {
     ...JSON.parse(JSON.stringify(def)),
     id: `${def.id}_${i + 1}`,
   }));
-  const vrax = buildPlayer(FIGHTER, { id: 'vrax', name: 'VRAX', portrait: null });
+  const vrax = buildPlayer(SAMURAI, { id: 'vrax', name: 'VRAX', portrait: null });
   const characters = [vrax, ...builtEnemies];
   return {
     phase: 'QUEUE_SETUP',  // QUEUE_SETUP | BATTLE | RESULT

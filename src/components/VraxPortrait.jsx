@@ -20,7 +20,7 @@ export default function VraxPortrait({ player }) {
 
           {/* Banner */}
           <div className="w-full py-2 text-center text-xs font-bold text-[#4da6ff] tracking-widest font-body">
-            FIGHTER
+            {player.class_id?.toUpperCase()}
           </div>
 
           {/* Name + HP Bar at bottom */}

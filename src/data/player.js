@@ -25,5 +25,6 @@ export function buildPlayer(classDef, { id = 'player', name, portrait }) {
     combat_start_tags: [...classDef.combat_start_tags],
     permanent_tags: [...classDef.permanent_tags],
     cards: classDef.cards,
+    ...(classDef.extra_fields ?? {}),
   };
 }
