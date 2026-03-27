@@ -29,6 +29,17 @@ No class system, no resource enforcement, no player customization.
 - Fighter: RAGE (starts 0, generates on hit via RAGE_ON_HIT permanent tag)
 - Wizard: MANA (starts 100, regenerates via MANA_REGEN combat-start tag)
 
+## Planned — Execution-Time Cost Enforcement
+Currently costs are deducted at queue time. Spending at execution time is also possible —
+would need a SPEND_RESOURCE handler (reverse of GAIN_RESOURCE) firing at the start of ExecuteAction.
+Edge case to handle: player queues a card but loses the resource before it fires.
+
+## Planned Refactor — Self-Registering Handlers
+Currently every new tag requires touching two files: the handler file + `battle_registry.js` (import + entry).
+The fix is self-registration — each handler file calls `registerTag(...)` directly, so `battle_registry.js`
+becomes a pure container with no imports. Adding a new tag = one file only.
+Do this before the registry grows much larger.
+
 ## What is NOT done yet (next session)
 - [ ] Wire `buildPlayer` into `App.jsx` (replace hardcoded VRAX)
 - [ ] Add `RAGE_ON_HIT` and `MANA_REGEN` handlers to `battle_registry.js`

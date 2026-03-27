@@ -15,6 +15,7 @@ import {
 } from '../handlers/injector_handlers';
 import { DamageHandler, HealHandler, GainResourceHandler } from '../handlers/delivery_handlers';
 import { ComboStackHandler } from '../handlers/post_attack_handlers';
+import { UndyingSpiritHandler } from '../handlers/passive_handlers';
 import { SpeedBoostHandler, SpeedBoostImbueHandler, SpeedBoostOnApply } from '../handlers/speed_handlers';
 
 export const battle_registry = {
@@ -82,6 +83,14 @@ export const battle_registry = {
     phases: ['DELIVERY'],
     handlers: {
       DELIVERY: GainResourceHandler,
+    },
+  },
+
+  // ── ON_RECEIVE ──
+  UNDYING_SPIRIT: {
+    phases: ['ON_RECEIVE'],
+    handlers: {
+      ON_RECEIVE: UndyingSpiritHandler,
     },
   },
 
