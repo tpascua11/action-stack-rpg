@@ -2,7 +2,7 @@
 //  SAMURAI CLASS
 // ============================================================
 
-import { FIGHTER_CARDS } from '../cards/fighter_cards';
+import { SAMURAI_CARDS } from '../cards/samurai_cards';
 import SamuraiResourceBar from '../../components/resources/SamuraiResourceBar';
 
 export const SAMURAI = {
@@ -16,7 +16,7 @@ export const SAMURAI = {
   ],
   permanent_tags: [],
   combat_start_tags: [],
-  cards: FIGHTER_CARDS,
+  cards: SAMURAI_CARDS,
   ResourceBar: SamuraiResourceBar,
   extra_fields: { battleSpirit: 0 },
 };

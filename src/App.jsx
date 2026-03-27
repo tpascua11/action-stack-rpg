@@ -38,6 +38,7 @@ function buildInitialState(enemies = CURRENT_ENCOUNTER) {
     result: null,          // WIN | LOSS
     characters,
     logs: [{ msg: '⚔️  System Ready. Queue your actions and execute.', type: 'info' }],
+    stepCount: 0,
     shakingEnemyId: null,
     lastTargetId: characters.find(c => !c.is_player && c.health > 0)?.id ?? null,
   };
@@ -179,6 +180,7 @@ function battleReducer(state, action) {
       return {
         ...newState,
         phase: 'BATTLE',
+        stepCount: state.stepCount + 1,
         logs: [...state.logs, ...newLogs],
         shakingEnemyId: enemyWasHit ? actualTargetId : null,
       };
@@ -226,7 +228,7 @@ export default function App() {
       dispatch({ type: 'BATTLE_STEP' });
     }, 700);
     return () => clearTimeout(battleTimerRef.current);
-  }, [gs.phase, gs.logs.length]);
+  }, [gs.phase, gs.stepCount]);
 
   // Stop shake animation
   useEffect(() => {

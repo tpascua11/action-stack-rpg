@@ -30,19 +30,24 @@ export default function SamuraiResourceBar({ resources }) {
   const { current = 0, max = 10 } = resources?.BATTLE_SPIRIT ?? {};
   return (
     <div className="relative flex items-center justify-center">
-      {/* Label behind pips */}
-      <span className="absolute text-[11px] font-mono tracking-widest whitespace-nowrap pointer-events-none"
-        style={{ color: 'rgba(255,255,255,0.25)', zIndex: 0, bottom: '2px' }}>
-        BATTLE SPIRIT
-      </span>
-      {/* Pips on top */}
-      <div className="relative flex" style={{ gap: '3px', zIndex: 1 }}>
+      {/* Pips behind */}
+      <div className="relative flex" style={{ gap: '3px', zIndex: 0 }}>
         {Array.from({ length: max }, (_, i) => (
-          <div key={i} style={{ width: '28px', height: '28px', flexShrink: 0 }}>
+          <div key={i} style={{ width: '30px', height: '30px', flexShrink: 0 }}>
             <AztecSun filled={i < current} />
           </div>
         ))}
       </div>
+      {/* Label in front with dark shadow for readability */}
+      <span className="absolute text-[11px] font-mono tracking-widest whitespace-nowrap pointer-events-none"
+        style={{
+          color: 'white',
+          zIndex: 1,
+          bottom: '-8px',
+          textShadow: '0 0 4px #000, 0 1px 3px #000, 0 0 8px #000',
+        }}>
+        BATTLE SPIRIT
+      </span>
     </div>
   );
 }
