@@ -343,7 +343,7 @@ export default function App() {
       <div className="h-[67%] flex flex-col overflow-hidden">
 
         {/* Center row: Buff Column | Character Column | Slot Column */}
-        <div className="flex-1 flex items-center justify-center overflow-hidden">
+        <div className="flex-1 flex items-end justify-center overflow-hidden pb-4">
 
           {/* LEFT — Buff column (fixed width, right-aligned so buffs hug the gap) */}
           <div style={{ width: '340px', paddingRight: '60px', display: 'flex', justifyContent: 'flex-end' }}>

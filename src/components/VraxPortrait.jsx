@@ -28,7 +28,7 @@ export default function VraxPortrait({ player }) {
             <div className="text-center font-display text-xl text-white tracking-widest py-2">
               {player.name}
             </div>
-            <div className="relative w-full h-4 bg-gray-600/60 rounded-full overflow-hidden">
+            <div className="relative w-full h-5 bg-gray-600/20 rounded-full overflow-hidden">
               <div
                 className="h-full rounded-full transition-all duration-500"
                 style={{

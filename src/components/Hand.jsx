@@ -40,7 +40,7 @@ export default function Hand({ cards, queue, totalSlots, onCardClick, disabled }
       </div>
 
       {/* Card area — cards sit at the bottom with breathing room */}
-      <div className="flex-1 flex items-end justify-center px-4 pb-1">
+      <div className="flex-1 flex items-start justify-center px-4 pt-2">
         {cards.map((card, idx) => {
           const wouldSpeed = nextSlotIndex >= 0
             ? calcSpeed(card.speed, nextSlotIndex)
