@@ -247,7 +247,7 @@ export default function App() {
     if (gs.phase !== 'BATTLE') return;
     battleTimerRef.current = setTimeout(() => {
       dispatch({ type: 'BATTLE_STEP' });
-    }, 700);
+    }, 1000);
     return () => clearTimeout(battleTimerRef.current);
   }, [gs.phase, gs.stepCount]);
 

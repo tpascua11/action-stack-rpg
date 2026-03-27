@@ -2,34 +2,59 @@
 //  BattleQueue — All queued actions sorted highest → lowest speed
 // ============================================================
 
-import { SpeedCheckAllAvailableActions } from '../battle/engine/battle_engine';
+import { battle_registry } from '../battle/registry/battle_registry';
+import '../battle/handlers'; // ensure tags are registered
 
 const ENEMY_COLOR = '#e94560';
 
-export default function BattleQueue({ characters, phase, onToggleLog, logOpen }) {
-  // First action of each character with SPEED_CALC tags applied (accurate speeds)
-  const firstActions = SpeedCheckAllAvailableActions(characters).map(action => ({
-    ...action,
-    _char: characters.find(c => c.id === action.owner_id),
-    _queueIndex: 0,
-  }));
-  // Remaining actions (index 1+) with queue position tracked
-  const remainingActions = characters.flatMap(char =>
-    (char.queue || []).slice(1).map((action, i) => ({
-      ...action,
-      _char: char,
-      _queueIndex: i + 1,
-    }))
-  );
+// Apply SPEED_CALC tags from the tag pool to an action's calc_speed (non-destructive).
+function applySpeedCalc(action, tagPool) {
+  let speed = action.calc_speed;
+  for (const tag of tagPool) {
+    const entry = battle_registry[tag.tag_name];
+    if (entry?.phases?.includes('SPEED_CALC')) {
+      const clone = { calc_speed: speed };
+      entry.handlers['SPEED_CALC'](clone, null, tag);
+      speed = clone.calc_speed;
+    }
+  }
+  return speed;
+}
 
-  const allActions = phase === 'BATTLE'
-    ? [...firstActions, ...remainingActions].sort((a, b) => {
-        // Same character: always preserve queue order
-        if (a.owner_id === b.owner_id) return a._queueIndex - b._queueIndex;
-        // Different characters: highest speed first
-        return b.calc_speed - a.calc_speed;
-      })
-    : [];
+// Simulate execution order the same way the battle engine does:
+// each step pick the fastest queue[0] across all characters, remove it, repeat.
+// Applies SPEED_CALC tags so boosted actions (e.g. after Speed Up) show correctly.
+function simulateExecutionOrder(characters) {
+  const queues = {};
+  const tagPools = {};
+  for (const char of characters) {
+    if (char.health <= 0) continue;
+    const filled = (char.queue || []).filter(Boolean);
+    if (filled.length > 0) {
+      queues[char.id] = filled.map(a => ({ ...a, _char: char }));
+      tagPools[char.id] = [...(char.active_tag_pool || [])];
+    }
+  }
+
+  const order = [];
+  for (let step = 0; step < 50; step++) {
+    const candidates = Object.entries(queues)
+      .filter(([, q]) => q.length > 0)
+      .map(([id, q]) => ({
+        ...q[0],
+        _simSpeed: applySpeedCalc(q[0], tagPools[id] || []),
+      }));
+    if (candidates.length === 0) break;
+    candidates.sort((a, b) => b._simSpeed - a._simSpeed);
+    const winner = candidates[0];
+    order.push({ ...winner, calc_speed: winner._simSpeed });
+    queues[winner.owner_id] = queues[winner.owner_id].slice(1);
+  }
+  return order;
+}
+
+export default function BattleQueue({ characters, phase, onToggleLog, logOpen }) {
+  const allActions = phase === 'BATTLE' ? simulateExecutionOrder(characters) : [];
 
   return (
     <div
