@@ -5,6 +5,8 @@
 //  Always consumed on trigger
 // ============================================================
 
+import { registerTag } from '../registry/battle_registry';
+
 export function FireImbueHandler(payload, character, tag) {
   payload.damages.forEach(d => (d.element = 'FIRE'));
   payload.status_effects.push('BURN');
@@ -16,3 +18,13 @@ export function IceImbueHandler(payload, character, tag) {
   payload.status_effects.push('FREEZE_CHANCE');
   return { payload, consumed: true };
 }
+
+registerTag('FIRE_IMBUE', {
+  phases: ['IMBUE'],
+  handlers: { IMBUE: FireImbueHandler },
+});
+
+registerTag('ICE_IMBUE', {
+  phases: ['IMBUE'],
+  handlers: { IMBUE: IceImbueHandler },
+});

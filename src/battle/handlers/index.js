@@ -1,0 +1,12 @@
+// ============================================================
+//  HANDLER BARREL
+//  Importing this file triggers all registerTag() calls.
+//  To add a new tag: create a handler file and add one line here.
+// ============================================================
+
+import './delivery_handlers';
+import './imbue_handlers';
+import './injector_handlers';
+import './passive_handlers';
+import './post_attack_handlers';
+import './speed_handlers';

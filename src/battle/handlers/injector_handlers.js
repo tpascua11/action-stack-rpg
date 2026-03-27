@@ -5,6 +5,8 @@
 //  Only consumed if condition passes
 // ============================================================
 
+import { registerTag } from '../registry/battle_registry';
+
 export function MagicChargeHandler(payload, character, tag) {
   if (payload.type !== 'MAGIC') return { payload, consumed: false };
   if (payload.tag_types?.includes('CHARGING')) return { payload, consumed: false };
@@ -68,3 +70,27 @@ export function MomentumOnApply(pool, tag) {
     pool.push({ ...tag, stack_count: 1, reset: 'END_OF_TURN' });
   }
 }
+
+registerTag('MAGIC_CHARGE', {
+  phases: ['INJECT_MULT'],
+  onApply: MagicChargeOnApply,
+  handlers: { INJECT_MULT: MagicChargeHandler },
+});
+
+registerTag('FIRE_CHARGE', {
+  phases: ['INJECT_MULT'],
+  handlers: { INJECT_MULT: FireChargeHandler },
+});
+
+registerTag('MOMENTUM', {
+  phases: ['INJECT_MULT'],
+  reset: 'END_OF_TURN',
+  onApply: MomentumOnApply,
+  handlers: { INJECT_MULT: MomentumHandler },
+});
+
+registerTag('FUEL_TO_THE_FLAMES', {
+  phases: ['INJECT_FLAT'],
+  onApply: FuelToTheFlamesOnApply,
+  handlers: { INJECT_FLAT: FuelToTheFlamesHandler },
+});

@@ -5,6 +5,7 @@
 // ============================================================
 
 import { battle_registry } from '../registry/battle_registry';
+import '../handlers'; // triggers all self-registering tag handlers
 
 // ── HELPERS ──
 

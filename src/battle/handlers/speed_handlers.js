@@ -5,6 +5,8 @@
 //  Modifies calc_speed on the action before sorting
 // ============================================================
 
+import { registerTag } from '../registry/battle_registry';
+
 export function SpeedBoostHandler(action, character, tag) {
   action.calc_speed += tag.amount;
 }
@@ -38,3 +40,12 @@ export function SpeedBoostOnApply(pool, tag) {
     }
   }
 }
+
+registerTag('SPEED_BOOST', {
+  phases: ['SPEED_CALC', 'IMBUE'],
+  onApply: SpeedBoostOnApply,
+  handlers: {
+    SPEED_CALC: SpeedBoostHandler,
+    IMBUE: SpeedBoostImbueHandler,
+  },
+});

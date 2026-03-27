@@ -4,6 +4,8 @@
 //  Build damage entries and immediate effects
 // ============================================================
 
+import { registerTag } from '../registry/battle_registry';
+
 export function DamageHandler(payload, character, tag) {
   payload.damages.push({ element: tag.type, power: tag.power });
   return { payload, consumed: true };
@@ -20,3 +22,18 @@ export function GainResourceHandler(payload, character, tag) {
   res.current = Math.min(res.current + tag.power, res.max);
   return { payload, consumed: true };
 }
+
+registerTag('DAMAGE', {
+  phases: ['DELIVERY'],
+  handlers: { DELIVERY: DamageHandler },
+});
+
+registerTag('HEAL', {
+  phases: ['DELIVERY'],
+  handlers: { DELIVERY: HealHandler },
+});
+
+registerTag('GAIN_RESOURCE', {
+  phases: ['DELIVERY'],
+  handlers: { DELIVERY: GainResourceHandler },
+});
