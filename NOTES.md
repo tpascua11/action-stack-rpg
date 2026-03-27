@@ -44,6 +44,7 @@ Do this before the registry grows much larger.
 - [x] Wire `buildPlayer` into `App.jsx` (replace hardcoded VRAX)
 - [x] Add `RAGE_ON_HIT` and `MANA_REGEN` handlers to `battle_registry.js`
 - [x] Enforce card cost in `ADD_TO_QUEUE` reducer case
+- [x] Self-registering tag handlers (battle_registry.js is now a pure container)
 - [ ] Character select screen (name input, class pick, portrait pick)
 - [ ] Move STONE_GOLEM out of `vrax.js` into `enemies.js` (it's in the wrong file)
 - [ ] Wizard gets its own card set (currently borrows FIGHTER_CARDS as placeholder)
