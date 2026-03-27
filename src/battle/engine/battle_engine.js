@@ -136,6 +136,20 @@ function runPhaseInjectFlat(tag_pool, payload, character) {
   return { tag_pool: remaining, payload };
 }
 
+function runPhaseOnReceive(tag_pool, payload, character, hit_result) {
+  const remaining = [];
+  for (const tag of tag_pool) {
+    const entry = battle_registry[tag.tag_name];
+    if (entry?.phases?.includes('ON_RECEIVE')) {
+      const result = entry.handlers['ON_RECEIVE'](payload, character, tag, hit_result);
+      if (!result.consumed) remaining.push(tag);
+    } else {
+      remaining.push(tag);
+    }
+  }
+  return remaining;
+}
+
 function runPhasePostAttack(tag_pool, payload, character, hit_result) {
   for (const tag of tag_pool) {
     const entry = battle_registry[tag.tag_name];
@@ -231,6 +245,11 @@ export function ExecuteAction(action, interaction_result, state) {
   }
 
   const hit_result = total_damage > 0 ? 'HIT' : 'MISS';
+
+  // ── ON_RECEIVE ──
+  if (resolvedTarget) {
+    resolvedTarget.active_tag_pool = runPhaseOnReceive(resolvedTarget.active_tag_pool, payload, resolvedTarget, hit_result);
+  }
 
   // ── POST_ATTACK ──
   owner.active_tag_pool = runPhasePostAttack(owner.active_tag_pool, payload, owner, hit_result);

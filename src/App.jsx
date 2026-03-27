@@ -208,7 +208,7 @@ function battleReducer(state, action) {
 
 // ── APP ──
 export default function App() {
-  const [gs, dispatch] = useReducer(battleReducer, null, buildInitialState);
+  const [gs, dispatch] = useReducer(battleReducer, undefined, buildInitialState);
   const [logOpen, setLogOpen] = useState(false);
   const [retargetingSlot, setRetargetingSlot] = useState(null);
   const [lineCoords, setLineCoords] = useState(null);
