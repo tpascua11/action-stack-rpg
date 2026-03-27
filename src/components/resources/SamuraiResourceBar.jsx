@@ -26,7 +26,8 @@ function AztecSun({ filled }) {
   );
 }
 
-export default function SamuraiResourceBar({ current, max }) {
+export default function SamuraiResourceBar({ resources }) {
+  const { current = 0, max = 10 } = resources?.BATTLE_SPIRIT ?? {};
   return (
     <div className="relative flex items-center justify-center">
       {/* Label behind pips */}

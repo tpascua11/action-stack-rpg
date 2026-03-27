@@ -70,7 +70,7 @@ export const FIGHTER_CARDS = [
     tags: {
       self: [
         { tag_name: 'MAGIC_CHARGE', multiplier: 0.2, consume: true },
-        { tag_name: 'RESTORE_MANA', power: 25 },
+        { tag_name: 'GAIN_RESOURCE', resource_type: 'MANA', power: 25 },
       ],
       target: [],
     },

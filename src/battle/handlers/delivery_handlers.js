@@ -14,9 +14,9 @@ export function HealHandler(payload, character, tag) {
   return { payload, consumed: true };
 }
 
-export function RestoreManaHandler(payload, character, tag) {
-  if (character.wizard_mana !== undefined) {
-    character.wizard_mana = Math.min(character.wizard_mana + tag.power, character.max_wizard_mana);
-  }
+export function GainResourceHandler(payload, character, tag) {
+  const res = character.resources?.[tag.resource_type];
+  if (!res) return { payload, consumed: true };
+  res.current = Math.min(res.current + tag.power, res.max);
   return { payload, consumed: true };
 }

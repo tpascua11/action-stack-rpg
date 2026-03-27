@@ -379,7 +379,7 @@ export default function App() {
           totalSlots={player.total_action_slots}
           onCardClick={handleCardClick}
           disabled={gs.phase !== 'QUEUE_SETUP'}
-          resource={player.resource}
+          resources={player.resources}
           ResourceBar={ResourceBar}
         />
       </div>

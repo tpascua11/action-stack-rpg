@@ -13,11 +13,9 @@ export function buildPlayer(classDef, { id = 'player', name, portrait }) {
     class_id: classDef.id,
     health: classDef.base_health,
     max_health: classDef.base_health,
-    resource: {
-      type: classDef.resource.type,
-      current: classDef.resource.starting,
-      max: classDef.resource.max,
-    },
+    resources: Object.fromEntries(
+      classDef.resources.map(r => [r.type, { current: r.starting, max: r.max }])
+    ),
     total_action_slots: classDef.total_action_slots,
     active_tag_pool: [...classDef.permanent_tags],
     queue: [],

@@ -2,7 +2,8 @@
 //  WIZARD — Mana Bar
 // ============================================================
 
-export default function WizardResourceBar({ current, max }) {
+export default function WizardResourceBar({ resources }) {
+  const { current = 0, max = 300 } = resources?.MANA ?? {};
   const pct = max > 0 ? Math.min(current / max, 1) : 0;
 
   return (

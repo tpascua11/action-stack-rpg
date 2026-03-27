@@ -2,7 +2,8 @@
 //  FIGHTER — Rage Bar
 // ============================================================
 
-export default function FighterResourceBar({ current, max }) {
+export default function FighterResourceBar({ resources }) {
+  const { current = 0, max = 100 } = resources?.RAGE ?? {};
   const pct = max > 0 ? Math.min(current / max, 1) : 0;
 
   return (
@@ -22,7 +23,7 @@ export default function FighterResourceBar({ current, max }) {
         style={{ background: 'repeating-linear-gradient(90deg, transparent 0px, transparent 6px, rgba(0,0,0,0.15) 6px, rgba(0,0,0,0.15) 7px)' }} />
 
       <span className="absolute inset-0 flex items-center justify-center text-[10px] font-mono text-white drop-shadow">
-        {current} / {max} RAGE
+        {Math.floor(current)} / {max} RAGE
       </span>
     </div>
   );

@@ -14,7 +14,9 @@ export const WIZARD = {
   icon: '🧙',
   base_health: 250,
   total_action_slots: 3,
-  resource: { type: 'MANA', max: 300, starting: 100 },
+  resources: [
+    { type: 'MANA', max: 300, starting: 100 },
+  ],
   // Always in pool — never removed
   permanent_tags: [],
   // Injected at battle start

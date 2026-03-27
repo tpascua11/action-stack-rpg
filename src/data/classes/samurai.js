@@ -11,7 +11,9 @@ export const SAMURAI = {
   icon: '⚔️',
   base_health: 350,
   total_action_slots: 3,
-  resource: { type: 'BATTLE_SPIRIT', max: 10, starting: 0 },
+  resources: [
+    { type: 'BATTLE_SPIRIT', max: 10, starting: 0 },
+  ],
   permanent_tags: [],
   combat_start_tags: [],
   cards: FIGHTER_CARDS,

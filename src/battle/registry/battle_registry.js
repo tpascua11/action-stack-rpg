@@ -13,7 +13,7 @@ import {
   FuelToTheFlamesHandler, FuelToTheFlamesOnApply,
   MomentumHandler, MomentumOnApply,
 } from '../handlers/injector_handlers';
-import { DamageHandler, HealHandler, RestoreManaHandler } from '../handlers/delivery_handlers';
+import { DamageHandler, HealHandler, GainResourceHandler } from '../handlers/delivery_handlers';
 import { ComboStackHandler } from '../handlers/post_attack_handlers';
 import { SpeedBoostHandler, SpeedBoostImbueHandler, SpeedBoostOnApply } from '../handlers/speed_handlers';
 
@@ -78,10 +78,10 @@ export const battle_registry = {
       DELIVERY: HealHandler,
     },
   },
-  RESTORE_MANA: {
+  GAIN_RESOURCE: {
     phases: ['DELIVERY'],
     handlers: {
-      DELIVERY: RestoreManaHandler,
+      DELIVERY: GainResourceHandler,
     },
   },
 

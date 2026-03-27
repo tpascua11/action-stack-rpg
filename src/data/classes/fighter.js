@@ -11,7 +11,9 @@ export const FIGHTER = {
   icon: '⚔️',
   base_health: 350,
   total_action_slots: 3,
-  resource: { type: 'RAGE', max: 100, starting: 0 },
+  resources: [
+    { type: 'RAGE', max: 100, starting: 0 },
+  ],
   // Always in pool — never removed
   permanent_tags: [
     { tag_name: 'RAGE_ON_HIT', amount: 15 },
