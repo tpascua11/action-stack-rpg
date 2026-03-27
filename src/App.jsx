@@ -69,22 +69,19 @@ function battleReducer(state, action) {
       const nullIdx = player.queue.findIndex(s => !s);
       const slotIndex = nullIdx !== -1 ? nullIdx : player.queue.length;
       const card = action.card;
-      // Check resource costs
+      // Check affordability against current minus already-planned costs
       for (const [resourceType, amount] of Object.entries(card.cost ?? {})) {
         const res = player.resources?.[resourceType];
-        if (!res || res.current < amount) return state;
-      }
-      // Deduct resource costs and record exactly what was paid
-      const paid_cost = {};
-      for (const [resourceType, amount] of Object.entries(card.cost ?? {})) {
-        player.resources[resourceType].current -= amount;
-        paid_cost[resourceType] = amount;
+        if (!res) return state;
+        const alreadyPlanned = player.queue.filter(Boolean).reduce(
+          (sum, s) => sum + (s.cost?.[resourceType] ?? 0), 0
+        );
+        if (res.current - alreadyPlanned < amount) return state;
       }
       const lastTarget = chars.find(c => c.id === state.lastTargetId && c.health > 0);
       const target = lastTarget ?? chars.find(c => !c.is_player && c.health > 0);
       player.queue[slotIndex] = {
         ...card,
-        paid_cost,
         owner_id: 'vrax',
         owner_name: player.name,
         target_id: target.id,
@@ -98,12 +95,6 @@ function battleReducer(state, action) {
     case 'CLEAR_SLOT': {
       const chars = JSON.parse(JSON.stringify(state.characters));
       const player = chars.find(c => c.id === 'vrax');
-      const slot = player.queue[action.index];
-      // Refund exactly what was paid at queue time
-      for (const [resourceType, amount] of Object.entries(slot?.paid_cost ?? {})) {
-        const res = player.resources?.[resourceType];
-        if (res) res.current = Math.min(res.current + amount, res.max);
-      }
       player.queue[action.index] = null;
       return { ...state, characters: chars };
     }

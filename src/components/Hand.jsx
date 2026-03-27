@@ -9,6 +9,15 @@ export default function Hand({ cards, queue, totalSlots, onCardClick, disabled, 
   const nullIdx = queue.findIndex(s => !s);
   const nextSlotIndex = filledCount >= totalSlots ? -1 : (nullIdx !== -1 ? nullIdx : queue.length);
 
+  // Sum costs of all queued cards to get planned spend per resource
+  const planned = {};
+  for (const slot of queue) {
+    if (!slot) continue;
+    for (const [type, amount] of Object.entries(slot.cost ?? {})) {
+      planned[type] = (planned[type] ?? 0) + amount;
+    }
+  }
+
   return (
     <div className="h-[35%] flex-shrink-0 flex flex-col border-t border-white/10"
       style={{ background: 'rgba(0,0,0,0.25)' }}>
@@ -24,7 +33,7 @@ export default function Hand({ cards, queue, totalSlots, onCardClick, disabled, 
         {/* MIDDLE — resource bar */}
         <div className="flex-1 flex items-center justify-center px-6">
           {ResourceBar && resources
-            ? <ResourceBar resources={resources} />
+            ? <ResourceBar resources={resources} planned={planned} />
             : <div className="w-full h-5 rounded-full bg-gray-700/60" />
           }
         </div>
@@ -43,7 +52,7 @@ export default function Hand({ cards, queue, totalSlots, onCardClick, disabled, 
             ? calcSpeed(card.speed, nextSlotIndex)
             : null;
           const canAfford = Object.entries(card.cost ?? {}).every(
-            ([type, amount]) => (resources?.[type]?.current ?? 0) >= amount
+            ([type, amount]) => (resources?.[type]?.current ?? 0) - (planned[type] ?? 0) >= amount
           );
           const isDisabled = disabled || nextSlotIndex === -1 || !canAfford;
 
@@ -116,7 +125,8 @@ export default function Hand({ cards, queue, totalSlots, onCardClick, disabled, 
                   <div className="text-[10px] text-gray-300 leading-tight mt-1">{card.desc}</div>
                   <div className="text-[9px] text-[#4da6ff] font-mono mt-1">BASE SPD {card.speed}</div>
                   {Object.entries(card.cost ?? {}).map(([type, amount]) => {
-                    const hasEnough = (resources?.[type]?.current ?? 0) >= amount;
+                    const free = (resources?.[type]?.current ?? 0) - (planned[type] ?? 0);
+                    const hasEnough = free >= amount;
                     return (
                       <div key={type} className={`text-[9px] font-mono mt-1 ${hasEnough ? 'text-yellow-400' : 'text-red-400'}`}>
                         COST: {amount} {type.replace(/_/g, ' ')}
