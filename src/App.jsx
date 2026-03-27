@@ -340,10 +340,10 @@ export default function App() {
       />
 
       {/* BOTTOM — Player Zone */}
-      <div className="flex-1 flex flex-col overflow-hidden">
+      <div className="h-[67%] flex flex-col overflow-hidden">
 
         {/* Center row: Buff Column | Character Column | Slot Column */}
-        <div className="flex items-center justify-center py-4 flex-shrink-0">
+        <div className="flex-1 flex items-center justify-center overflow-hidden">
 
           {/* LEFT — Buff column (fixed width, right-aligned so buffs hug the gap) */}
           <div style={{ width: '340px', paddingRight: '60px', display: 'flex', justifyContent: 'flex-end' }}>

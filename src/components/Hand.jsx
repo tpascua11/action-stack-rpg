@@ -10,11 +10,37 @@ export default function Hand({ cards, queue, totalSlots, onCardClick, disabled }
   const nextSlotIndex = filledCount >= totalSlots ? -1 : (nullIdx !== -1 ? nullIdx : queue.length);
 
   return (
-    <div className="flex-1 flex flex-col border-t border-white/10"
+    <div className="h-[35%] flex-shrink-0 flex flex-col border-t border-white/10"
       style={{ background: 'rgba(0,0,0,0.25)' }}>
-      <div className="text-[9px] text-gray-600 font-mono tracking-widest px-4 pt-2">HAND</div>
 
-      <div className="flex-1 flex items-end justify-center px-4 pb-3">
+      {/* Button row — 3 sections */}
+      <div className="flex-shrink-0 flex border-b border-white/10" style={{ height: '2.5rem' }}>
+
+        {/* LEFT — bag / inventory */}
+        <div className="w-[25%] flex items-center justify-center border-r border-white/10 cursor-pointer hover:bg-white/5 transition-colors">
+          <span className="text-[9px] font-mono tracking-widest text-gray-500">BAG</span>
+        </div>
+
+        {/* MIDDLE — resource bar */}
+        <div className="flex-1 flex items-center justify-center px-6">
+          <div className="relative w-full h-5 bg-gray-700/60 rounded-full overflow-hidden">
+            <div className="h-full rounded-full transition-all duration-500"
+              style={{ width: '70%', background: 'linear-gradient(90deg,#7c3aed,#a78bfa)' }} />
+            <span className="absolute inset-0 flex items-center justify-center text-[10px] font-mono text-white drop-shadow">
+              70 / 100 MP
+            </span>
+          </div>
+        </div>
+
+        {/* RIGHT — options */}
+        <div className="w-[25%] flex items-center justify-center border-l border-white/10 cursor-pointer hover:bg-white/5 transition-colors">
+          <span className="text-[9px] font-mono tracking-widest text-gray-500">OPT</span>
+        </div>
+
+      </div>
+
+      {/* Card area — cards sit at the bottom with breathing room */}
+      <div className="flex-1 flex items-end justify-center px-4 pb-1">
         {cards.map((card, idx) => {
           const wouldSpeed = nextSlotIndex >= 0
             ? calcSpeed(card.speed, nextSlotIndex)

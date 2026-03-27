@@ -28,7 +28,7 @@ export default function VraxPortrait({ player }) {
             <div className="text-center font-display text-xl text-white tracking-widest py-2">
               {player.name}
             </div>
-            <div className="w-full h-3 bg-gray-600/60 rounded-full overflow-hidden">
+            <div className="relative w-full h-4 bg-gray-600/60 rounded-full overflow-hidden">
               <div
                 className="h-full rounded-full transition-all duration-500"
                 style={{
@@ -38,10 +38,11 @@ export default function VraxPortrait({ player }) {
                     : 'linear-gradient(90deg,#e94560,#ff6b6b)'
                 }}
               />
+              <span className="absolute inset-0 flex items-center justify-center text-[10px] font-mono text-white drop-shadow">
+                {player.health} / {player.max_health} HP
+              </span>
             </div>
-            <div className="text-center text-[11px] text-gray-300 font-mono mt-1">
-              {player.health} / {player.max_health} HP
-            </div>
+
           </div>
 
         </div>

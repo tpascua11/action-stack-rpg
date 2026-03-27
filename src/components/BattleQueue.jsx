@@ -33,8 +33,8 @@ export default function BattleQueue({ characters, phase, onToggleLog, logOpen })
 
   return (
     <div
-      className="flex-shrink-0 flex items-center border-y border-white/10"
-      style={{ height: '7rem', background: 'rgba(0,0,0,0.3)' }}
+      className="h-[8%] flex items-center border-y border-white/10"
+      style={{ background: 'rgba(0,0,0,0.3)' }}
     >
       {/* Scrollable card row */}
       <div className="flex-1 overflow-x-auto h-full">
