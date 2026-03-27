@@ -41,9 +41,9 @@ becomes a pure container with no imports. Adding a new tag = one file only.
 Do this before the registry grows much larger.
 
 ## What is NOT done yet (next session)
-- [ ] Wire `buildPlayer` into `App.jsx` (replace hardcoded VRAX)
-- [ ] Add `RAGE_ON_HIT` and `MANA_REGEN` handlers to `battle_registry.js`
-- [ ] Enforce card cost in `ADD_TO_QUEUE` reducer case
+- [x] Wire `buildPlayer` into `App.jsx` (replace hardcoded VRAX)
+- [x] Add `RAGE_ON_HIT` and `MANA_REGEN` handlers to `battle_registry.js`
+- [x] Enforce card cost in `ADD_TO_QUEUE` reducer case
 - [ ] Character select screen (name input, class pick, portrait pick)
 - [ ] Move STONE_GOLEM out of `vrax.js` into `enemies.js` (it's in the wrong file)
 - [ ] Wizard gets its own card set (currently borrows FIGHTER_CARDS as placeholder)
