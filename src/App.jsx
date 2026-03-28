@@ -1,4 +1,5 @@
 import { useReducer, useEffect, useRef, useState } from 'react';
+import { DEBUG_HAND_COST } from './debug';
 import { EMBER_WITCH } from './data/characters/enemies';
 import { SAMURAI } from './data/classes/samurai';
 import { buildPlayer } from './data/player';
@@ -71,10 +72,12 @@ function battleReducer(state, action) {
       const slotIndex = nullIdx !== -1 ? nullIdx : player.queue.length;
       const card = action.card;
       // Legal if resources available at execution time (slots before this one) cover the cost
-      for (const [resourceType, amount] of Object.entries(card.cost ?? {})) {
-        if (!player.resources?.[resourceType]) return state;
-        const effective = effectiveResourceAtExecution(resourceType, slotIndex, player.queue, player.resources);
-        if (effective < amount) return state;
+      if (!DEBUG_HAND_COST) {
+        for (const [resourceType, amount] of Object.entries(card.cost ?? {})) {
+          if (!player.resources?.[resourceType]) return state;
+          const effective = effectiveResourceAtExecution(resourceType, slotIndex, player.queue, player.resources);
+          if (effective < amount) return state;
+        }
       }
       const lastTarget = chars.find(c => c.id === state.lastTargetId && c.health > 0);
       const target = lastTarget ?? chars.find(c => !c.is_player && c.health > 0);
@@ -95,17 +98,19 @@ function battleReducer(state, action) {
       const player = chars.find(c => c.id === 'vrax');
       player.queue[action.index] = null;
       // Cascade: remove any cards that are now illegal after this removal
-      let changed = true;
-      while (changed) {
-        changed = false;
-        for (let i = 0; i < player.queue.length; i++) {
-          const slot = player.queue[i];
-          if (!slot) continue;
-          const illegal = Object.entries(slot.cost ?? {}).some(([resourceType, amount]) => {
-            const effective = effectiveResourceAtExecution(resourceType, i, player.queue, player.resources, i);
-            return effective < amount;
-          });
-          if (illegal) { player.queue[i] = null; changed = true; }
+      if (!DEBUG_HAND_COST) {
+        let changed = true;
+        while (changed) {
+          changed = false;
+          for (let i = 0; i < player.queue.length; i++) {
+            const slot = player.queue[i];
+            if (!slot) continue;
+            const illegal = Object.entries(slot.cost ?? {}).some(([resourceType, amount]) => {
+              const effective = effectiveResourceAtExecution(resourceType, i, player.queue, player.resources, i);
+              return effective < amount;
+            });
+            if (illegal) { player.queue[i] = null; changed = true; }
+          }
         }
       }
       return { ...state, characters: chars };

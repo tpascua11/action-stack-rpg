@@ -3,6 +3,7 @@
 // ============================================================
 
 import { calcSpeed, effectiveResourceAtExecution } from '../battle/engine/battle_engine';
+import { battle_registry } from '../battle/registry/battle_registry';
 
 export default function Hand({ cards, queue, totalSlots, onCardClick, disabled, resources, ResourceBar }) {
   const filledCount = queue.filter(Boolean).length;
@@ -63,9 +64,9 @@ export default function Hand({ cards, queue, totalSlots, onCardClick, disabled, 
           const wouldSpeed = nextSlotIndex >= 0
             ? calcSpeed(card.speed, nextSlotIndex)
             : null;
-          const canAfford = nextSlotIndex >= 0 && Object.entries(card.cost ?? {}).every(
+          const canAfford = DEBUG_HAND_COST || (nextSlotIndex >= 0 && Object.entries(card.cost ?? {}).every(
             ([type, amount]) => effectiveResourceAtExecution(type, nextSlotIndex, queue, resources) >= amount
-          );
+          ));
           const isDisabled = disabled || nextSlotIndex === -1 || !canAfford;
 
           return (
