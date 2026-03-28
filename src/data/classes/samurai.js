@@ -20,5 +20,4 @@ export const SAMURAI = {
   combat_start_tags: [],
   cards: SAMURAI_CARDS,
   ResourceBar: SamuraiResourceBar,
-  extra_fields: { battleSpirit: 0 },
 };
