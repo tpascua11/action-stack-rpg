@@ -181,6 +181,35 @@ function runPhasePostAttack(tag_pool, payload, character, hit_result) {
   return tag_pool;
 }
 
+function runPhasePreAction(tag_pool, action, owner) {
+  const logs = [];
+  const remaining = [];
+
+  for (let i = 0; i < tag_pool.length; i++) {
+    const tag = tag_pool[i];
+    const entry = battle_registry[tag.tag_name];
+    if (entry?.phases?.includes('PRE_ACTION')) {
+      const result = entry.handlers['PRE_ACTION'](action, owner, tag);
+      logs.push(...(result.logs ?? []));
+      if (result.cancelled) return { cancelled: true, logs, tag_pool: [...remaining, ...tag_pool.slice(i + 1)] };
+      if (!result.consumed) remaining.push(tag);
+    } else {
+      remaining.push(tag);
+    }
+  }
+
+  // Engine-level resource gate — not a tag, just a rule
+  for (const [resourceType, amount] of Object.entries(action.cost ?? {})) {
+    const res = owner.resources?.[resourceType];
+    if (!res || res.current < amount) {
+      logs.push({ msg: `💨 "${action.name}" fizzled — not enough ${resourceType}`, type: 'fizzle' });
+      return { cancelled: true, logs, tag_pool: remaining };
+    }
+  }
+
+  return { cancelled: false, logs, tag_pool: remaining };
+}
+
 // ── EXECUTE ACTION ──
 
 export function ExecuteAction(action, interaction_result, state) {
@@ -198,14 +227,12 @@ export function ExecuteAction(action, interaction_result, state) {
   if (!owner || !target) return { newState, logs };
   if (owner.health <= 0) return { newState, logs };
 
-  // Fizzle if owner can't pay the full resource cost
-  for (const [resourceType, amount] of Object.entries(action.cost ?? {})) {
-    const res = owner.resources?.[resourceType];
-    if (!res || res.current < amount) {
-      logs.push({ msg: `💨 "${action.name}" fizzled — not enough ${resourceType}`, type: 'fizzle' });
-      return { newState, logs, fizzled: true };
-    }
-  }
+  // PRE_ACTION phase — tag-based gates, then engine resource check
+  const preAction = runPhasePreAction(owner.active_tag_pool, action, owner);
+  logs.push(...preAction.logs);
+  owner.active_tag_pool = preAction.tag_pool;
+  if (preAction.cancelled) return { newState, logs, fizzled: true };
+
   // Deduct resource costs at execution time
   for (const [resourceType, amount] of Object.entries(action.cost ?? {})) {
     owner.resources[resourceType].current -= amount;
