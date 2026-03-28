@@ -7,6 +7,7 @@
 import { battle_registry } from '../registry/battle_registry';
 import '../handlers'; // triggers all self-registering tag handlers
 
+
 // ── HELPERS ──
 
 export function calcSpeed(base_speed, slot_index) {
@@ -24,9 +25,9 @@ export function effectiveResourceAtExecution(resourceType, mySlotIndex, queue, r
     if (!slot) continue;
     effect -= slot.cost?.[resourceType] ?? 0;
     for (const tag of slot.tags?.self ?? []) {
-      if (tag.tag_name === 'GAIN_RESOURCE' && tag.resource_type === resourceType) {
-        effect += tag.power ?? 0;
-      }
+      const entry = battle_registry[tag.tag_name];
+      const delta = entry?.resource_delta?.(tag);
+      if (delta?.type === resourceType) effect += delta.amount ?? 0;
     }
   }
   return effect;

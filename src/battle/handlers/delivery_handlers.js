@@ -34,6 +34,7 @@ registerTag('HEAL', {
 });
 
 registerTag('GAIN_RESOURCE', {
+  resource_delta: (tag) => ({ type: tag.resource_type, amount: tag.power }),
   phases: ['DELIVERY'],
   handlers: { DELIVERY: GainResourceHandler },
 });

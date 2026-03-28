@@ -4,6 +4,7 @@
 
 import { calcSpeed, effectiveResourceAtExecution } from '../battle/engine/battle_engine';
 import { battle_registry } from '../battle/registry/battle_registry';
+import { DEBUG_HAND_COST } from '../debug';
 
 export default function Hand({ cards, queue, totalSlots, onCardClick, disabled, resources, ResourceBar }) {
   const filledCount = queue.filter(Boolean).length;
@@ -19,14 +20,13 @@ export default function Hand({ cards, queue, totalSlots, onCardClick, disabled, 
     }
   }
 
-  // Sum GAIN_RESOURCE self-tags of queued cards to get planned gains per resource
+  // Sum resource-delta self-tags of queued cards to get planned gains per resource
   const plannedGain = {};
   for (const slot of queue) {
     if (!slot) continue;
     for (const tag of slot.tags?.self ?? []) {
-      if (tag.tag_name === 'GAIN_RESOURCE' && tag.resource_type) {
-        plannedGain[tag.resource_type] = (plannedGain[tag.resource_type] ?? 0) + (tag.power ?? 0);
-      }
+      const delta = battle_registry[tag.tag_name]?.resource_delta?.(tag);
+      if (delta?.type) plannedGain[delta.type] = (plannedGain[delta.type] ?? 0) + (delta.amount ?? 0);
     }
   }
 
