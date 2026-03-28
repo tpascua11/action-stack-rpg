@@ -8,7 +8,8 @@ const LOG_COLORS = {
   dmg:   'text-[#e94560]',
   heal:  'text-green-400',
   buff:  'text-[#4da6ff]',
-  clash: 'text-purple-400',
+  clash:  'text-purple-400',
+  fizzle: 'text-orange-400',
   info:  'text-[#ffd700]',
   normal:'text-gray-400',
 };

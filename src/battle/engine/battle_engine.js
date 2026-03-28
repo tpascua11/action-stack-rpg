@@ -197,10 +197,17 @@ export function ExecuteAction(action, interaction_result, state) {
   if (!owner || !target) return { newState, logs };
   if (owner.health <= 0) return { newState, logs };
 
-  // Deduct resource costs at execution time
+  // Fizzle if owner can't pay the full resource cost
   for (const [resourceType, amount] of Object.entries(action.cost ?? {})) {
     const res = owner.resources?.[resourceType];
-    if (res) res.current = Math.max(0, res.current - amount);
+    if (!res || res.current < amount) {
+      logs.push({ msg: `💨 "${action.name}" fizzled — not enough ${resourceType}`, type: 'fizzle' });
+      return { newState, logs, fizzled: true };
+    }
+  }
+  // Deduct resource costs at execution time
+  for (const [resourceType, amount] of Object.entries(action.cost ?? {})) {
+    owner.resources[resourceType].current -= amount;
   }
 
   // Retarget if original target is already dead

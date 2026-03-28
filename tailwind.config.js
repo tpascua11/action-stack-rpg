@@ -31,7 +31,7 @@ module.exports = {
         pulse_glow: {
           "0%, 100%": { boxShadow: "0 0 8px rgba(77,166,255,0.4)" },
           "50%":       { boxShadow: "0 0 24px rgba(77,166,255,0.9)" },
-        }
+        },
       },
       animation: {
         shake: "shake 0.3s ease-in-out",

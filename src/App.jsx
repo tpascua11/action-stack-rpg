@@ -171,7 +171,7 @@ function battleReducer(state, action) {
       if (interactionLog) newLogs.push(interactionLog);
 
       // Execute actionA
-      const { newState: afterExec, logs: execLogs, actualTargetId } = ExecuteAction(actionA, resultA, newState);
+      const { newState: afterExec, logs: execLogs, actualTargetId, fizzled } = ExecuteAction(actionA, resultA, newState);
       newState = afterExec;
       newLogs.push(...execLogs);
 
@@ -204,6 +204,7 @@ function battleReducer(state, action) {
         stepCount: state.stepCount + 1,
         logs: [...state.logs, ...newLogs],
         shakingEnemyId: enemyWasHit ? actualTargetId : null,
+        fizzlingCard: fizzled ? actionA : null,
       };
     }
 
@@ -221,6 +222,9 @@ function battleReducer(state, action) {
 
     case 'STOP_SHAKE':
       return { ...state, shakingEnemyId: null };
+
+    case 'STOP_FIZZLE':
+      return { ...state, fizzlingCard: null };
 
     case 'RESET':
       return buildInitialState(CURRENT_ENCOUNTER);
@@ -257,6 +261,13 @@ export default function App() {
     const t = setTimeout(() => dispatch({ type: 'STOP_SHAKE' }), 350);
     return () => clearTimeout(t);
   }, [gs.shakingEnemyId]);
+
+  // Stop fizzle animation
+  useEffect(() => {
+    if (!gs.fizzlingCard) return;
+    const t = setTimeout(() => dispatch({ type: 'STOP_FIZZLE' }), 600);
+    return () => clearTimeout(t);
+  }, [gs.fizzlingCard]);
 
   const slotTargetId = retargetingSlot !== null ? player.queue[retargetingSlot]?.target_id ?? null : null;
 
@@ -390,6 +401,7 @@ export default function App() {
               onExecute={handleExecute}
               isBattling={gs.phase === 'BATTLE'}
               isResult={gs.phase === 'RESULT'}
+              fizzlingCard={gs.fizzlingCard ?? null}
             />
           </div>
 

@@ -2,14 +2,24 @@
 //  ActionQueue — Card-shaped slots to the right of Vrax
 // ============================================================
 
-export default function ActionQueue({ queue, totalSlots, enemies, retargetingSlot, onRetargetBoxClick, onClearSlot, onExecute, isBattling, isResult }) {
+export default function ActionQueue({ queue, totalSlots, enemies, retargetingSlot, onRetargetBoxClick, onClearSlot, onExecute, isBattling, isResult, fizzlingCard }) {
   const PENALTIES = Array.from({ length: totalSlots }, (_, i) => i * 20);
 
   return (
     <div className="flex flex-col items-start gap-3">
 
       {/* Slots — horizontal row, same card size as Hand */}
-      <div className="flex flex-row gap-2" style={{ paddingTop: '5rem' }}>
+      <div className="relative flex flex-row gap-2" style={{ paddingTop: '5rem' }}>
+
+        {/* Fizzle popup — placeholder until animation is implemented */}
+        {fizzlingCard && (
+          <div className="absolute inset-x-0 top-4 flex justify-center pointer-events-none z-20">
+            <div style={{ background: '#09090f', border: '2px solid #f97316', borderRadius: '3px', padding: '0.35rem 0.9rem', boxShadow: '0 0 16px rgba(249,115,22,0.45)' }}>
+              <div className="text-xs font-bold font-mono tracking-widest uppercase text-orange-400 text-center">FIZZLED</div>
+              <div className="text-[9px] font-mono text-gray-400 text-center tracking-wide mt-[2px]">{fizzlingCard.name}</div>
+            </div>
+          </div>
+        )}
         {Array.from({ length: totalSlots }).map((_, i) => {
           const slot = queue[i];
           const borderColor = slot ? slot.color : '#ffffff22';
