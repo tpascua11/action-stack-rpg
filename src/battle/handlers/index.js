@@ -10,3 +10,4 @@ import './injector_handlers';
 import './passive_handlers';
 import './post_attack_handlers';
 import './speed_handlers';
+import './turn_phase_handlers';

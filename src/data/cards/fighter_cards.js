@@ -53,6 +53,7 @@ export const FIGHTER_CARDS = [
     tags: {
       self: [
         { tag_name: 'HEAL', power: 100 },
+        { tag_name: 'REGEN', power: 25, duration: 3, reset: 'TICK_TURN' },
       ],
       target: [],
     },
@@ -123,6 +124,7 @@ export const FIGHTER_CARDS = [
       self: [],
       target: [
         { tag_name: 'DAMAGE', type: 'FIRE', power: 150 },
+        { tag_name: 'BURN', power: 33, duration: 3, reset: 'TICK_TURN' },
       ],
     },
   },

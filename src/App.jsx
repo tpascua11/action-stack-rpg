@@ -13,6 +13,7 @@ import {
   ExecuteAction,
   ActionCleanup,
   TurnResultCleanup,
+  runPhaseOnTurnStart,
 } from './battle/engine/battle_engine';
 
 import EnemyZone from './components/EnemyZone';
@@ -121,11 +122,21 @@ function battleReducer(state, action) {
       const battlePlayer = chars.find(c => c.id === 'vrax');
       battlePlayer.queue = battlePlayer.queue.filter(Boolean);
       chars.filter(c => !c.is_player && c.health > 0).forEach(e => { e.queue = buildEnemyQueue(e); });
+      const { newCharacters: startChars, logs: startLogs } = runPhaseOnTurnStart(chars, null);
+      const turnStartLogs = [...state.logs, { msg: `━━━ TURN ${state.turn} BEGIN ━━━`, type: 'info' }, ...startLogs];
+      const playerAfterStart = startChars.find(c => c.id === 'vrax');
+      const allEnemiesDeadAfterStart = startChars.filter(c => !c.is_player).every(e => e.health <= 0);
+      if (playerAfterStart.health <= 0) {
+        return { ...state, characters: startChars, phase: 'RESULT', result: 'LOSS', logs: [...turnStartLogs, { msg: '💀 VRAX HAS FALLEN.', type: 'dmg' }] };
+      }
+      if (allEnemiesDeadAfterStart) {
+        return { ...state, characters: startChars, phase: 'RESULT', result: 'WIN', logs: [...turnStartLogs, { msg: '🏆 VICTORY! ALL ENEMIES DEFEATED!', type: 'heal' }] };
+      }
       return {
         ...state,
-        characters: chars,
+        characters: startChars,
         phase: 'BATTLE',
-        logs: [...state.logs, { msg: `━━━ TURN ${state.turn} BEGIN ━━━`, type: 'info' }],
+        logs: turnStartLogs,
       };
     }
 

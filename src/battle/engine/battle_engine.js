@@ -307,6 +307,17 @@ export function ExecuteAction(action, interaction_result, state) {
 
   const hit_result = total_damage > 0 ? 'HIT' : 'MISS';
 
+  // ── APPLY STATUS TARGET TAGS ──
+  if (resolvedTarget) {
+    for (const tag of (action.tags?.target || [])) {
+      const entry = battle_registry[tag.tag_name];
+      if (!entry?.phases?.includes('DELIVERY')) {
+        resolvedTarget.active_tag_pool = addTagToPool(resolvedTarget.active_tag_pool, tag);
+        logs.push({ msg: `🔻 ${resolvedTarget.name} gains ${tag.tag_name}`, type: 'debuff' });
+      }
+    }
+  }
+
   // ── ON_RECEIVE ──
   if (resolvedTarget) {
     resolvedTarget.active_tag_pool = runPhaseOnReceive(resolvedTarget.active_tag_pool, payload, resolvedTarget, hit_result);
@@ -330,11 +341,66 @@ export function ActionCleanup(action, state) {
   return newState;
 }
 
+// ── ON_TURN_START / END_OF_TURN PHASE RUNNERS ──
+
+export function runPhaseOnTurnStart(characters, field) {
+  const newCharacters = deepClone(characters);
+  const logs = [];
+
+  for (const character of newCharacters) {
+    if (character.health <= 0) continue;
+    const remaining = [];
+    for (const tag of character.active_tag_pool) {
+      const entry = battle_registry[tag.tag_name];
+      if (entry?.phases?.includes('ON_TURN_START')) {
+        const context = { owner: character, field, state: { characters: newCharacters } };
+        const result = entry.handlers['ON_TURN_START'](context, tag);
+        logs.push(...(result.logs ?? []));
+        if (!result.consumed) remaining.push(tag);
+      } else {
+        remaining.push(tag);
+      }
+    }
+    character.active_tag_pool = remaining;
+  }
+
+  return { newCharacters, logs };
+}
+
+export function runPhaseEndOfTurn(characters, field) {
+  const newCharacters = deepClone(characters);
+  const logs = [];
+
+  for (const character of newCharacters) {
+    if (character.health <= 0) continue;
+    const remaining = [];
+    for (const tag of character.active_tag_pool) {
+      const entry = battle_registry[tag.tag_name];
+      if (entry?.phases?.includes('END_OF_TURN')) {
+        const context = { owner: character, field, state: { characters: newCharacters } };
+        const result = entry.handlers['END_OF_TURN'](context, tag);
+        logs.push(...(result.logs ?? []));
+        if (!result.consumed) remaining.push(tag);
+      } else {
+        remaining.push(tag);
+      }
+    }
+    character.active_tag_pool = remaining;
+  }
+
+  return { newCharacters, logs };
+}
+
 // ── TURN RESULT CLEANUP ──
 
-export function TurnResultCleanup(state) {
-  const newState = deepClone(state);
+export function TurnResultCleanup(state, field = null) {
+  let newState = deepClone(state);
   const logs = [];
+
+  // END_OF_TURN tag phase — runs before expiry sweep
+  const endOfTurnResult = runPhaseEndOfTurn(newState.characters, field);
+  newState.characters = endOfTurnResult.newCharacters;
+  logs.push(...endOfTurnResult.logs);
 
   for (const character of newState.characters) {
     character.active_tag_pool = character.active_tag_pool.filter(tag => {
