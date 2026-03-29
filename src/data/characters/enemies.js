@@ -21,7 +21,7 @@ export const EMBER_WITCH = {
       properties: [],
       tags: {
         self: [],
-        target: [{ tag_name: 'DAMAGE', type: 'FIRE', power: 40 }],
+        target: [{ tag_name: 'DAMAGE', type: 'FIRE', power: 10 }],
       },
     },
     {

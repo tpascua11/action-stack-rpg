@@ -25,7 +25,7 @@ import ActionQueue from './components/ActionQueue';
 import Hand from './components/Hand';
 
 // ── CURRENT ENCOUNTER ──
-const CURRENT_ENCOUNTER = [EMBER_WITCH, EMBER_WITCH];
+const CURRENT_ENCOUNTER = [EMBER_WITCH, EMBER_WITCH, EMBER_WITCH, EMBER_WITCH, EMBER_WITCH];
 
 // ── BUILD INITIAL STATE ──
 function buildInitialState(enemies = CURRENT_ENCOUNTER) {
@@ -392,10 +392,10 @@ export default function App() {
       />
 
       {/* BOTTOM — Player Zone */}
-      <div className="h-[67%] flex flex-col overflow-hidden">
+      <div className="flex-shrink-0 flex flex-col overflow-hidden">
 
         {/* Center row: Buff Column | Character Column | Slot Column */}
-        <div className="flex-1 flex items-end justify-center overflow-hidden pb-4">
+        <div className="flex-1 flex items-end justify-center overflow-hidden pt-2 pb-4 max-h-[26rem]">
 
           {/* LEFT — Buff column (fixed width, right-aligned so buffs hug the gap) */}
           <div style={{ width: '340px', paddingRight: '60px', display: 'flex', justifyContent: 'flex-end' }}>

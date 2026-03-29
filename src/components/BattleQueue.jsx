@@ -58,7 +58,7 @@ export default function BattleQueue({ characters, phase, onToggleLog, logOpen })
 
   return (
     <div
-      className="h-[8%] flex items-center border-y border-white/10"
+      className="h-[8.25rem] flex items-center border-y border-white/10"
       style={{ background: 'rgba(0,0,0,0.3)' }}
     >
       {/* Scrollable card row */}
@@ -77,8 +77,8 @@ export default function BattleQueue({ characters, phase, onToggleLog, logOpen })
                 key={i}
                 className="flex flex-col flex-shrink-0"
                 style={{
-                  width: '3.5rem',
-                  height: '5.25rem',
+                  width: '5.5rem',
+                  height: '8.25rem',
                   background: '#09090f',
                   border: `2px solid ${color}`,
                   borderRadius: '3px',
@@ -89,9 +89,9 @@ export default function BattleQueue({ characters, phase, onToggleLog, logOpen })
                 {/* Header */}
                 <div
                   className="relative flex-shrink-0"
-                  style={{ background: color, height: '1.1rem', overflow: 'visible', zIndex: 2 }}
+                  style={{ background: color, height: '1.3rem', overflow: 'visible', zIndex: 2 }}
                 >
-                  <span className="absolute inset-x-0 top-0 px-[2px] pt-[2px] text-[7px] font-bold font-mono text-white tracking-wide uppercase text-center leading-tight">
+                  <span className="absolute inset-x-0 top-0 px-1 pt-[3px] text-[8px] font-bold font-mono text-white tracking-widest uppercase text-center leading-tight">
                     {action.name}
                   </span>
                 </div>
@@ -102,7 +102,7 @@ export default function BattleQueue({ characters, phase, onToggleLog, logOpen })
                     style={{ background: `linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)), ${color}` }}>
                     {action.image
                       ? <img src={action.image} alt={action.name} className="w-full h-full object-contain" />
-                      : <span style={{ fontSize: '1.25rem' }}>{icon}</span>
+                      : <span style={{ fontSize: '1.75rem' }}>{icon}</span>
                     }
                     <div className="absolute inset-0 pointer-events-none"
                       style={{ background: 'repeating-linear-gradient(0deg, rgba(0,0,0,0.18) 0px, rgba(0,0,0,0.18) 1px, transparent 1px, transparent 3px)' }} />
@@ -112,9 +112,9 @@ export default function BattleQueue({ characters, phase, onToggleLog, logOpen })
                 {/* Footer */}
                 <div
                   className="flex items-center justify-center flex-shrink-0"
-                  style={{ background: '#0d0d1a', borderTop: `1px solid ${color}55`, height: '1rem' }}
+                  style={{ background: '#0d0d1a', borderTop: `1px solid ${color}55`, height: '1.1rem' }}
                 >
-                  <span className="text-[9px] font-bold font-mono" style={{ color }}>
+                  <span className="text-[11px] font-bold font-mono" style={{ color }}>
                     SPD {action.calc_speed}
                   </span>
                 </div>
