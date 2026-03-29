@@ -128,6 +128,24 @@ export const SAMURAI_CARDS = [
     },
   },
   {
+    id: 'freeze_slash',
+    name: 'Freeze Slash',
+    speed: 90,
+    tag_type: ['PHYSICAL', 'SLASH', 'FROST'],
+    cost: {},
+    icon: '❄️',
+    image: require('../../asssets/FOX_SUMMURAI/fox_summurai_20.png'),
+    color: '#38bdf8',
+    desc: 'A chilling slash. Deal 50 Frost damage and apply 2 stacks of Freeze.',
+    tags: {
+      self: [],
+      target: [
+        { tag_name: 'DAMAGE', type: 'FROST', power: 50 },
+        { tag_name: 'FREEZE', stacks: 5 },
+      ],
+    },
+  },
+  {
     id: 'focus_spirit',
     name: 'Focus Spirit',
     speed: 70,
