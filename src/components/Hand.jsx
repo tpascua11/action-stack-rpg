@@ -32,7 +32,7 @@ export default function Hand({ cards, queue, totalSlots, onCardClick, disabled, 
 
 
   return (
-    <div className="h-[35%] flex-shrink-0 flex flex-col border-t border-white/10"
+    <div className="h-[200px] flex-shrink-0 flex flex-col border-t border-white/10 mb-2"
       style={{ background: 'rgba(0,0,0,0.25)' }}>
 
       {/* Button row — 3 sections */}
