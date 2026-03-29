@@ -68,7 +68,7 @@ export default function BattleQueue({ characters, phase, onToggleLog, logOpen })
           <span className="text-[9px] font-mono text-gray-700 tracking-widest">NO ACTIONS QUEUED</span>
         ) : (
           allActions.map((action, i) => {
-            const isPlayer = action._char.is_player;
+            const isPlayer = action._char.faction === 'player';
             const color = action.color || (isPlayer ? '#4da6ff' : ENEMY_COLOR);
             const icon = action.icon || action._char.icon || '⚔️';
 

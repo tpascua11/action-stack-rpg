@@ -43,7 +43,7 @@ function buildInitialState(enemies = CURRENT_ENCOUNTER) {
     logs: [{ msg: '⚔️  System Ready. Queue your actions and execute.', type: 'info' }],
     stepCount: 0,
     shakingEnemyId: null,
-    lastTargetId: characters.find(c => !c.is_player && c.health > 0)?.id ?? null,
+    lastTargetId: characters.find(c => c.faction === 'enemy' && c.health > 0)?.id ?? null,
   };
 }
 
@@ -66,7 +66,7 @@ function battleReducer(state, action) {
 
     case 'ADD_TO_QUEUE': {
       const chars = JSON.parse(JSON.stringify(state.characters));
-      const player = chars.find(c => c.id === 'vrax');
+      const player = chars.find(c => c.faction === 'player');
       const filledCount = player.queue.filter(Boolean).length;
       if (filledCount >= player.total_action_slots) return state;
       const nullIdx = player.queue.findIndex(s => !s);
@@ -81,7 +81,7 @@ function battleReducer(state, action) {
         }
       }
       const lastTarget = chars.find(c => c.id === state.lastTargetId && c.health > 0);
-      const target = lastTarget ?? chars.find(c => !c.is_player && c.health > 0);
+      const target = lastTarget ?? chars.find(c => c.faction === 'enemy' && c.health > 0);
       player.queue[slotIndex] = {
         ...card,
         owner_id: 'vrax',
@@ -96,7 +96,7 @@ function battleReducer(state, action) {
 
     case 'CLEAR_SLOT': {
       const chars = JSON.parse(JSON.stringify(state.characters));
-      const player = chars.find(c => c.id === 'vrax');
+      const player = chars.find(c => c.faction === 'player');
       player.queue[action.index] = null;
       // Cascade: remove any cards that are now illegal after this removal
       if (!DEBUG_HAND_COST) {
@@ -119,13 +119,13 @@ function battleReducer(state, action) {
 
     case 'START_BATTLE': {
       const chars = JSON.parse(JSON.stringify(state.characters));
-      const battlePlayer = chars.find(c => c.id === 'vrax');
+      const battlePlayer = chars.find(c => c.faction === 'player');
       battlePlayer.queue = battlePlayer.queue.filter(Boolean);
-      chars.filter(c => !c.is_player && c.health > 0).forEach(e => { e.queue = buildEnemyQueue(e); });
+      chars.filter(c => c.faction === 'enemy' && c.health > 0).forEach(e => { e.queue = buildEnemyQueue(e); });
       const { newCharacters: startChars, logs: startLogs } = runPhaseOnTurnStart(chars, null);
       const turnStartLogs = [...state.logs, { msg: `━━━ TURN ${state.turn} BEGIN ━━━`, type: 'info' }, ...startLogs];
-      const playerAfterStart = startChars.find(c => c.id === 'vrax');
-      const allEnemiesDeadAfterStart = startChars.filter(c => !c.is_player).every(e => e.health <= 0);
+      const playerAfterStart = startChars.find(c => c.faction === 'player');
+      const allEnemiesDeadAfterStart = startChars.filter(c => c.faction === 'enemy').every(e => e.health <= 0);
       if (playerAfterStart.health <= 0) {
         return { ...state, characters: startChars, phase: 'RESULT', result: 'LOSS', logs: [...turnStartLogs, { msg: '💀 VRAX HAS FALLEN.', type: 'dmg' }] };
       }
@@ -146,8 +146,8 @@ function battleReducer(state, action) {
       // All queues empty — run cleanup
       if (sorted.length === 0) {
         const { newState: cleanedState, logs: cleanLogs } = TurnResultCleanup({ ...state });
-        const player = cleanedState.characters.find(c => c.id === 'vrax');
-        const allEnemiesDead = cleanedState.characters.filter(c => !c.is_player).every(e => e.health <= 0);
+        const player = cleanedState.characters.find(c => c.faction === 'player');
+        const allEnemiesDead = cleanedState.characters.filter(c => c.faction === 'enemy').every(e => e.health <= 0);
 
         if (player.health <= 0) {
           return {
@@ -204,7 +204,7 @@ function battleReducer(state, action) {
       newState = {
         ...newState,
         characters: newState.characters.map(c => {
-          if (c.is_player || c.health > 0) return c;
+          if (c.faction === 'player' || c.health > 0) return c;
           const remaining = c.queue.filter(a => a?.properties?.includes('GHOST'));
           return { ...c, queue: remaining };
         }),
@@ -212,7 +212,7 @@ function battleReducer(state, action) {
 
       // Check if enemy was hit for shake animation — use actual (possibly retargeted) target
       const targetChar = actualTargetId ? state.characters.find(c => c.id === actualTargetId) : null;
-      const enemyWasHit = targetChar && !targetChar.is_player && resultA !== 'NULLIFY';
+      const enemyWasHit = targetChar && targetChar.faction === 'enemy' && resultA !== 'NULLIFY';
 
       return {
         ...newState,
@@ -229,7 +229,7 @@ function battleReducer(state, action) {
 
     case 'RETARGET_SLOT': {
       const chars = JSON.parse(JSON.stringify(state.characters));
-      const player = chars.find(c => c.id === 'vrax');
+      const player = chars.find(c => c.faction === 'player');
       const slot = player.queue[action.index];
       if (!slot) return state;
       player.queue[action.index] = { ...slot, target_id: action.targetId };
@@ -258,8 +258,8 @@ export default function App() {
   const [lineCoords, setLineCoords] = useState(null);
   const battleTimerRef = useRef(null);
 
-  const player = gs.characters.find(c => c.id === 'vrax');
-  const enemies = gs.characters.filter(c => !c.is_player);
+  const player = gs.characters.find(c => c.faction === 'player');
+  const enemies = gs.characters.filter(c => c.faction === 'enemy');
   const { ResourceBar } = CLASS_REGISTRY[player.class_id] ?? {};
 
   // Drive battle loop with timed steps

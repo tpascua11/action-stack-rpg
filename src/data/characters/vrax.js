@@ -12,7 +12,7 @@ export const VRAX = {
   total_action_slots: 3,
   active_tag_pool: [],
   queue: [],
-  is_player: true,
+  faction: 'player',
 };
 
 export const STONE_GOLEM = {
@@ -23,7 +23,7 @@ export const STONE_GOLEM = {
   max_health: 200,
   total_action_slots: 2,
   active_tag_pool: [],
-  is_player: false,
+  faction: 'enemy',
   queue: [],
   // Base actions the enemy cycles through
   base_actions: [

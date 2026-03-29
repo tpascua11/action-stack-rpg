@@ -9,7 +9,7 @@ export function buildPlayer(classDef, { id = 'player', name, portrait }) {
     name,
     portrait,
     icon: classDef.icon,
-    is_player: true,
+    faction: 'player',
     class_id: classDef.id,
     health: classDef.base_health,
     max_health: classDef.base_health,
