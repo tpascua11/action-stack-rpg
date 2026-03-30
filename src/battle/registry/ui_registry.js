@@ -1,9 +1,11 @@
 // ============================================================
 //  UI REGISTRY
-//  Maps tag_name → { icon, color, describe(tag) }
+//  Maps tag_name → { icon, color, statusIcon, describe(tag) }
 //  describe(tag) returns a human-readable string for display.
 //  This registry is UI-only — battle logic never touches it.
 // ============================================================
+
+import NATURE_1 from '../../asssets/STATUS/NATURE_1.png';
 
 export const ui_registry = {
 
@@ -79,6 +81,13 @@ export const ui_registry = {
     icon: '❄️',
     color: '#38bdf8',
     describe: () => 'Next hit becomes ICE',
+  },
+
+  REGEN: {
+    icon: '💚',
+    statusIcon: NATURE_1,
+    color: '#22c55e',
+    describe: (tag) => `+${tag.power} HP/turn`,
   },
 
 };
