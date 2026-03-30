@@ -7,8 +7,11 @@ import { ui_registry, UI_DEFAULT } from '../battle/registry/ui_registry';
 
 export default function EnemyZone({ enemies, shakingEnemyId, selectedTargetId, phase, onSelectTarget }) {
   return (
-    <div className="flex-1 min-h-0 flex items-end justify-center gap-4 pb-2 border-b border-red-900/30"
-      style={{ background: 'radial-gradient(circle at center, #2a1520 0%, #0f0f1a 100%)' }}>
+    <div className="flex-1 min-h-0 grid pb-2 border-b border-red-900/30"
+      style={{
+        background: 'radial-gradient(circle at center, #2a1520 0%, #0f0f1a 100%)',
+        gridTemplateColumns: 'repeat(5, 1fr)',
+      }}>
 
       {enemies.map(enemy => {
         const hpPct = Math.max(0, (enemy.health / enemy.max_health) * 100);
@@ -23,7 +26,7 @@ export default function EnemyZone({ enemies, shakingEnemyId, selectedTargetId, p
         return (
           <div
             key={enemy.id}
-            className={`flex flex-row items-center gap-1.5 transition-opacity duration-500 ${isDead ? 'opacity-30' : 'opacity-100'} ${isSelectable ? 'cursor-pointer' : ''}`}
+            className={`flex flex-row items-end justify-center gap-1.5 transition-opacity duration-500 ${isDead ? 'opacity-30' : 'opacity-100'} ${isSelectable ? 'cursor-pointer' : ''}`}
             onClick={e => { if (!isSelectable) return; e.stopPropagation(); onSelectTarget(enemy.id); }}
           >
 
