@@ -14,7 +14,7 @@ export default function TagPool({ tags }) {
 
   // Chunk into columns of 6, newest tags in the rightmost column
   const columns = [];
-  for (let i = 0; i < tags.length; i += 6) columns.push(tags.slice(i, i + 6));
+  for (let i = 0; i < tags.length; i += 8) columns.push(tags.slice(i, i + 8));
 
   return (
     <div className="flex flex-row-reverse gap-1.5">
