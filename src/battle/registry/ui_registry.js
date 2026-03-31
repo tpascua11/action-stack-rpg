@@ -90,6 +90,15 @@ export const ui_registry = {
     describe: (tag) => `+${tag.power} HP/turn`,
   },
 
+  FREEZE: {
+    icon: '🧊',
+    color: '#38bdf8',
+    describe: (tag) => {
+      const s = tag.stacks ?? 1;
+      return `-${s * 5} speed (${s} stack${s !== 1 ? 's' : ''}, max 10)`;
+    },
+  },
+
 };
 
 export const UI_DEFAULT = { icon: '🔮', color: '#4da6ff', describe: () => 'active' };

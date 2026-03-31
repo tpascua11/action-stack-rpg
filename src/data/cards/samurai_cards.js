@@ -54,6 +54,11 @@ export const SAMURAI_CARDS = [
       self: [
         { tag_name: 'HEAL', power: 100 },
         { tag_name: 'REGEN', power: 25, duration: 3, reset: 'TICK_TURN' },
+        { tag_name: 'REGEN', power: 25, duration: 3, reset: 'TICK_TURN' },
+        { tag_name: 'REGEN', power: 25, duration: 3, reset: 'TICK_TURN' },
+        { tag_name: 'REGEN', power: 25, duration: 3, reset: 'TICK_TURN' },
+        { tag_name: 'REGEN', power: 25, duration: 3, reset: 'TICK_TURN' },
+        { tag_name: 'REGEN', power: 25, duration: 3, reset: 'TICK_TURN' },
       ],
       target: [],
     },
@@ -157,7 +162,7 @@ export const SAMURAI_CARDS = [
     desc: 'Center yourself. Gain 1 Battle Spirit.',
     tags: {
       self: [
-        { tag_name: 'GAIN_RESOURCE', resource_type: 'BATTLE_SPIRIT', power: 1 },
+        { tag_name: 'GAIN_RESOURCE', resource_type: 'BATTLE_SPIRIT', power: 3 },
       ],
       target: [],
     },

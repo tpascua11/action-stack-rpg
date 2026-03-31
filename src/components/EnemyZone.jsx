@@ -4,13 +4,13 @@
 // ============================================================
 
 import { ui_registry, UI_DEFAULT } from '../battle/registry/ui_registry';
+import DEFAULT_ICON from '../asssets/STATUS/DEFAULT.png';
 
 export default function EnemyZone({ enemies, shakingEnemyId, selectedTargetId, phase, onSelectTarget }) {
   return (
-    <div className="flex-1 min-h-0 grid pb-2 border-b border-red-900/30"
+    <div className="flex-1 min-h-0 flex flex-row items-end justify-center gap-6 pb-2 border-b border-red-900/30"
       style={{
         background: 'radial-gradient(circle at center, #2a1520 0%, #0f0f1a 100%)',
-        gridTemplateColumns: 'repeat(5, 1fr)',
       }}>
 
       {enemies.map(enemy => {
@@ -30,27 +30,79 @@ export default function EnemyZone({ enemies, shakingEnemyId, selectedTargetId, p
             onClick={e => { if (!isSelectable) return; e.stopPropagation(); onSelectTarget(enemy.id); }}
           >
 
-            {/* Left: Tag List */}
-            <div className="flex flex-col gap-1 items-end w-10 shrink-0">
-              {tags.slice(0, 5).map((tag, i) => {
+            {/* Left: Tag Pool — same width as right side so card stays centered */}
+            <div className="flex flex-col gap-1 shrink-0" style={{ width: '8rem' }}>
+              {tags.length === 0 ? (
+                <div className="flex items-center justify-center h-8">
+                  <span className="text-[9px] text-gray-700 font-mono italic">no buffs</span>
+                </div>
+              ) : tags.slice(0, 8).map((tag, i) => {
                 const display = ui_registry[tag.tag_name] || UI_DEFAULT;
+                const description = display.describe(tag);
+                const hasDesc = description && description !== 'active';
                 return (
                   <div
                     key={i}
-                    className="flex items-center gap-0.5 rounded px-1 py-0.5 w-full"
+                    className="group relative flex flex-row items-center overflow-visible border"
                     style={{
-                      background: display.color + '22',
-                      border: `1px solid ${display.color}55`,
+                      minHeight: '1.75rem',
+                      background: '#09090f',
+                      borderColor: display.color,
+                      borderRadius: '3px',
+                      boxShadow: `0 0 6px ${display.color}44, inset 0 0 4px ${display.color}11`,
                     }}
-                    title={display.describe(tag)}
                   >
-                    <span className="text-[9px] leading-none">{display.icon}</span>
-                    <span
-                      className="text-[7px] font-mono font-bold leading-none truncate"
-                      style={{ color: display.color }}
-                    >
-                      {tag.tag_name.replace(/_/g, ' ')}
-                    </span>
+                    {/* Icon */}
+                    <div className="flex-shrink-0 flex items-center justify-center p-0.5" style={{ width: '1.75rem', height: '1.75rem' }}>
+                      <img
+                        src={display.statusIcon ?? DEFAULT_ICON}
+                        alt={tag.tag_name}
+                        className="w-full h-full object-contain"
+                        style={{ border: '1px solid rgba(255,255,255,0.2)', borderRadius: '2px' }}
+                      />
+                    </div>
+
+                    {/* Name + duration */}
+                    <div className="flex flex-row items-center justify-between min-w-0 flex-1 self-stretch py-0.5 pr-1">
+                      {(tag.stacks ?? tag.stack_count ?? 1) > 1 && (
+                        <>
+                          <span className="flex-shrink-0 text-[9px] text-white font-mono mr-0.5 self-center">
+                            x{tag.stacks ?? tag.stack_count}
+                          </span>
+                          <div className="flex-shrink-0 self-stretch w-px ml-0.5 mr-1" style={{ background: 'rgba(255,255,255,0.15)' }} />
+                        </>
+                      )}
+                      <div
+                        className={`text-[9px] font-bold tracking-wide font-body leading-tight flex-1 min-w-0 flex items-center ${(tag.stacks ?? tag.stack_count ?? 1) <= 1 ? 'ml-0.5' : ''}`}
+                        style={{ color: display.color }}
+                      >
+                        <span className="truncate">{tag.tag_name.replace(/_/g, ' ')}</span>
+                      </div>
+                      {tag.duration && (
+                        <span className="flex-shrink-0 text-[9px] text-[#ffd700] font-mono ml-0.5 self-center">{tag.duration}⏳</span>
+                      )}
+                    </div>
+
+                    {/* Tooltip */}
+                    {hasDesc && (
+                      <div
+                        className="pointer-events-none absolute bottom-[calc(100%+6px)] left-0
+                          w-40 rounded-lg border border-gray-600 shadow-xl z-[100]
+                          opacity-0 group-hover:opacity-100 transition-opacity duration-150"
+                        style={{ background: '#1a1a2e' }}
+                      >
+                        <div className="h-1 rounded-t-lg" style={{ background: display.color }} />
+                        <div className="px-3 py-2 flex flex-col gap-1">
+                          <div className="text-[10px] font-bold font-body" style={{ color: display.color }}>
+                            {tag.tag_name.replace(/_/g, ' ')}
+                          </div>
+                          <div className="text-[9px] text-gray-300 font-mono leading-tight">{description}</div>
+                          {tag.duration && (
+                            <div className="text-[8px] text-[#ffd700] font-mono">{tag.duration} turns remaining</div>
+                          )}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 );
               })}
@@ -59,7 +111,7 @@ export default function EnemyZone({ enemies, shakingEnemyId, selectedTargetId, p
             {/* Center: Enemy Card */}
             <div
               data-enemy-id={enemy.id}
-              className={`w-32 h-48 bg-white rounded-lg border-2 flex flex-col items-center overflow-hidden shrink-0 ${isShaking ? 'animate-shake' : ''}`}
+              className={`w-48 h-72 bg-white rounded-lg border-2 flex flex-col items-center overflow-hidden shrink-0 ${isShaking ? 'animate-shake' : ''}`}
               style={{
                 borderColor: isSelected ? '#ff0030' : '#e94560',
                 boxShadow: isSelected
@@ -90,8 +142,9 @@ export default function EnemyZone({ enemies, shakingEnemyId, selectedTargetId, p
               <div className="text-[10px] text-gray-500 mb-2 font-mono">{enemy.health} / {enemy.max_health}</div>
             </div>
 
-            {/* Right: Action Stack */}
-            <div className="relative shrink-0" style={{ width: '60px', height: '76px' }}>
+            {/* Right: Action Stack — padded to match left width (8rem) so card stays centered */}
+            <div className="shrink-0 flex items-end" style={{ width: '8rem' }}>
+              <div className="relative" style={{ width: '60px', height: '76px' }}>
               {visibleActions.length === 0 ? (
                 <div
                   className="absolute inset-0 rounded border flex items-center justify-center"
@@ -152,6 +205,7 @@ export default function EnemyZone({ enemies, shakingEnemyId, selectedTargetId, p
                   );
                 })
               )}
+              </div>
             </div>
 
           </div>

@@ -49,16 +49,16 @@ export default function TagPool({ tags }) {
 
                 {/* Right — name + duration on same row */}
                 <div className="flex flex-row items-center justify-between min-w-0 flex-1 self-stretch py-1">
-                  {(tag.stack_count ?? 1) > 1 && (
+                  {(tag.stacks ?? tag.stack_count ?? 1) > 1 && (
                     <>
                       <span className="flex-shrink-0 text-[13px] text-white font-mono mr-1 self-center">
-                        x{tag.stack_count}
+                        x{tag.stacks ?? tag.stack_count}
                       </span>
                       <div className="flex-shrink-0 self-stretch w-px ml-0.5 mr-1.5" style={{ background: 'rgba(255,255,255,0.15)' }} />
                     </>
                   )}
                   <div
-                    className={`text-[13px] font-bold tracking-wide font-body leading-tight flex-1 min-w-0 flex items-center ${(tag.stack_count ?? 1) <= 1 ? 'ml-1' : ''}`}
+                    className={`text-[13px] font-bold tracking-wide font-body leading-tight flex-1 min-w-0 flex items-center ${(tag.stacks ?? tag.stack_count ?? 1) <= 1 ? 'ml-1' : ''}`}
                     style={{ color: display.color }}
                   >
                     <span className="break-words">{tag.tag_name.replace(/_/g, ' ')}</span>
