@@ -21,7 +21,7 @@ const FULL_SZ = {
 const COMPACT_SZ = {
   tile:         '2.00rem',
   stackFont:    '15px',
-  barWidth:     '9rem',
+  barWidth:     '8rem',
   barMinHeight: '1.75rem',
   barIconWidth: '1.75rem',
   barFont:      '10px',

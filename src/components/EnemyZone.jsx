@@ -7,7 +7,7 @@ import TagPool from './TagPool';
 
 export default function EnemyZone({ enemies, shakingEnemyId, selectedTargetId, phase, onSelectTarget }) {
   return (
-    <div className="flex-1 min-h-0 flex flex-row items-end justify-center gap-6 pb-2 border-b border-red-900/30"
+    <div className="flex-1 min-h-0 flex flex-row items-end justify-center gap-20 pb-2 border-b border-red-900/30"
       style={{
         background: 'radial-gradient(circle at center, #2a1520 0%, #0f0f1a 100%)',
       }}>
@@ -69,6 +69,7 @@ export default function EnemyZone({ enemies, shakingEnemyId, selectedTargetId, p
             </div>
 
             {/* Right: Action Stack — padded to match left width (8rem) so card stays centered */}
+            {/* COMMENTED OUT: action stack display next to enemy card
             <div className="shrink-0 flex items-end" style={{ width: '8rem' }}>
               <div className="relative" style={{ width: '60px', height: '76px' }}>
               {visibleActions.length === 0 ? (
@@ -79,9 +80,8 @@ export default function EnemyZone({ enemies, shakingEnemyId, selectedTargetId, p
                   <span className="text-[9px] text-gray-700 font-mono">—</span>
                 </div>
               ) : (
-                /* Render back-to-front so front card sits on top in DOM */
                 [...visibleActions].reverse().map((action, ri) => {
-                  const frontIndex = visibleActions.length - 1 - ri; // 0 = next action (front)
+                  const frontIndex = visibleActions.length - 1 - ri;
                   const isTop = frontIndex === 0;
                   const offsetY = frontIndex * 4;
                   const offsetX = frontIndex * 4;
@@ -119,7 +119,6 @@ export default function EnemyZone({ enemies, shakingEnemyId, selectedTargetId, p
                           </div>
                         </>
                       ) : (
-                        /* Back cards just show a subtle header to look like a card back */
                         <div
                           className="w-full py-0.5 text-center text-[7px] font-bold tracking-wider font-body"
                           style={{ background: '#2a0810', color: '#6a2030' }}
@@ -133,6 +132,7 @@ export default function EnemyZone({ enemies, shakingEnemyId, selectedTargetId, p
               )}
               </div>
             </div>
+            */}
 
           </div>
         );
