@@ -3,7 +3,7 @@
 // ============================================================
 
 import { ui_registry, UI_DEFAULT } from '../battle/registry/ui_registry';
-import DEFAULT_ICON from '../asssets/STATUS/DEFAULT.png';
+import { STATUS_DEFAULT as DEFAULT_ICON } from '../asssets';
 
 const TAG_SIZE = 'calc((24rem - 7 * 0.375rem) / 8)';
 

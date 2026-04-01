@@ -1,0 +1,14 @@
+================================================================================
+  DAQ-GAME TODO LIST
+================================================================================
+
+[x] Create a centralized image/asset index file (e.g. src/asssets/index.js) that
+    exports all image imports in one place, so components don't each need their
+    own import statements for icons, status images, portraits, etc.
+
+[ ] Consolidate enemy and player tag pools into one TagPool component.
+    Add a `compact` prop that switches to single-column, smaller sizing for
+    enemies. EnemyZone should use <TagPool tags={tags} compact /> instead of
+    maintaining its own duplicate tag row logic.
+
+================================================================================

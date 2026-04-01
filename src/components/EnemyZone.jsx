@@ -4,7 +4,7 @@
 // ============================================================
 
 import { ui_registry, UI_DEFAULT } from '../battle/registry/ui_registry';
-import DEFAULT_ICON from '../asssets/STATUS/DEFAULT.png';
+import { STATUS_DEFAULT as DEFAULT_ICON } from '../asssets';
 
 export default function EnemyZone({ enemies, shakingEnemyId, selectedTargetId, phase, onSelectTarget }) {
   return (
