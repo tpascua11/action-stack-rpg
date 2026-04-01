@@ -12,6 +12,11 @@ export { default as UPSCALED_00028 } from './Upscaled_00028_.png';
 export { default as UPSCALED_00203 } from './Upscaled_00203_.png';
 export { default as UPSCALED_00235 } from './Upscaled_00235_.png';
 
+// --- Enemy Portraits ---
+export { default as ENEMY_APPRENTICE_WITCH } from './ENEMY/APPRENTICE_WITCH.png';
+export { default as ENEMY_FLAME_WITCH } from './ENEMY/FLAME_WITCH.png';
+export { default as ENEMY_FLAME_QUEEN } from './ENEMY/FLAME_QUEEN.png';
+
 // --- Status Icons ---
 export { default as STATUS_DEFAULT } from './STATUS/DEFAULT.png';
 export { default as STATUS_FROST_1 } from './STATUS/FROST_1.png';

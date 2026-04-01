@@ -5,13 +5,37 @@
 
 import TagPool from './TagPool';
 
+const CARD_SIZES = {
+  small:  { card: 'w-32 h-48',  icon: 'text-3xl py-2',   name: 'text-[10px]', hpText: 'text-[8px]'  },
+  medium: { card: 'w-40 h-60',  icon: 'text-4xl py-2.5', name: 'text-xs',     hpText: 'text-[9px]'  },
+  large:  { card: 'w-48 h-72',  icon: 'text-5xl py-3',   name: 'text-sm',     hpText: 'text-[10px]' },
+};
+
+const CARD_WIDTH_REM = { small: 8, medium: 10, large: 12 };
+const TAG_POOL_REM = 8;
+const GAP_REM = 5; // gap-20 = 5rem
+
+function getMidCardOffset(enemies) {
+  const cardWidths = enemies.map(e => CARD_WIDTH_REM[e.card_size] ?? 12);
+  const unitWidths = cardWidths.map(w => TAG_POOL_REM + w);
+  const midIdx = Math.floor(enemies.length / 2);
+  const totalWidth = unitWidths.reduce((a, b) => a + b, 0) + GAP_REM * (enemies.length - 1);
+  const midCardCenter = unitWidths.slice(0, midIdx).reduce((a, b) => a + b, 0)
+    + GAP_REM * midIdx
+    + TAG_POOL_REM
+    + cardWidths[midIdx] / 2;
+  return totalWidth / 2 - midCardCenter;
+}
+
 export default function EnemyZone({ enemies, shakingEnemyId, selectedTargetId, phase, onSelectTarget }) {
+  const offset = getMidCardOffset(enemies);
   return (
     <div className="flex-1 min-h-0 flex flex-row items-end justify-center gap-20 pb-2 border-b border-red-900/30"
       style={{
         background: 'radial-gradient(circle at center, #2a1520 0%, #0f0f1a 100%)',
       }}>
 
+      <div className="flex flex-row items-end gap-20" style={{ transform: `translateX(${offset}rem)` }}>
       {enemies.map(enemy => {
         const hpPct = Math.max(0, (enemy.health / enemy.max_health) * 100);
         const isDead = enemy.health <= 0;
@@ -22,22 +46,24 @@ export default function EnemyZone({ enemies, shakingEnemyId, selectedTargetId, p
         const actions = enemy.queue || [];
         const visibleActions = actions.slice(0, 3);
 
+        const sz = CARD_SIZES[enemy.card_size] ?? CARD_SIZES.large;
+
         return (
           <div
             key={enemy.id}
-            className={`flex flex-row items-end justify-center gap-1.5 transition-opacity duration-500 ${isDead ? 'opacity-30' : 'opacity-100'} ${isSelectable ? 'cursor-pointer' : ''}`}
+            className={`flex flex-row items-end gap-1.5 transition-opacity duration-500 ${isDead ? 'opacity-30' : 'opacity-100'} ${isSelectable ? 'cursor-pointer' : ''}`}
             onClick={e => { if (!isSelectable) return; e.stopPropagation(); onSelectTarget(enemy.id); }}
           >
 
-            {/* Left: Tag Pool — same width as right side so card stays centered */}
-            <div className="flex flex-col gap-1 shrink-0" style={{ width: '8rem' }}>
+            {/* Left: Tag Pool */}
+            <div className="shrink-0" style={{ width: `${TAG_POOL_REM}rem` }}>
               <TagPool tags={tags} compact />
             </div>
 
-            {/* Center: Enemy Card */}
+            {/* Enemy Card */}
             <div
               data-enemy-id={enemy.id}
-              className={`w-48 h-72 bg-white rounded-lg border-2 flex flex-col items-center overflow-hidden shrink-0 ${isShaking ? 'animate-shake' : ''}`}
+              className={`${sz.card} relative rounded-lg border-2 overflow-hidden shrink-0 ${isShaking ? 'animate-shake' : ''}`}
               style={{
                 borderColor: isSelected ? '#ff0030' : '#e94560',
                 boxShadow: isSelected
@@ -45,27 +71,28 @@ export default function EnemyZone({ enemies, shakingEnemyId, selectedTargetId, p
                   : '0 0 20px rgba(233,69,96,0.3)',
               }}
             >
-              <div className="w-full bg-[#e94560] py-1 text-center text-[10px] font-bold text-white tracking-widest font-body">
-                ENEMY
-              </div>
-              <div className="text-5xl py-3">{enemy.icon}</div>
-              <div className="font-display text-sm text-gray-800 tracking-widest mb-1">{enemy.name}</div>
+              {/* Portrait fills entire card */}
+              <img src={enemy.portrait} alt={enemy.name} className="absolute inset-0 w-full h-full object-cover" />
 
-              {/* HP Bar */}
-              <div className="w-[85%] h-2 bg-gray-300 rounded-full overflow-hidden mb-2">
-                <div
-                  className="h-full rounded-full transition-all duration-500"
-                  style={{
-                    width: `${hpPct}%`,
-                    background: hpPct > 50
-                      ? 'linear-gradient(90deg,#e94560,#ff6b6b)'
-                      : hpPct > 25
-                        ? 'linear-gradient(90deg,#ff6b35,#ffa500)'
-                        : 'linear-gradient(90deg,#888,#aaa)',
-                  }}
-                />
+              {/* Bottom overlay: name + HP bar */}
+              <div className="absolute bottom-0 left-0 right-0 px-2 pb-2 pt-4"
+                style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 100%)' }}>
+                <div className={`font-display ${sz.name} text-white tracking-widest text-center mb-1`}>{enemy.name}</div>
+                <div className="w-full h-1.5 bg-gray-600/50 rounded-full overflow-hidden">
+                  <div
+                    className="h-full rounded-full transition-all duration-500"
+                    style={{
+                      width: `${hpPct}%`,
+                      background: hpPct > 50
+                        ? 'linear-gradient(90deg,#e94560,#ff6b6b)'
+                        : hpPct > 25
+                          ? 'linear-gradient(90deg,#ff6b35,#ffa500)'
+                          : 'linear-gradient(90deg,#888,#aaa)',
+                    }}
+                  />
+                </div>
+                <div className={`${sz.hpText} text-gray-300 font-mono text-center mt-0.5`}>{enemy.health} / {enemy.max_health}</div>
               </div>
-              <div className="text-[10px] text-gray-500 mb-2 font-mono">{enemy.health} / {enemy.max_health}</div>
             </div>
 
             {/* Right: Action Stack — padded to match left width (8rem) so card stays centered */}
@@ -137,6 +164,7 @@ export default function EnemyZone({ enemies, shakingEnemyId, selectedTargetId, p
           </div>
         );
       })}
+      </div>
 
     </div>
   );

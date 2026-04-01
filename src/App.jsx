@@ -1,6 +1,6 @@
 import { useReducer, useEffect, useRef, useState } from 'react';
 import { DEBUG_HAND_COST } from './debug';
-import { EMBER_WITCH } from './data/characters/enemies';
+import { EMBER_WITCH, FLAME_WITCH, FLAME_QUEEN } from './data/characters/enemies';
 import { SAMURAI } from './data/classes/samurai';
 import { buildPlayer } from './data/player';
 import { CLASS_REGISTRY } from './data/classes/class_registry';
@@ -25,11 +25,12 @@ import ActionQueue from './components/ActionQueue';
 import Hand from './components/Hand';
 
 // ── CURRENT ENCOUNTER ──
-const CURRENT_ENCOUNTER = [EMBER_WITCH, EMBER_WITCH, EMBER_WITCH, EMBER_WITCH, EMBER_WITCH];
+const MAX_ENEMIES = 5;
+const CURRENT_ENCOUNTER = [EMBER_WITCH, EMBER_WITCH, FLAME_QUEEN, EMBER_WITCH, FLAME_WITCH];
 
 // ── BUILD INITIAL STATE ──
 function buildInitialState(enemies = CURRENT_ENCOUNTER) {
-  const builtEnemies = enemies.map((def, i) => ({
+  const builtEnemies = enemies.slice(0, MAX_ENEMIES).map((def, i) => ({
     ...JSON.parse(JSON.stringify(def)),
     id: `${def.id}_${i + 1}`,
   }));
