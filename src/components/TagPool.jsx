@@ -1,24 +1,46 @@
 // ============================================================
-//  TagPool — Active buff/debuff tags left of Vrax
+//  TagPool — Active buff/debuff tags
+//  Used for both player (full) and enemy (compact).
+//  Same layout code runs for both — only sizes differ.
 // ============================================================
 
 import { ui_registry, UI_DEFAULT } from '../battle/registry/ui_registry';
 import { STATUS_DEFAULT as DEFAULT_ICON } from '../asssets';
 
-const TAG_SIZE = 'calc((24rem - 7 * 0.375rem) / 8)';
+const FULL_SZ = {
+  tile:         'calc((24rem - 7 * 0.375rem) / 8)',
+  stackFont:    '16px',
+  barWidth:     '12rem',
+  barMinHeight: '2.5rem',
+  barIconWidth: '2.5rem',
+  barFont:      '13px',
+  gap:          'gap-1.5',
+  barMargin:    '16px',
+};
 
-// ── Top section: icon-only square tiles ─────────────────────
-function IconTag({ icon, color, stacks, name, duration, tooltip }) {
+const COMPACT_SZ = {
+  tile:         '2.00rem',
+  stackFont:    '15px',
+  barWidth:     '9rem',
+  barMinHeight: '1.75rem',
+  barIconWidth: '1.75rem',
+  barFont:      '10px',
+  gap:          'gap-1',
+  barMargin:    '8px',
+};
+
+// ── Icon-only square tile (condition tier) ───────────────────
+function IconTag({ icon, color, stacks, name, duration, tooltip, sz }) {
   return (
     <div
       className="group relative flex flex-row items-center overflow-visible"
-      style={{ height: TAG_SIZE }}
+      style={{ height: sz.tile }}
     >
       <div
         className="flex-shrink-0 relative flex items-center justify-center"
         style={{
-          width: TAG_SIZE,
-          height: TAG_SIZE,
+          width: sz.tile,
+          height: sz.tile,
           background: '#09090f',
           border: `1px solid ${color}`,
           borderRadius: '3px',
@@ -27,8 +49,8 @@ function IconTag({ icon, color, stacks, name, duration, tooltip }) {
       >
         <img src={icon} alt={name} className="w-full h-full object-contain" style={{ borderRadius: '2px' }} />
         <span
-          className="absolute bottom-0 right-0 text-[14px] text-white font-mono leading-none"
-          style={{ textShadow: '0 0 3px #000, 0 0 3px #000', padding: '1px 2px' }}
+          className="absolute bottom-0 right-0 text-white font-mono leading-none"
+          style={{ fontSize: sz.stackFont, textShadow: '0 0 3px #000, 0 0 3px #000', padding: '1px 2px' }}
         >
           {stacks}
         </span>
@@ -53,14 +75,14 @@ function IconTag({ icon, color, stacks, name, duration, tooltip }) {
   );
 }
 
-// ── Left section: bar style for 'advanced' tier tags ─────────
-function BarTag({ icon, color, stacks, name, duration, tooltip }) {
+// ── Bar-style tile (advanced tier) ───────────────────────────
+function BarTag({ icon, color, stacks, name, duration, tooltip, sz }) {
   return (
     <div
       className="group relative flex flex-row items-center overflow-visible"
       style={{
-        width: '12rem',
-        minHeight: '2.5rem',
+        width: sz.barWidth,
+        minHeight: sz.barMinHeight,
         background: '#09090f',
         border: `2px solid ${color}`,
         borderRadius: '3px',
@@ -70,30 +92,25 @@ function BarTag({ icon, color, stacks, name, duration, tooltip }) {
       {/* Left — icon */}
       <div
         className="flex-shrink-0 self-stretch flex items-center justify-center"
-        style={{ width: '2.5rem', borderRight: `1px solid ${color}` }}
+        style={{ width: sz.barIconWidth, borderRight: `1px solid ${color}` }}
       >
-        <img
-          src={icon}
-          alt={name}
-          className="w-full h-full object-contain"
-          style={{ borderRadius: '2px' }}
-        />
+        <img src={icon} alt={name} className="w-full h-full object-contain" style={{ borderRadius: '2px' }} />
       </div>
 
       {/* Right — stack + name + duration */}
       <div className="flex flex-row items-center justify-between min-w-0 flex-1 self-stretch py-1">
         <>
-          <span className="flex-shrink-0 text-[13px] text-white font-mono mx-2 self-center">x{stacks}</span>
+          <span className="flex-shrink-0 text-white font-mono mx-2 self-center" style={{ fontSize: sz.barFont }}>x{stacks}</span>
           <div className="flex-shrink-0 self-stretch w-px ml-0.5 mr-1.5" style={{ background: 'rgba(255,255,255,0.15)' }} />
         </>
         <div
-          className="text-[13px] font-bold tracking-wide font-body leading-tight flex-1 min-w-0 flex items-center"
-          style={{ color }}
+          className="font-bold tracking-wide font-body leading-tight flex-1 min-w-0 flex items-center"
+          style={{ color, fontSize: sz.barFont }}
         >
           <span className="break-words">{name}</span>
         </div>
         {duration && (
-          <span className="flex-shrink-0 text-[13px] text-[#ffd700] font-mono ml-1 self-center">{duration}⏳</span>
+          <span className="flex-shrink-0 text-[#ffd700] font-mono ml-1 self-center" style={{ fontSize: sz.barFont }}>{duration}⏳</span>
         )}
       </div>
 
@@ -116,9 +133,11 @@ function BarTag({ icon, color, stacks, name, duration, tooltip }) {
   );
 }
 
-export default function TagPool({ tags }) {
-  const advancedTags   = tags.filter(t => t.tier === 'advanced');
-  const conditionTags  = tags.filter(t => t.tier === 'condition');
+export default function TagPool({ tags, compact }) {
+  const sz = compact ? COMPACT_SZ : FULL_SZ;
+
+  const advancedTags  = tags.filter(t => t.tier === 'advanced');
+  const conditionTags = tags.filter(t => t.tier === 'condition');
 
   // Chunk condition tags into columns of 8, newest rightmost
   const columns = [];
@@ -128,7 +147,7 @@ export default function TagPool({ tags }) {
   const paddedColumns = columns.length === 0 ? [[]] : columns;
 
   const advancedColumn = advancedTags.length > 0 ? (
-    <div className="flex flex-col-reverse gap-1.5" style={{ marginRight: '16px' }}>
+    <div className={`flex flex-col-reverse ${sz.gap}`} style={{ marginRight: sz.barMargin }}>
       {advancedTags.map((tag, i) => {
         const display = ui_registry[tag.tag_name] || UI_DEFAULT;
         const stacks = tag.stacks ?? tag.stack_count ?? 1;
@@ -136,6 +155,7 @@ export default function TagPool({ tags }) {
         return (
           <BarTag
             key={i}
+            sz={sz}
             icon={display.statusIcon ?? DEFAULT_ICON}
             color={display.color}
             stacks={stacks}
@@ -149,17 +169,17 @@ export default function TagPool({ tags }) {
   ) : null;
 
   return (
-    <div className="flex flex-row-reverse gap-1.5">
+    <div className={`flex flex-row-reverse ${sz.gap}`}>
       {paddedColumns.map((col, ci) => (
-        <div key={ci} className="flex flex-col-reverse gap-1.5">
+        <div key={ci} className={`flex flex-col-reverse ${sz.gap}`}>
           {Array.from({ length: 8 }).map((_, si) => {
             const tag = col[si];
             if (!tag) return (
               <div
                 key={si}
                 style={{
-                  width: TAG_SIZE,
-                  height: TAG_SIZE,
+                  width: sz.tile,
+                  height: sz.tile,
                   border: '1px solid rgba(255,255,255,0.18)',
                   borderRadius: '3px',
                   background: 'rgba(255,255,255,0.02)',
@@ -172,6 +192,7 @@ export default function TagPool({ tags }) {
             return (
               <IconTag
                 key={si}
+                sz={sz}
                 icon={display.statusIcon ?? DEFAULT_ICON}
                 color={display.color}
                 stacks={stacks}
@@ -183,7 +204,7 @@ export default function TagPool({ tags }) {
           })}
         </div>
       ))}
-      {/* Advanced tier tags — leftmost, bar style */}
+      {/* Advanced tier — leftmost */}
       {advancedColumn}
     </div>
   );
