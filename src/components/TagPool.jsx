@@ -89,14 +89,12 @@ function BarTag({ icon, color, stacks, name, duration }) {
 
       {/* Right — stack + name + duration */}
       <div className="flex flex-row items-center justify-between min-w-0 flex-1 self-stretch py-1">
-        {stacks > 1 && (
-          <>
-            <span className="flex-shrink-0 text-[13px] text-white font-mono mr-1 self-center">x{stacks}</span>
-            <div className="flex-shrink-0 self-stretch w-px ml-0.5 mr-1.5" style={{ background: 'rgba(255,255,255,0.15)' }} />
-          </>
-        )}
+        <>
+          <span className="flex-shrink-0 text-[13px] text-white font-mono mr-1 self-center">x{stacks}</span>
+          <div className="flex-shrink-0 self-stretch w-px ml-0.5 mr-1.5" style={{ background: 'rgba(255,255,255,0.15)' }} />
+        </>
         <div
-          className={`text-[13px] font-bold tracking-wide font-body leading-tight flex-1 min-w-0 flex items-center ${stacks <= 1 ? 'ml-1' : ''}`}
+          className="text-[13px] font-bold tracking-wide font-body leading-tight flex-1 min-w-0 flex items-center"
           style={{ color }}
         >
           <span className="break-words">{name}</span>
@@ -115,7 +113,7 @@ export default function TagPool({ tags }) {
   for (let i = 0; i < tags.length; i += 8) columns.push(tags.slice(i, i + 8));
 
   const testColumn = (
-    <div className="flex flex-col-reverse gap-1.5">
+    <div className="flex flex-col-reverse gap-1.5" style={{ marginRight: '16px' }}>
       {TEST_TAGS.map((t, i) => (
         <BarTag
           key={i}
@@ -129,17 +127,34 @@ export default function TagPool({ tags }) {
     </div>
   );
 
+  // Always show a full first column even if no tags yet
+  const paddedColumns = columns.length === 0 ? [[]] : columns;
+
   return (
     <div className="flex flex-row-reverse gap-1.5">
-      {columns.map((col, ci) => (
+      {paddedColumns.map((col, ci) => (
         <div key={ci} className="flex flex-col-reverse gap-1.5">
-          {col.map((tag, i) => {
+          {/* Fill up to 8 slots — empty placeholders at the top (rendered first in col-reverse) */}
+          {Array.from({ length: 8 }).map((_, si) => {
+            const tag = col[si];
+            if (!tag) return (
+              <div
+                key={si}
+                style={{
+                  width: TAG_SIZE,
+                  height: TAG_SIZE,
+                  border: '1px solid rgba(255,255,255,0.18)',
+                  borderRadius: '3px',
+                  background: 'rgba(255,255,255,0.02)',
+                }}
+              />
+            );
             const display = ui_registry[tag.tag_name] || UI_DEFAULT;
             const description = display.describe(tag);
             const stacks = tag.stacks ?? tag.stack_count ?? 1;
             return (
               <IconTag
-                key={i}
+                key={si}
                 icon={display.statusIcon ?? DEFAULT_ICON}
                 color={display.color}
                 stacks={stacks}
