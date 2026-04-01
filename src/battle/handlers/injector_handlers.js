@@ -73,6 +73,7 @@ export function MomentumOnApply(pool, tag) {
 
 registerTag('MAGIC_CHARGE', {
   phases: ['INJECT_MULT'],
+  status_type: 'buff',
   onApply: MagicChargeOnApply,
   handlers: { INJECT_MULT: MagicChargeHandler },
 });
@@ -84,6 +85,7 @@ registerTag('FIRE_CHARGE', {
 
 registerTag('MOMENTUM', {
   phases: ['INJECT_MULT'],
+  status_type: 'buff',
   reset: 'END_OF_TURN',
   onApply: MomentumOnApply,
   handlers: { INJECT_MULT: MomentumHandler },

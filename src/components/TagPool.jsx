@@ -143,11 +143,11 @@ export default function TagPool({ tags, compact }) {
   const columns = [];
   for (let i = 0; i < conditionTags.length; i += 8) columns.push(conditionTags.slice(i, i + 8));
 
-  // Always show at least one empty column
-  const paddedColumns = columns.length === 0 ? [[]] : columns;
+  // Show empty column only when condition tags are expected (i.e. no tags at all, or some condition tags)
+  const paddedColumns = (columns.length === 0 && advancedTags.length === 0) ? [[]] : columns;
 
   const advancedColumn = advancedTags.length > 0 ? (
-    <div className={`flex flex-col-reverse ${sz.gap}`} style={{ marginRight: sz.barMargin }}>
+    <div className={`flex flex-col-reverse ${sz.gap}`}>
       {advancedTags.map((tag, i) => {
         const display = ui_registry[tag.tag_name] || UI_DEFAULT;
         const stacks = tag.stacks ?? tag.stack_count ?? 1;

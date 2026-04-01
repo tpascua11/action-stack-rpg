@@ -38,6 +38,7 @@ function FreezeEndOfTurnHandler(context, tag) {
 
 registerTag('FREEZE', {
   phases: ['SPEED_CALC', 'END_OF_TURN'],
+  status_type: 'debuff',
   onApply: FreezeOnApply,
   handlers: {
     SPEED_CALC: FreezeSpeedCalcHandler,

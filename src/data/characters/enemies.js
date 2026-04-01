@@ -87,7 +87,10 @@ export const FLAME_QUEEN = {
       properties: [],
       tags: {
         self: [],
-        target: [{ tag_name: 'DAMAGE', type: 'FIRE', power: 35 }],
+        target: [
+          { tag_name: 'DAMAGE', type: 'FIRE', power: 5 },
+          { tag_name: 'BURN', power: 8 },
+        ],
       },
     },
     {

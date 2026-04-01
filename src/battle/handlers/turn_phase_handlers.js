@@ -17,6 +17,7 @@ function RegenHandler(context, tag) {
 
 registerTag('REGEN', {
   phases: ['ON_TURN_START'],
+  status_type: 'buff',
   handlers: { ON_TURN_START: RegenHandler },
 });
 
@@ -31,5 +32,6 @@ function BurnHandler(context, tag) {
 
 registerTag('BURN', {
   phases: ['ON_TURN_START'],
+  status_type: 'debuff',
   handlers: { ON_TURN_START: BurnHandler },
 });

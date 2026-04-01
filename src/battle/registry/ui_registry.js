@@ -5,7 +5,7 @@
 //  This registry is UI-only — battle logic never touches it.
 // ============================================================
 
-import { STATUS_NATURE_1 as NATURE_1, STATUS_FROST_1 as FROST_1 } from '../../asssets';
+import { STATUS_NATURE_1 as NATURE_1, STATUS_FROST_1 as FROST_1, STATUS_FIRE_1 as FIRE_1 } from '../../asssets';
 
 export const ui_registry = {
 
@@ -98,6 +98,13 @@ export const ui_registry = {
       const s = tag.stacks ?? 1;
       return `-${s * 5} speed (${s} stack${s !== 1 ? 's' : ''}, max 10)`;
     },
+  },
+
+  BURN: {
+    icon: '🔥',
+    statusIcon: FIRE_1,
+    color: '#f97316',
+    describe: (tag) => `-${tag.power} HP/turn`,
   },
 
 };

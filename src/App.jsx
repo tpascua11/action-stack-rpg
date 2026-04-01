@@ -398,16 +398,17 @@ export default function App() {
         {/* Center row: Buff Column | Character Column | Slot Column */}
         <div className="flex-1 flex items-end justify-center overflow-hidden pt-2 pb-4 max-h-[26rem]">
 
-          {/* LEFT — Buff column (fixed width, right-aligned so buffs hug the gap) */}
+          {/* LEFT — Condition tag column (fixed width, right-aligned so buffs hug the gap) */}
           <div style={{ width: '340px', paddingRight: '12px', display: 'flex', justifyContent: 'flex-end', alignSelf: 'flex-end' }}>
-            <TagPool tags={player.active_tag_pool} />
+            <TagPool tags={player.active_tag_pool.filter(t => t.status_type === 'debuff')} />
           </div>
 
           {/* CENTER — Character column */}
           <VraxPortrait player={player} />
 
-          {/* RIGHT — Slot column (fixed width, left-aligned so slots hug the gap) */}
-          <div style={{ width: '340px', paddingLeft: '60px', display: 'flex', justifyContent: 'flex-start' }}>
+          {/* RIGHT — Advanced tag column + Slot column */}
+          <div style={{ width: '340px', paddingLeft: '12px', display: 'flex', flexDirection: 'row', alignItems: 'flex-end', gap: '12px' }}>
+            <TagPool tags={player.active_tag_pool.filter(t => t.status_type === 'buff')} />
             <ActionQueue
               queue={player.queue}
               totalSlots={player.total_action_slots}
