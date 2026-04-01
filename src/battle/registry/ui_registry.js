@@ -5,7 +5,7 @@
 //  This registry is UI-only — battle logic never touches it.
 // ============================================================
 
-import { STATUS_NATURE_1 as NATURE_1 } from '../../asssets';
+import { STATUS_NATURE_1 as NATURE_1, STATUS_FROST_1 as FROST_1 } from '../../asssets';
 
 export const ui_registry = {
 
@@ -92,6 +92,7 @@ export const ui_registry = {
 
   FREEZE: {
     icon: '🧊',
+    statusIcon: FROST_1,
     color: '#38bdf8',
     describe: (tag) => {
       const s = tag.stacks ?? 1;
