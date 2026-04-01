@@ -16,7 +16,7 @@ export const FIGHTER = {
   ],
   // Always in pool — never removed
   permanent_tags: [
-    { tag_name: 'RAGE_ON_HIT', amount: 15 },
+    { tag_name: 'RAGE_ON_HIT', amount: 15, tier: 'permanent' },
   ],
   // Injected at battle start — can be one-time buffs or combat-duration effects
   combat_start_tags: [],

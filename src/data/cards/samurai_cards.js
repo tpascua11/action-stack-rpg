@@ -16,7 +16,7 @@ export const SAMURAI_CARDS = [
     desc: 'A powerful slash attack.',
     tags: {
       self: [
-        { tag_name: 'MOMENTUM', multiplier: 0.2 },
+        { tag_name: 'MOMENTUM', multiplier: 0.2, tier: 'advanced' },
       ],
       target: [
         { tag_name: 'DAMAGE', type: 'PHYSICAL', power: 50 },
@@ -75,7 +75,7 @@ export const SAMURAI_CARDS = [
     desc: 'Charge next MAGIC attack by 20%.',
     tags: {
       self: [
-        { tag_name: 'MAGIC_CHARGE', multiplier: 0.2, consume: true },
+        { tag_name: 'MAGIC_CHARGE', multiplier: 0.2, consume: true, tier: 'advanced' },
       ],
       target: [],
     },

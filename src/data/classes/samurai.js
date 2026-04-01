@@ -15,7 +15,7 @@ export const SAMURAI = {
     { type: 'BATTLE_SPIRIT', max: 10, starting: 0 },
   ],
   permanent_tags: [
-    { tag_name: 'UNDYING_SPIRIT' },
+    { tag_name: 'UNDYING_SPIRIT', tier: 'permanent' },
   ],
   combat_start_tags: [],
   cards: SAMURAI_CARDS,

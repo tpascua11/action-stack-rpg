@@ -42,7 +42,7 @@ export const EMBER_WITCH = {
       tag_type: ['MAGIC', 'CHARGING'],
       properties: [],
       tags: {
-        self: [{ tag_name: 'MAGIC_CHARGE', multiplier: 0.1, consume: true }],
+        self: [{ tag_name: 'MAGIC_CHARGE', multiplier: 0.1, consume: true, tier: 'advanced' }],
         target: [],
       },
     },
@@ -89,7 +89,7 @@ export const EMBER_QUEEN_WITCH = {
       tag_type: ['MAGIC', 'CHARGING'],
       properties: [],
       tags: {
-        self: [{ tag_name: 'MAGIC_CHARGE', multiplier: 0.1, consume: true }],
+        self: [{ tag_name: 'MAGIC_CHARGE', multiplier: 0.1, consume: true, tier: 'advanced' }],
         target: [],
       },
     },

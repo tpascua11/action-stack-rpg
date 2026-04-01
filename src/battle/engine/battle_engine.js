@@ -34,13 +34,14 @@ export function effectiveResourceAtExecution(resourceType, mySlotIndex, queue, r
 }
 
 export function addTagToPool(pool, tag) {
-  const entry = battle_registry[tag.tag_name];
+  const tagWithTier = { tier: 'condition', ...tag };
+  const entry = battle_registry[tagWithTier.tag_name];
   if (entry?.onApply) {
     const newPool = [...pool];
-    entry.onApply(newPool, tag);
+    entry.onApply(newPool, tagWithTier);
     return newPool;
   }
-  return [...pool, { ...tag }];
+  return [...pool, { ...tagWithTier }];
 }
 
 function deepClone(obj) {
