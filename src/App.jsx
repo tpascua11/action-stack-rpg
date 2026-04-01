@@ -398,7 +398,7 @@ export default function App() {
         <div className="flex-1 flex items-end justify-center overflow-hidden pt-2 pb-4 max-h-[26rem]">
 
           {/* LEFT — Buff column (fixed width, right-aligned so buffs hug the gap) */}
-          <div style={{ width: '340px', paddingRight: '60px', display: 'flex', justifyContent: 'flex-end' }}>
+          <div style={{ width: '340px', paddingRight: '60px', display: 'flex', justifyContent: 'flex-end', alignSelf: 'flex-start' }}>
             <TagPool tags={player.active_tag_pool} />
           </div>
 

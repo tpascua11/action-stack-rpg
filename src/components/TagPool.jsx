@@ -12,9 +12,9 @@ export default function TagPool({ tags }) {
     </div>;
   }
 
-  // Chunk into columns of 6, newest tags in the rightmost column
+  // Chunk into columns of 4, newest tags in the rightmost column
   const columns = [];
-  for (let i = 0; i < tags.length; i += 8) columns.push(tags.slice(i, i + 8));
+  for (let i = 0; i < tags.length; i += 4) columns.push(tags.slice(i, i + 4));
 
   return (
     <div className="flex flex-row-reverse gap-1.5">
@@ -24,48 +24,45 @@ export default function TagPool({ tags }) {
             const display = ui_registry[tag.tag_name] || UI_DEFAULT;
             const description = display.describe(tag);
             const hasDesc = description && description !== 'active';
+            const stacks = tag.stacks ?? tag.stack_count ?? 1;
             return (
               <div
                 key={i}
-                className="group relative flex flex-row items-center overflow-visible border"
-                style={{
-                  width: '11rem',
-                  minHeight: '2.5rem',
-                  background: '#09090f',
-                  borderColor: display.color,
-                  borderRadius: '3px',
-                  boxShadow: `0 0 10px ${display.color}55, inset 0 0 6px ${display.color}11`,
-                }}
+                className="group relative flex flex-row items-center overflow-visible"
+                style={{ height: '2.5rem' }}
               >
-                {/* Left — icon */}
-                <div className="flex-shrink-0 self-start flex items-center justify-center p-1" style={{ width: '2.5rem', height: '2.5rem' }}>
+                {/* Icon box — bordered, same size as before */}
+                <div
+                  className="flex-shrink-0 flex items-center justify-center"
+                  style={{
+                    width: '2.5rem',
+                    height: '2.5rem',
+                    background: '#09090f',
+                    border: `1px solid ${display.color}`,
+                    borderRadius: '3px',
+                    boxShadow: `0 0 8px ${display.color}55, inset 0 0 4px ${display.color}11`,
+                  }}
+                >
                   <img
                     src={display.statusIcon ?? DEFAULT_ICON}
                     alt={tag.tag_name}
                     className="w-full h-full object-contain"
-                    style={{ border: '1px solid rgba(255,255,255,0.25)', borderRadius: '2px' }}
+                    style={{ borderRadius: '2px' }}
                   />
                 </div>
 
-                {/* Right — name + duration on same row */}
-                <div className="flex flex-row items-center justify-between min-w-0 flex-1 self-stretch py-1">
-                  {(tag.stacks ?? tag.stack_count ?? 1) > 1 && (
-                    <>
-                      <span className="flex-shrink-0 text-[13px] text-white font-mono mr-1 self-center">
-                        x{tag.stacks ?? tag.stack_count}
-                      </span>
-                      <div className="flex-shrink-0 self-stretch w-px ml-0.5 mr-1.5" style={{ background: 'rgba(255,255,255,0.15)' }} />
-                    </>
-                  )}
-                  <div
-                    className={`text-[13px] font-bold tracking-wide font-body leading-tight flex-1 min-w-0 flex items-center ${(tag.stacks ?? tag.stack_count ?? 1) <= 1 ? 'ml-1' : ''}`}
-                    style={{ color: display.color }}
-                  >
-                    <span className="break-words">{tag.tag_name.replace(/_/g, ' ')}</span>
-                  </div>
-                  {tag.duration && (
-                    <span className="flex-shrink-0 text-[13px] text-[#ffd700] font-mono ml-1 self-center">{tag.duration}⏳</span>
-                  )}
+                {/* Stack count (top) + timer (bottom) — connected by bottom border line */}
+                <div
+                  className="flex flex-col items-center justify-center px-1.5"
+                  style={{
+                    height: '2.5rem',
+                    borderBottom: `1px solid ${display.color}88`,
+                  }}
+                >
+                  <span className="text-[15px] text-white font-mono leading-none">{stacks}x</span>
+                  {/* <span className="text-[11px] text-[#ffd700] font-mono leading-none mt-1.5">
+                    {tag.duration ?? ''}t
+                  </span> */}
                 </div>
 
                 {/* Tooltip — shown on hover */}
