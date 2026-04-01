@@ -67,30 +67,33 @@ function IconTag({ icon, color, stacks, name, duration, tooltip }) {
 function BarTag({ icon, color, stacks, name, duration }) {
   return (
     <div
-      className="group relative flex flex-row items-center overflow-visible border"
+      className="group relative flex flex-row items-center overflow-visible"
       style={{
-        width: '11rem',
+        width: '12rem',
         minHeight: '2.5rem',
         background: '#09090f',
-        borderColor: color,
+        border: `2px solid ${color}`,
         borderRadius: '3px',
         boxShadow: `0 0 10px ${color}55, inset 0 0 6px ${color}11`,
       }}
     >
       {/* Left — icon */}
-      <div className="flex-shrink-0 self-start flex items-center justify-center p-1" style={{ width: '2.5rem', height: '2.5rem' }}>
+      <div
+        className="flex-shrink-0 self-stretch flex items-center justify-center"
+        style={{ width: '2.5rem', borderRight: `1px solid ${color}` }}
+      >
         <img
           src={icon}
           alt={name}
           className="w-full h-full object-contain"
-          style={{ border: '1px solid rgba(255,255,255,0.25)', borderRadius: '2px' }}
+          style={{ borderRadius: '2px' }}
         />
       </div>
 
       {/* Right — stack + name + duration */}
       <div className="flex flex-row items-center justify-between min-w-0 flex-1 self-stretch py-1">
         <>
-          <span className="flex-shrink-0 text-[13px] text-white font-mono mr-1 self-center">x{stacks}</span>
+          <span className="flex-shrink-0 text-[13px] text-white font-mono mx-2 self-center">x{stacks}</span>
           <div className="flex-shrink-0 self-stretch w-px ml-0.5 mr-1.5" style={{ background: 'rgba(255,255,255,0.15)' }} />
         </>
         <div
