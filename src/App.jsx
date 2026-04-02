@@ -263,6 +263,13 @@ export default function App() {
   const enemies = gs.characters.filter(c => c.faction === 'enemy');
   const { ResourceBar } = CLASS_REGISTRY[player.class_id] ?? {};
 
+  const [scale, setScale] = useState(() => Math.min(1, window.innerWidth / 1920, window.innerHeight / 1080));
+  useEffect(() => {
+    const onResize = () => setScale(Math.min(1, window.innerWidth / 1920, window.innerHeight / 1080));
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
+
   // Drive battle loop with timed steps
   useEffect(() => {
     if (gs.phase !== 'BATTLE') return;
@@ -338,9 +345,9 @@ export default function App() {
   }
 
   return (
-    <div className="w-screen h-screen flex flex-col overflow-hidden bg-[#0f0f1a]" onClick={() => setRetargetingSlot(null)}>
+    <div style={{ width: '100vw', height: '100vh', overflow: 'hidden', background: '#0f0f1a', position: 'relative' }}>
 
-      {/* Retarget line overlay */}
+      {/* Retarget line overlay — outside scaled container so fixed+getBoundingClientRect coords align */}
       {lineCoords && (() => {
         const { x1, y1, x2, y2 } = lineCoords;
         return (
@@ -373,6 +380,23 @@ export default function App() {
           </svg>
         );
       })()}
+
+      {/* Game canvas — fixed 1920×1080 scaled down when viewport is smaller; fluid layout when larger */}
+      <div
+        style={scale < 1 ? {
+          width: 1920,
+          height: 1080,
+          transform: `scale(${scale})`,
+          transformOrigin: 'top left',
+          position: 'absolute',
+          top: `${(window.innerHeight - 1080 * scale) / 2}px`,
+          left: `${(window.innerWidth - 1920 * scale) / 2}px`,
+        } : {}}
+        className={scale < 1
+          ? "flex flex-col overflow-hidden bg-[#0f0f1a]"
+          : "w-screen h-screen flex flex-col overflow-hidden bg-[#0f0f1a]"}
+        onClick={() => setRetargetingSlot(null)}
+      >
 
       {/* TOP — Enemy Zone */}
       <EnemyZone
@@ -437,7 +461,9 @@ export default function App() {
         />
       </div>
 
-      {/* FLOATING — Battle Log modal */}
+    </div>
+
+      {/* FLOATING — Battle Log modal (outside scaled container so fixed+drag coords are viewport-relative) */}
       <BattleLog
         logs={gs.logs}
         turn={gs.turn}
