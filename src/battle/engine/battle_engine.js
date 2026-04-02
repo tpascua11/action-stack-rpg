@@ -36,9 +36,9 @@ export function effectiveResourceAtExecution(resourceType, mySlotIndex, queue, r
 export function addTagToPool(pool, tag) {
   const entry = battle_registry[tag.tag_name];
   const tagWithMeta = {
+    ...tag,
     tier: 'condition',
     ...(entry?.status_type ? { status_type: entry.status_type } : {}),
-    ...tag,
   };
   if (entry?.onApply) {
     const newPool = [...pool];

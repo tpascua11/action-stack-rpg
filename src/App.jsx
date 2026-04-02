@@ -399,7 +399,7 @@ export default function App() {
         <div className="flex-1 flex items-end justify-center overflow-hidden pt-2 pb-4 max-h-[26rem]">
 
           {/* LEFT — Condition tag column (fixed width, right-aligned so buffs hug the gap) */}
-          <div style={{ width: '340px', paddingRight: '12px', display: 'flex', justifyContent: 'flex-end', alignSelf: 'flex-end' }}>
+          <div style={{ width: '340px', paddingRight: '12px', display: 'flex', justifyContent: 'flex-end', alignItems: 'flex-end', alignSelf: 'flex-end' }}>
             <TagPool tags={player.active_tag_pool.filter(t => t.status_type === 'debuff')} />
           </div>
 
@@ -408,7 +408,7 @@ export default function App() {
 
           {/* RIGHT — Advanced tag column + Slot column */}
           <div style={{ width: '340px', paddingLeft: '12px', display: 'flex', flexDirection: 'row', alignItems: 'flex-end', gap: '12px' }}>
-            <TagPool tags={player.active_tag_pool.filter(t => t.status_type === 'buff')} />
+            <TagPool tags={player.active_tag_pool.filter(t => t.status_type === 'buff')} growRight />
             <ActionQueue
               queue={player.queue}
               totalSlots={player.total_action_slots}

@@ -12,12 +12,12 @@ const CARD_SIZES = {
 };
 
 const CARD_WIDTH_REM = { small: 8, medium: 10, large: 12 };
-const TAG_POOL_REM = 8;
+const TAG_POOL_REM = 4;
 const GAP_REM = 5; // gap-20 = 5rem
 
 function getMidCardOffset(enemies) {
   const cardWidths = enemies.map(e => CARD_WIDTH_REM[e.card_size] ?? 12);
-  const unitWidths = cardWidths.map(w => TAG_POOL_REM + w);
+  const unitWidths = cardWidths.map(w => 2 * TAG_POOL_REM + w);
   const midIdx = Math.floor(enemies.length / 2);
   const totalWidth = unitWidths.reduce((a, b) => a + b, 0) + GAP_REM * (enemies.length - 1);
   const midCardCenter = unitWidths.slice(0, midIdx).reduce((a, b) => a + b, 0)
@@ -55,9 +55,9 @@ export default function EnemyZone({ enemies, shakingEnemyId, selectedTargetId, p
             onClick={e => { if (!isSelectable) return; e.stopPropagation(); onSelectTarget(enemy.id); }}
           >
 
-            {/* Left: Tag Pool */}
-            <div className="shrink-0" style={{ width: `${TAG_POOL_REM}rem` }}>
-              <TagPool tags={tags} compact />
+            {/* Left: Debuff Pool */}
+            <div className="shrink-0 flex justify-end items-end" style={{ width: `${TAG_POOL_REM}rem` }}>
+              <TagPool tags={tags.filter(t => t.status_type === 'debuff')} compact />
             </div>
 
             {/* Enemy Card */}
@@ -93,6 +93,11 @@ export default function EnemyZone({ enemies, shakingEnemyId, selectedTargetId, p
                 </div>
                 <div className={`${sz.hpText} text-gray-300 font-mono text-center mt-0.5`}>{enemy.health} / {enemy.max_health}</div>
               </div>
+            </div>
+
+            {/* Right: Buff Pool */}
+            <div className="shrink-0 flex justify-start items-end" style={{ width: `${TAG_POOL_REM}rem` }}>
+              <TagPool tags={tags.filter(t => t.status_type === 'buff')} compact growRight />
             </div>
 
             {/* Right: Action Stack — padded to match left width (8rem) so card stays centered */}

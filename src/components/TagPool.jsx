@@ -133,7 +133,7 @@ function BarTag({ icon, color, stacks, name, duration, tooltip, sz }) {
   );
 }
 
-export default function TagPool({ tags, compact }) {
+export default function TagPool({ tags, compact, growRight }) {
   const sz = compact ? COMPACT_SZ : FULL_SZ;
 
   const advancedTags  = tags.filter(t => t.tier === 'advanced');
@@ -142,9 +142,7 @@ export default function TagPool({ tags, compact }) {
   // Chunk condition tags into columns of 8, newest rightmost
   const columns = [];
   for (let i = 0; i < conditionTags.length; i += 8) columns.push(conditionTags.slice(i, i + 8));
-
-  // Show empty column only when condition tags are expected (i.e. no tags at all, or some condition tags)
-  const paddedColumns = (columns.length === 0 && advancedTags.length === 0) ? [[]] : columns;
+  if (columns.length === 0) columns.push([]);
 
   const advancedColumn = advancedTags.length > 0 ? (
     <div className={`flex flex-col-reverse ${sz.gap}`}>
@@ -169,23 +167,12 @@ export default function TagPool({ tags, compact }) {
   ) : null;
 
   return (
-    <div className={`flex flex-row-reverse ${sz.gap}`}>
-      {paddedColumns.map((col, ci) => (
+    <div className={`flex ${growRight ? 'flex-row' : 'flex-row-reverse'} ${sz.gap}`}>
+      {columns.map((col, ci) => (
         <div key={ci} className={`flex flex-col-reverse ${sz.gap}`}>
           {Array.from({ length: 8 }).map((_, si) => {
             const tag = col[si];
-            if (!tag) return (
-              <div
-                key={si}
-                style={{
-                  width: sz.tile,
-                  height: sz.tile,
-                  border: '1px solid rgba(255,255,255,0.18)',
-                  borderRadius: '3px',
-                  background: 'rgba(255,255,255,0.02)',
-                }}
-              />
-            );
+            if (!tag) return <div key={si} style={{ width: sz.tile, height: sz.tile, flexShrink: 0 }} />;
             const display = ui_registry[tag.tag_name] || UI_DEFAULT;
             const description = display.describe(tag);
             const stacks = tag.stacks ?? tag.stack_count ?? 1;
