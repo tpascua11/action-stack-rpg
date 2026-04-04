@@ -1,6 +1,25 @@
 import './CharacterSelectScreen.css';
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useGame } from '../context/GameContext';
+
+function useTypewriter(text, speed = 18, delay = 500) {
+  const [displayed, setDisplayed] = useState('');
+  useEffect(() => {
+    setDisplayed('');
+    if (!text) return;
+    let i = 0;
+    let intervalId;
+    const timeoutId = setTimeout(() => {
+      intervalId = setInterval(() => {
+        i++;
+        setDisplayed(text.slice(0, i));
+        if (i >= text.length) clearInterval(intervalId);
+      }, speed);
+    }, delay);
+    return () => { clearTimeout(timeoutId); clearInterval(intervalId); };
+  }, [text, speed, delay]);
+  return displayed;
+}
 
 // ── Character data ───────────────────────────────────────────────
 const CHARACTER_DATA = {
@@ -69,6 +88,19 @@ function CharacterCard({ id, index, selectedId, onSelect }) {
         <span className="character-name">{data.name}</span>
       </div>
     </article>
+  );
+}
+
+const EMPTY_DESC = `The vessel does not hold the essence... the essence becomes the vessel. You will know joy only as your class knows joy. You will know pain only as your class knows pain. You will know victory only as your class knows victory. These are not separate journeys woven together, wandering soul. They are one thread, one fate, one truth revealed.\n\nDo not ask what class you shall be. Ask instead what you have always been, hiding behind a name you had not yet spoken. Speak it now. Live it now. Become it now.`;
+
+function TypewriterText({ text, className, style }) {
+  const displayed = useTypewriter(text);
+  return (
+    <p className={className} style={style}>
+      {displayed.split('\n').map((line, i, arr) => (
+        <span key={i}>{line}{i < arr.length - 1 && <br />}</span>
+      ))}
+    </p>
   );
 }
 
@@ -142,15 +174,21 @@ export default function CharacterSelectScreen() {
               '--showcase-bg-end':   showcaseData.bgEnd,
             } : {}}
           >
-            <div className="showcase-portrait" style={fadeStyle}>
+            <div className={`showcase-portrait${!showcaseData ? ' showcase-portrait--empty' : ''}`} style={fadeStyle}>
               {showcaseData && <div className="large-portrait-placeholder">{showcaseData.icon}</div>}
             </div>
+            {!showcaseData && (
+              <div className="showcase-info showcase-info--empty">
+                <h2 className="showcase-name showcase-name--empty">Choose Your Path</h2>
+                <TypewriterText text={EMPTY_DESC} className="showcase-description" />
+              </div>
+            )}
             {showcaseData && (
               <>
                 <div className="showcase-info">
                   <h2 className="showcase-name" style={fadeTextStyle}>{showcaseData.name}</h2>
                   <p className="showcase-class" style={fadeTextStyle}>{showcaseData.classTitle}</p>
-                  <p className="showcase-description" style={fadeTextStyle}>{showcaseData.description}</p>
+                  <TypewriterText text={showcaseData.description} className="showcase-description" style={fadeTextStyle} />
                 </div>
                 <button
                   className="start-button"
