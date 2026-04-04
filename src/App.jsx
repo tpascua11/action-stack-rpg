@@ -3,13 +3,13 @@ import { CLASS_REGISTRY } from './data/classes/class_registry';
 import { battleReducer } from './battle/reducer';
 import { buildInitialState } from './battle/initialState';
 
-import EnemyZone from './components/EnemyZone';
-import BattleLog from './components/BattleLog';
-import BattleQueue from './components/BattleQueue';
-import TagPool from './components/TagPool';
-import VraxPortrait from './components/VraxPortrait';
-import ActionQueue from './components/ActionQueue';
-import Hand from './components/Hand';
+import EnemyZone from './components/battle/EnemyZone';
+import BattleLog from './components/battle/BattleLog';
+import BattleQueue from './components/battle/BattleQueue';
+import TagPool from './components/battle/TagPool';
+import VraxPortrait from './components/battle/VraxPortrait';
+import ActionQueue from './components/battle/ActionQueue';
+import Hand from './components/battle/Hand';
 
 // ── APP ──
 export default function App() {

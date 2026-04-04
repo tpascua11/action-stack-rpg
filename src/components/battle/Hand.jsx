@@ -2,9 +2,9 @@
 //  Hand — Bottom section showing available cards to play
 // ============================================================
 
-import { calcSpeed, effectiveResourceAtExecution } from '../battle/engine/battle_engine';
-import { battle_registry } from '../battle/registry/battle_registry';
-import { DEBUG_HAND_COST } from '../debug';
+import { calcSpeed, effectiveResourceAtExecution } from '../../battle/engine/battle_engine';
+import { battle_registry } from '../../battle/registry/battle_registry';
+import { DEBUG_HAND_COST } from '../../debug';
 
 export default function Hand({ cards, queue, totalSlots, onCardClick, disabled, resources, ResourceBar }) {
   const filledCount = queue.filter(Boolean).length;
