@@ -33,7 +33,7 @@ export function buildInitialState(enemies = CURRENT_ENCOUNTER) {
   const vrax = buildPlayer(SAMURAI, { id: 'vrax', name: 'VRAX', portrait: null });
   const characters = [vrax, ...builtEnemies];
   return {
-    phase: 'QUEUE_SETUP',  // QUEUE_SETUP | BATTLE | RESULT
+    phase: new URLSearchParams(window.location.search).has('debug') ? 'QUEUE_SETUP' : 'TITLE',
     turn: 1,
     result: null,          // WIN | LOSS
     characters,

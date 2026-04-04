@@ -171,6 +171,12 @@ export function battleReducer(state, action) {
     case 'STOP_FIZZLE':
       return { ...state, fizzlingCard: null };
 
+    case 'START_NEW_GAME':
+      return { ...state, phase: 'CHARACTER_SELECT' };
+
+    case 'GO_TO_BATTLE':
+      return { ...state, phase: 'QUEUE_SETUP' };
+
     case 'RESET':
       return buildInitialState(CURRENT_ENCOUNTER);
 
