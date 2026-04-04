@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Declared Tactics — Avormore</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@200;300;400;500;600&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+  <style>
+    /* ── RESET & BASE ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      /* Color System */
+      --bg-deep: #080812;
+      --text-primary: #e8dcc8;
+      --text-secondary: #9b8bab;
+      --gold-primary: #d4a84b;
+      --gold-light: #e8c56d;
+      --gold-bright: #f0d090;
+      --accent-line: #c9a86a;
+      
+      /* Animation timing */
+      --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+      --duration-entrance: 1.3s;
+    }
+
+    body {
+      background: var(--bg-deep);
+      color: var(--text-primary);
+      font-family: 'Barlow Condensed', sans-serif;
+      height: 100vh;
+      width: 100vw;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      user-select: none;
+      position: relative;
+    }
+
+    /* ════════════════════════════════════════ */
+    /* ████ VISUAL OVERLAY LAYERS █████████████ */
+    /* ════════════════════════════════════════ */
+    
+    .overlay-layer {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      will-change: opacity;
+    }
+
+    /* CRT Scanlines */
+    .crt-warmth {
+      z-index: 9999;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0, 0, 0, 0.03) 2px,
+        rgba(0, 0, 0, 0.03) 4px
+      );
+      opacity: 0.35;
+    }
+
+    /* Vignette + Color Cast */
+    .vignette {
+      z-index: 9998;
+      background: radial-gradient(
+        ellipse at center,
+        transparent 40%,
+        rgba(8, 8, 18, 0.92) 100%
+      );
+    }
+
+    .vignette::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: 
+        linear-gradient(to bottom, rgba(30, 20, 50, 0.12) 0%, transparent 35%, transparent 65%, rgba(15, 10, 30, 0.18) 100%),
+        linear-gradient(to right, rgba(40, 20, 60, 0.06) 0%, transparent 30%, transparent 70%, rgba(30, 15, 50, 0.08) 100%);
+    }
+
+    /* ════════════════════════════════════════════════════ */
+    /* ████ DYNAMIC PARTICLE SYSTEM ███████████████████████ */
+    /* ════════════════════════════════════════════════════ */
+    
+    .particle-container {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      contain: strict;
+    }
+
+    .cards-rain { z-index: 2; }
+    .particles { z-index: 1; }
+
+    /* Base Card Style - Single Rule! */
+    .falling-card {
+      position: absolute;
+      width: 48px;
+      height: 68px;
+      background: rgba(10, 8, 16, 0.4);
+      border: 1px solid var(--card-color, rgba(212, 168, 75, 0.35));
+      border-radius: 5px;
+      opacity: 0;
+      contain: layout style paint;
+      will-change: transform, opacity;
+      
+      animation: 
+        cardFall var(--fall-duration, 14s) linear infinite,
+        cardSway var(--sway-duration, 4s) ease-in-out infinite alternate;
+      animation-delay: var(--delay, 0s);
+      
+      box-shadow: 
+        inset 0 0 12px rgba(var(--card-rgb, 212, 168, 75), 0.08),
+        0 2px 8px rgba(0, 0, 0, 0.3),
+        0 0 15px rgba(var(--card-rgb, 212, 168, 75), 0.1);
+    }
+
+    .falling-card::before {
+      content: '';
+      position: absolute;
+      top: 6px; left: 6px; right: 6px; bottom: 6px;
+      border: 1px solid rgba(var(--card-rgb, 212, 168, 75), 0.12);
+      border-radius: 2px;
+    }
+
+    .falling-card::after {
+      content: '';
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 4px; height: 4px;
+      background: rgba(var(--card-rgb, 212, 168, 75), 0.25);
+      border-radius: 50%;
+    }
+
+    @keyframes cardFall {
+      0% { opacity: 0; transform: translateY(-10%) rotate(var(--start-rot, -8deg)); }
+      10% { opacity: var(--max-opacity, 0.5); }
+      90% { opacity: var(--max-opacity, 0.5); }
+      100% { opacity: 0; transform: translateY(110vh) rotate(var(--end-rot, 5deg)); }
+    }
+
+    @keyframes cardSway {
+      0% { margin-left: -15px; }
+      100% { margin-left: 15px; }
+    }
+
+    /* Ember Particles */
+    .ember {
+      position: absolute;
+      width: 2px; height: 2px;
+      border-radius: 50%;
+      opacity: 0;
+      contain: strict;
+      will-change: transform, opacity;
+      animation: floatEmber var(--ember-duration, 12s) ease-in-out infinite;
+      animation-delay: var(--delay, 0s);
+      background: var(--ember-color, var(--gold-primary));
+      box-shadow: 0 0 6px var(--ember-color, var(--gold-primary)), 
+                  0 0 12px color-mix(in srgb, var(--ember-color, var(--gold-primary)) 30%, transparent);
+    }
+
+    @keyframes floatEmber {
+      0% { opacity: 0; transform: translateY(0) scale(1); }
+      20% { opacity: 0.6; }
+      80% { opacity: 0.25; }
+      100% { opacity: 0; transform: translateY(-120px) scale(0.5); }
+    }
+
+    /* ════════════════════════════════════════ */
+    /* ████ MAIN CONTENT LAYOUT ████████████████ */
+    /* ════════════════════════════════════════ */
+    
+    .screen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      width: 100%; height: 100%;
+      position: relative;
+      z-index: 10;
+    }
+
+    /* Title Block */
+    .title-block {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: clamp(32px, 5vw, 48px);
+      position: relative;
+      animation: fadeUp var(--duration-entrance) ease both;
+    }
+
+    .title-main {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: clamp(42px, 8vw, 72px);
+      font-weight: 200;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      line-height: 1.1;
+      color: #f0e6d3;
+      text-shadow:
+        0 0 40px rgba(232, 197, 109, 0.4),
+        0 0 80px rgba(212, 168, 75, 0.25),
+        0 0 120px rgba(212, 118, 90, 0.12);
+      animation: titleBreath 6s ease-in-out infinite;
+    }
+
+    @keyframes titleBreath {
+      0%, 100% {
+        text-shadow:
+          0 0 40px rgba(232, 197, 109, 0.4),
+          0 0 80px rgba(212, 168, 75, 0.25),
+          0 0 120px rgba(212, 118, 90, 0.12);
+      }
+      50% {
+        text-shadow:
+          0 0 55px rgba(240, 208, 144, 0.5),
+          0 0 100px rgba(212, 168, 75, 0.3),
+          0 0 140px rgba(212, 118, 90, 0.18);
+      }
+    }
+
+    .title-world {
+      font-size: clamp(12px, 2vw, 16px);
+      font-weight: 300;
+      letter-spacing: 0.6em;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      margin-top: 20px;
+      opacity: 0.75;
+      text-shadow: 0 0 15px rgba(155, 139, 171, 0.3);
+    }
+
+    .title-world::before { content: '— '; opacity: 0.5; margin-right: 4px; }
+    .title-world::after { content: ' —'; opacity: 0.5; margin-left: 4px; }
+
+    .title-divider {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-top: 28px;
+      opacity: 0.4;
+    }
+
+    .divider-line {
+      width: clamp(60px, 12vw, 90px);
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--accent-line), transparent);
+    }
+
+    .divider-diamond {
+      width: 5px; height: 5px;
+      background: var(--gold-light);
+      transform: rotate(45deg);
+      box-shadow: 0 0 8px rgba(232, 197, 109, 0.5);
+    }
+
+    /* Menu Button */
+    .menu {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      animation: fadeUp var(--duration-entrance) ease 0.4s both;
+    }
+
+    .menu-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(20px, 4vw, 26px);
+      font-weight: 400;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #e8e0d3;
+      padding: 12px 52px;
+      position: relative;
+      transition: all 0.4s var(--ease-smooth);
+      outline: none;
+    }
+
+    .menu-btn:hover {
+      color: #ffffff;
+      text-shadow: 0 0 20px rgba(255, 255, 255, 0.5), 0 0 40px rgba(232, 220, 200, 0.25);
+      letter-spacing: 0.2em;
+    }
+
+    .menu-btn::before {
+      content: '';
+      position: absolute;
+      bottom: 8px; left: 50%;
+      transform: translateX(-50%);
+      width: 0; height: 1px;
+      background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.6), transparent);
+      transition: width 0.4s ease;
+    }
+
+    .menu-btn:hover::before { width: 85%; }
+
+    /* Corner Ornaments */
+    .corner {
+      position: fixed;
+      width: 24px; height: 24px;
+      opacity: 0.28;
+      z-index: 100;
+    }
+    
+    .corner.tl { top: 28px; left: 28px; border-top: 1px solid var(--accent-line); border-left: 1px solid var(--accent-line); }
+    .corner.tr { top: 28px; right: 28px; border-top: 1px solid var(--accent-line); border-right: 1px solid var(--accent-line); }
+    .corner.bl { bottom: 28px; left: 28px; border-bottom: 1px solid var(--accent-line); border-left: 1px solid var(--accent-line); }
+    .corner.br { bottom: 28px; right: 28px; border-bottom: 1px solid var(--accent-line); border-right: 1px solid var(--accent-line); }
+
+    /* Footer */
+    .footer {
+      position: fixed;
+      bottom: 28px;
+      left: 0; right: 0;
+      display: flex;
+      justify-content: center;
+      gap: clamp(20px, 4vw, 36px);
+      font-family: 'Share Tech Mono', monospace;
+      font-size: clamp(8px, 1.5vw, 10px);
+      letter-spacing: 0.2em;
+      color: #6b6070;
+      text-transform: uppercase;
+      z-index: 100;
+      opacity: 0.6;
+      animation: fadeUp var(--duration-entrance) ease 0.6s both;
+    }
+
+    /* Animations */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .particles { animation: fadeIn 2s ease 1s both; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    /* Reduced Motion Support */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Visual Overlays -->
+  <div class="overlay-layer crt-warmth"></div>
+  <div class="overlay-layer vignette"></div>
+
+  <!-- Dynamic Particle Containers -->
+  <div class="particle-container cards-rain" id="cardsContainer"></div>
+  <div class="particle-container particles" id="embersContainer"></div>
+
+  <!-- Corner Ornaments -->
+  <div class="corner tl"></div>
+  <div class="corner tr"></div>
+  <div class="corner bl"></div>
+  <div class="corner br"></div>
+
+  <!-- Main Content -->
+  <div class="screen">
+    <div class="title-block">
+      <div class="title-main">Declared Tactics</div>
+      <div class="title-world">Avormore</div>
+      <div class="title-divider">
+        <div class="divider-line"></div>
+        <div class="divider-diamond"></div>
+        <div class="divider-line"></div>
+      </div>
+    </div>
+
+    <nav class="menu">
+      <button class="menu-btn">New Game</button>
+    </nav>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <span>v0.1.0</span>
+    <span>© 2026</span>
+  </div>
+
+  <script>
+    // ═══════════════════════════════════════════════════════════
+    // DATA-DRIVEN PARTICLE SYSTEM - Configuration Objects
+    // ═══════════════════════════════════════════════════════════
+    
+    const CARD_CONFIG = [
+      // Gold Cards
+      { color: [212, 168, 75], left: 8, delay: 0, fallDuration: 14, swayDuration: 4, startRot: -8, endRot: 5, maxOpacity: 0.5, size: [44, 62] },
+      { color: [232, 197, 109], left: 22, delay: -3, fallDuration: 17, swayDuration: 4.5, startRot: 12, endRot: -6, maxOpacity: 0.45, size: [52, 72] },
+      { color: [201, 166, 105], left: 76, delay: -7, fallDuration: 13, swayDuration: 3.8, startRot: -5, endRot: 10, maxOpacity: 0.4, size: [46, 64] },
+      
+      // Lavender/Purple Cards
+      { color: [155, 139, 171], left: 45, delay: -2, fallDuration: 16, swayDuration: 5, startRot: 15, endRot: -8, maxOpacity: 0.48, size: [50, 70] },
+      { color: [175, 159, 191], left: 88, delay: -9, fallDuration: 19, swayDuration: 4.2, startRot: -10, endRot: 7, maxOpacity: 0.42, size: [42, 58] },
+      { color: [140, 120, 165], left: 12, delay: -11, fallDuration: 15, swayDuration: 4.7, startRot: 7, endRot: -12, maxOpacity: 0.46, size: [48, 66] },
+      
+      // Cyan/Teal Cards
+      { color: [108, 180, 190], left: 58, delay: -5, fallDuration: 18, swayDuration: 5.2, startRot: -14, endRot: 9, maxOpacity: 0.44, size: [46, 64] },
+      { color: [130, 200, 210], left: 33, delay: -13, fallDuration: 15, swayDuration: 3.9, startRot: 11, endRot: -5, maxOpacity: 0.38, size: [44, 60] },
+      
+      // Rose Pink Cards
+      { color: [195, 130, 150], left: 68, delay: -8, fallDuration: 16, swayDuration: 4.4, startRot: -7, endRot: 11, maxOpacity: 0.47, size: [50, 68] },
+      { color: [215, 150, 170], left: 5, delay: -15, fallDuration: 20, swayDuration: 5, startRot: 9, endRot: -9, maxOpacity: 0.41, size: [42, 58] },
+      
+      // Emerald Green Cards
+      { color: [100, 170, 130], left: 82, delay: -4, fallDuration: 17, swayDuration: 4.6, startRot: -12, endRot: 6, maxOpacity: 0.43, size: [46, 64] },
+      { color: [120, 190, 145], left: 38, delay: -10, fallDuration: 14, swayDuration: 4.1, startRot: 6, endRot: -10, maxOpacity: 0.39, size: [44, 60] },
+      
+      // Copper/Warm Cards
+      { color: [180, 130, 100], left: 92, delay: -6, fallDuration: 18, swayDuration: 4.8, startRot: -9, endRot: 8, maxOpacity: 0.45, size: [48, 66] },
+      { color: [200, 150, 120], left: 18, delay: -12, fallDuration: 15, swayDuration: 4.3, startRot: 13, endRot: -7, maxOpacity: 0.42, size: [44, 62] },
+      
+      // Soft Blue Cards
+      { color: [120, 150, 195], left: 52, delay: -1, fallDuration: 19, swayDuration: 5.1, startRot: -11, endRot: 10, maxOpacity: 0.44, size: [50, 68] },
+      { color: [140, 170, 215], left: 72, delay: -14, fallDuration: 16, swayDuration: 4, startRot: 8, endRot: -11, maxOpacity: 0.37, size: [42, 58] },
+      
+      // Extra Gold Accents
+      { color: [220, 185, 110], left: 28, delay: -17, fallDuration: 21, swayDuration: 5.3, startRot: -6, endRot: 12, maxOpacity: 0.35, size: [40, 56] },
+      { color: [240, 208, 144], left: 62, delay: -19, fallDuration: 17, swayDuration: 4.5, startRot: 10, endRot: -8, maxOpacity: 0.33, size: [38, 54] }
+    ];
+
+    const EMBER_CONFIG = [
+      { left: 20, top: 80, color: '#d4a84b', delay: 0, duration: 11 },
+      { left: 70, top: 85, color: '#e8c56d', delay: 2, duration: 13 },
+      { left: 45, top: 75, color: '#c9956c', delay: 4, duration: 10 },
+      { left: 85, top: 70, color: '#d4765a', delay: 1, duration: 14 },
+      { left: 15, top: 65, color: '#ddb988', delay: 3, duration: 12 },
+      { left: 55, top: 82, color: '#d4a84b', delay: 5, duration: 11 },
+      { left: 35, top: 78, color: '#e0a87c', delay: 2.5, duration: 13 },
+      { left: 65, top: 72, color: '#c98c64', delay: 4.5, duration: 12 },
+      { left: 28, top: 88, color: '#bf6a4f', delay: 6, duration: 11 },
+      { left: 78, top: 76, color: '#f0d090', delay: 3.5, duration: 14 }
+    ];
+
+    // ═══════════════════════════════════════════════════════════
+    // GENERATOR FUNCTIONS
+    // ═══════════════════════════════════════════════════════════
+
+    function createFallingCard(config) {
+      const card = document.createElement('div');
+      card.className = 'falling-card';
+      
+      // Apply inline custom properties from config
+      card.style.cssText = `
+        --card-rgb: ${config.color.join(',')};
+        --card-color: rgba(${config.color.join(',')}, ${0.25 + Math.random() * 0.15});
+        --fall-duration: ${config.fallDuration}s;
+        --sway-duration: ${config.swayDuration}s;
+        --start-rot: ${config.startRot}deg;
+        --end-rot: ${config.endRot}deg;
+        --max-opacity: ${config.maxOpacity};
+        --delay: ${config.delay}s;
+        left: ${config.left}%;
+        width: ${config.size[0]}px;
+        height: ${config.size[1]}px;
+      `;
+      
+      return card;
+    }
+
+    function createEmber(config) {
+      const ember = document.createElement('div');
+      ember.className = 'ember';
+      
+      ember.style.cssText = `
+        --ember-color: ${config.color};
+        --ember-duration: ${config.duration}s;
+        --delay: ${config.delay}s;
+        left: ${config.left}%;
+        top: ${config.top}%;
+      `;
+      
+      return ember;
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // INITIALIZATION
+    // ═══════════════════════════════════════════════════════════
+
+    function initializeParticles() {
+      const cardsContainer = document.getElementById('cardsContainer');
+      const embersContainer = document.getElementById('embersContainer');
+      
+      // Generate cards from config
+      const cardFragment = document.createDocumentFragment();
+      CARD_CONFIG.forEach(config => {
+        cardFragment.appendChild(createFallingCard(config));
+      });
+      cardsContainer.appendChild(cardFragment);
+      
+      // Generate embers from config
+      const emberFragment = document.createDocumentFragment();
+      EMBER_CONFIG.forEach(config => {
+        emberFragment.appendChild(createEmber(config));
+      });
+      embersContainer.appendChild(emberFragment);
+    }
+
+    // Initialize when DOM is ready
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initializeParticles);
+    } else {
+      initializeParticles();
+    }
+  </script>
+
+</body>
+</html>
