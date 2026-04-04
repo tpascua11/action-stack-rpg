@@ -176,13 +176,13 @@ src/
 
 [x] 2. Organize loose Upscaled_*.png files — moved to assets/PLAYER_PORTRAITS/
 
-[ ] 3. Extract battleReducer + buildInitialState + buildEnemyQueue out of App.jsx
+[x] 3. Extract battleReducer + buildInitialState + buildEnemyQueue out of App.jsx
        → src/battle/reducer.js
        → src/battle/initialState.js
 
-[ ] 4. Move battle components into src/components/battle/
+[x] 4. Move battle components into src/components/battle/
 
-[ ] 5. Extract battle JSX → src/screens/BattleScreen.jsx and make App.jsx a pure phase router
+[x] 5. Extract battle JSX → src/screens/BattleScreen.jsx and make App.jsx a pure phase router
        switch (state.phase) {
          case 'QUEUE_SETUP':
          case 'BATTLE':   return <BattleScreen />
@@ -192,8 +192,8 @@ src/
        - Reducer exposes lastHitEnemyId + lastFizzledAction as game facts
        - BattleScreen watches those and owns all animation state (shake, fizzle, future sprite/card effects)
 
-[ ] 6. Add stub screen files: TitleScreen, CharacterSelectScreen, MapScreen, PlayerMenuScreen, ResultScreen
+[x] 6. Add stub screen files: TitleScreen, CharacterSelectScreen, MapScreen, PlayerMenuScreen, ResultScreen
 
-[ ] 7. Create src/components/shared/ for reusable UI elements
+[x] 7. Create src/components/shared/ for reusable UI elements
 
 ================================================================================
