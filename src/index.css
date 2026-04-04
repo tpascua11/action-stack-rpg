@@ -2,36 +2,60 @@
 @tailwind components;
 @tailwind utilities;
 
-* {
+:root {
+  /* Color System */
+  --bg-deep: #080812;
+  --text-primary: #e8dcc8;
+  --text-light: #f0e6d3;
+  --text-secondary: #9b8bab;
+  --text-muted: #c8baba;
+  --text-footer: #6b6070;
+  --gold-primary: #d4a84b;
+  --gold-light: #e8c56d;
+  --gold-bright: #f0d090;
+  --gold-glow: rgba(232, 197, 109, 0.4);
+  --accent-line: #c9a86a;
+
+  /* Typography */
+  --font-display: 'Bebas Neue', sans-serif;
+  --font-body: 'Barlow Condensed', sans-serif;
+  --font-mono: 'Share Tech Mono', monospace;
+
+  /* Spacing */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 12px;
+  --spacing-lg: 20px;
+  --spacing-xl: 32px;
+
+  /* Border Radius */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+
+  /* Transitions */
+  --transition-fast: 0.2s ease;
+  --transition-base: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 0.5s ease;
+
+  /* Animation timing */
+  --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+  --duration-entrance: 1.3s;
+}
+
+*, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
 body {
-  background-color: #0f0f1a;
-  color: #eaeaea;
+  background-color: var(--bg-deep);
+  color: var(--text-primary);
   font-family: 'Barlow Condensed', sans-serif;
   overflow: hidden;
   height: 100vh;
   width: 100vw;
   user-select: none;
-}
-
-/* Scanline overlay */
-body::after {
-  content: '';
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  background: repeating-linear-gradient(
-    0deg,
-    transparent,
-    transparent 2px,
-    rgba(0, 0, 0, 0.06) 2px,
-    rgba(0, 0, 0, 0.06) 4px
-  );
-  z-index: 9999;
 }
 
 /* Electric arc */
