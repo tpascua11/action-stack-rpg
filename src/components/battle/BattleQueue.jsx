@@ -3,7 +3,7 @@
 // ============================================================
 
 import { battle_registry } from '../../battle/registry/battle_registry';
-import '../battle/handlers'; // ensure tags are registered
+import '../../battle/handlers'; // ensure tags are registered
 
 const ENEMY_COLOR = '#e94560';
 
