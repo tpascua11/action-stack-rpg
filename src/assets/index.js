@@ -30,6 +30,16 @@ export { default as STATUS_LIGHT_2 } from './STATUS/LIGHT_2.png';
 export { default as STATUS_WATER_1 } from './STATUS/WATER_1.png';
 export { default as STATUS_WATER_2 } from './STATUS/WATER_2.png';
 
+// --- Class Icons ---
+export { default as CLASS_ICON_WARRIOR } from './CLASS_ICONS/WARRIOR.png';
+export { default as CLASS_ICON_PALADIN } from './CLASS_ICONS/PALADIN.png';
+export { default as CLASS_ICON_MONK } from './CLASS_ICONS/MONK.png';
+export { default as CLASS_ICON_ROGUE } from './CLASS_ICONS/ROGUE.png';
+export { default as CLASS_ICON_SAMURAI } from './CLASS_ICONS/SAMURAI.png';
+export { default as CLASS_ICON_TEMPLAR } from './CLASS_ICONS/TEMPLAR.png';
+export { default as CLASS_ICON_WIZARD } from './CLASS_ICONS/WIZARD.png';
+export { default as CLASS_ICON_FIGHTER } from './CLASS_ICONS/FIGHTER.png';
+
 // --- Fox Summurai Animation Frames ---
 export { default as FOX_SUMMURAI_1 } from './FOX_SUMMURAI/fox_summurai_1.png';
 export { default as FOX_SUMMURAI_2 } from './FOX_SUMMURAI/fox_summurai_2.png';

@@ -331,7 +331,6 @@
 
 .character-card:hover,
 .character-card.selected {
-  transform: scale(1.06);
   border-color: rgba(var(--card-accent), 0.65);
   box-shadow:
     0 8px 32px rgba(0, 0, 0, 0.5),
@@ -351,31 +350,30 @@
 
 .portrait-container {
   display: flex;
-  width: 48px;
-  height: 48px;
-  position: relative;
-  background: linear-gradient(
-    135deg,
-    rgba(var(--card-bg-start), 1) 0%,
-    rgba(var(--card-bg-end), 1) 100%
-  );
-  border-radius: 50%;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
+  flex: 1 1 auto;
+  width: 100%;
+  min-height: 0;
 }
 
-.portrait-placeholder {
-  font-size: 24px;
-  opacity: 0.35;
-  filter: drop-shadow(0 0 8px rgba(var(--card-accent), 0.3));
-  transition: all var(--transition-base);
-}
-
-.character-card:hover .portrait-placeholder {
+.portrait-icon {
+  width: 60%;
+  height: auto;
+  object-fit: contain;
   opacity: 0.55;
-  transform: scale(1.15);
-  filter: drop-shadow(0 0 14px rgba(var(--card-accent), 0.45));
+  border: 2px solid rgba(var(--card-accent), 0.5);
+  border-radius: var(--radius-sm);
+  filter: grayscale(0.2);
+  transition: opacity var(--transition-base), border-color var(--transition-base), box-shadow var(--transition-base), filter var(--transition-base);
+}
+
+.character-card:hover .portrait-icon,
+.character-card.selected .portrait-icon {
+  opacity: 0.9;
+  border-color: rgba(var(--card-accent), 0.9);
+  box-shadow: 0 0 12px rgba(var(--card-accent), 0.35);
+  filter: grayscale(0);
 }
 
 .character-label {
@@ -538,7 +536,6 @@
 @media (max-width: 1200px) {
   .side-panel { flex: 0 0 31%; gap: 7px; }
   .center-showcase { padding: 16px; gap: 12px; }
-  .portrait-container { width: 44px; height: 44px; }
   .character-name { font-size: 12px; }
 }
 
@@ -555,8 +552,6 @@
   .cs-header { padding: 20px 14px 8px; }
   .character-selection-container { padding: 6px 14px 10px; gap: 6px; }
   .side-panel { grid-template-columns: repeat(4, 1fr); gap: 6px; }
-  .portrait-container { width: 36px; height: 36px; }
-  .portrait-placeholder { font-size: 18px; }
   .character-name { font-size: 10px; }
   .center-showcase { padding: 12px 14px; gap: 14px; }
   .showcase-portrait { max-width: 130px; }
@@ -568,8 +563,6 @@
   .page-subtitle { font-size: 9px; }
   .character-selection-container { padding: 4px 10px 8px; gap: 5px; }
   .side-panel { grid-template-columns: repeat(3, 1fr); gap: 5px; }
-  .portrait-container { width: 32px; height: 32px; }
-  .portrait-placeholder { font-size: 16px; }
   .character-name { font-size: 9px; }
   .center-showcase { padding: 10px 12px; gap: 10px; }
   .showcase-portrait { max-width: 110px; }
