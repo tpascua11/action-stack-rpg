@@ -5,7 +5,7 @@
 //  This registry is UI-only — battle logic never touches it.
 // ============================================================
 
-import { STATUS_NATURE_1 as NATURE_1, STATUS_FROST_1 as FROST_1, STATUS_FIRE_1 as FIRE_1 } from '../../asssets';
+import { STATUS_NATURE_1 as NATURE_1, STATUS_FROST_1 as FROST_1, STATUS_FIRE_1 as FIRE_1 } from '../../assets';
 
 export const ui_registry = {
 

@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Declared Tactics — Avormore</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@200;300;400;500;600&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+  <style>
+    /* ── RESET ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ── BASE - DEEP MIDNIGHT WITH COLOR DEPTH ── */
+    body {
+      background: #080812;
+      color: #e8dcc8;
+      font-family: 'Barlow Condensed', sans-serif;
+      height: 100vh;
+      width: 100vw;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      user-select: none;
+      position: relative;
+    }
+
+    /* ════════════════════════════════════════ */
+    /* ████ LAYER 1: SUBTLE CRT WARMTH ████████ */
+    /* ════════════════════════════════════════ */
+    .crt-warmth {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9999;
+      background: 
+        repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 2px,
+          rgba(0, 0, 0, 0.03) 2px,
+          rgba(0, 0, 0, 0.03) 4px
+        );
+      opacity: 0.35;
+    }
+
+    /* ════════════════════════════════════════ */
+    /* ████ LAYER 2: VIGNETTE + COLOR CAST █████ */
+    /* ════════════════════════════════════════ */
+    .vignette {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9998;
+      background: radial-gradient(
+        ellipse at center,
+        transparent 40%,
+        rgba(8, 8, 18, 0.92) 100%
+      );
+    }
+
+    .vignette::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: 
+        linear-gradient(
+          to bottom,
+          rgba(30, 20, 50, 0.12) 0%,
+          transparent 35%,
+          transparent 65%,
+          rgba(15, 10, 30, 0.18) 100%
+        ),
+        linear-gradient(
+          to right,
+          rgba(40, 20, 60, 0.06) 0%,
+          transparent 30%,
+          transparent 70%,
+          rgba(30, 15, 50, 0.08) 100%
+        );
+    }
+
+    /* ════════════════════════════════════════════════════ */
+    /* ████ FALLING CARDS - MAGICAL CARD RAIN ████████████████ */
+    /* ════════════════════════════════════════════════════ */
+    
+    .cards-rain {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 2;
+      overflow: hidden;
+    }
+
+    .falling-card {
+      position: absolute;
+      width: 48px;
+      height: 68px;
+      background: rgba(10, 8, 16, 0.4);
+      border: 1px solid var(--card-color);
+      border-radius: 5px;
+      opacity: 0;
+      
+      animation: 
+        cardFall var(--fall-duration) linear infinite,
+        cardSway var(--sway-duration) ease-in-out infinite alternate;
+      
+      box-shadow: 
+        inset 0 0 12px rgba(var(--card-rgb), 0.08),
+        0 2px 8px rgba(0, 0, 0, 0.3),
+        0 0 15px rgba(var(--card-rgb), 0.1);
+    }
+
+    .falling-card::before {
+      content: '';
+      position: absolute;
+      top: 6px;
+      left: 6px;
+      right: 6px;
+      bottom: 6px;
+      border: 1px solid rgba(var(--card-rgb), 0.12);
+      border-radius: 2px;
+    }
+
+    .falling-card::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 4px;
+      height: 4px;
+      background: rgba(var(--card-rgb), 0.25);
+      border-radius: 50%;
+    }
+
+    @keyframes cardFall {
+      0% {
+        opacity: 0;
+        transform: translateY(-10%) rotate(var(--start-rot));
+      }
+      10% {
+        opacity: var(--max-opacity);
+      }
+      90% {
+        opacity: var(--max-opacity);
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(110vh) rotate(var(--end-rot));
+      }
+    }
+
+    @keyframes cardSway {
+      0% { margin-left: -15px; }
+      100% { margin-left: 15px; }
+    }
+
+    /* Individual Card Variations */
+
+    /* Gold Cards */
+    .falling-card:nth-child(1) {
+      --card-color: rgba(212, 168, 75, 0.35);
+      --card-rgb: 212, 168, 75;
+      --max-opacity: 0.5;
+      --fall-duration: 14s;
+      --sway-duration: 4s;
+      --start-rot: -8deg;
+      --end-rot: 5deg;
+      left: 8%;
+      animation-delay: 0s;
+      width: 44px;
+      height: 62px;
+    }
+
+    .falling-card:nth-child(2) {
+      --card-color: rgba(232, 197, 109, 0.32);
+      --card-rgb: 232, 197, 109;
+      --max-opacity: 0.45;
+      --fall-duration: 17s;
+      --sway-duration: 4.5s;
+      --start-rot: 12deg;
+      --end-rot: -6deg;
+      left: 22%;
+      animation-delay: -3s;
+      width: 52px;
+      height: 72px;
+    }
+
+    .falling-card:nth-child(3) {
+      --card-color: rgba(201, 166, 105, 0.28);
+      --card-rgb: 201, 166, 105;
+      --max-opacity: 0.4;
+      --fall-duration: 13s;
+      --sway-duration: 3.8s;
+      --start-rot: -5deg;
+      --end-rot: 10deg;
+      left: 76%;
+      animation-delay: -7s;
+      width: 46px;
+      height: 64px;
+    }
+
+    /* Lavender/Purple Cards */
+    .falling-card:nth-child(4) {
+      --card-color: rgba(155, 139, 171, 0.38);
+      --card-rgb: 155, 139, 171;
+      --max-opacity: 0.48;
+      --fall-duration: 16s;
+      --sway-duration: 5s;
+      --start-rot: 15deg;
+      --end-rot: -8deg;
+      left: 45%;
+      animation-delay: -2s;
+      width: 50px;
+      height: 70px;
+    }
+
+    .falling-card:nth-child(5) {
+      --card-color: rgba(175, 159, 191, 0.3);
+      --card-rgb: 175, 159, 191;
+      --max-opacity: 0.42;
+      --fall-duration: 19s;
+      --sway-duration: 4.2s;
+      --start-rot: -10deg;
+      --end-rot: 7deg;
+      left: 88%;
+      animation-delay: -9s;
+      width: 42px;
+      height: 58px;
+    }
+
+    .falling-card:nth-child(6) {
+      --card-color: rgba(140, 120, 165, 0.33);
+      --card-rgb: 140, 120, 165;
+      --max-opacity: 0.46;
+      --fall-duration: 15s;
+      --sway-duration: 4.7s;
+      --start-rot: 7deg;
+      --end-rot: -12deg;
+      left: 12%;
+      animation-delay: -11s;
+      width: 48px;
+      height: 66px;
+    }
+
+    /* Cyan/Teal Magical Cards */
+    .falling-card:nth-child(7) {
+      --card-color: rgba(108, 180, 190, 0.34);
+      --card-rgb: 108, 180, 190;
+      --max-opacity: 0.44;
+      --fall-duration: 18s;
+      --sway-duration: 5.2s;
+      --start-rot: -14deg;
+      --end-rot: 9deg;
+      left: 58%;
+      animation-delay: -5s;
+      width: 46px;
+      height: 64px;
+    }
+
+    .falling-card:nth-child(8) {
+      --card-color: rgba(130, 200, 210, 0.28);
+      --card-rgb: 130, 200, 210;
+      --max-opacity: 0.38;
+      --fall-duration: 15s;
+      --sway-duration: 3.9s;
+      --start-rot: 11deg;
+      --end-rot: -5deg;
+      left: 33%;
+      animation-delay: -13s;
+      width: 44px;
+      height: 60px;
+    }
+
+    /* Rose Pink Cards */
+    .falling-card:nth-child(9) {
+      --card-color: rgba(195, 130, 150, 0.36);
+      --card-rgb: 195, 130, 150;
+      --max-opacity: 0.47;
+      --fall-duration: 16s;
+      --sway-duration: 4.4s;
+      --start-rot: -7deg;
+      --end-rot: 11deg;
+      left: 68%;
+      animation-delay: -8s;
+      width: 50px;
+      height: 68px;
+    }
+
+    .falling-card:nth-child(10) {
+      --card-color: rgba(215, 150, 170, 0.3);
+      --card-rgb: 215, 150, 170;
+      --max-opacity: 0.41;
+      --fall-duration: 20s;
+      --sway-duration: 5s;
+      --start-rot: 9deg;
+      --end-rot: -9deg;
+      left: 5%;
+      animation-delay: -15s;
+      width: 42px;
+      height: 58px;
+    }
+
+    /* Emerald Green Cards */
+    .falling-card:nth-child(11) {
+      --card-color: rgba(100, 170, 130, 0.32);
+      --card-rgb: 100, 170, 130;
+      --max-opacity: 0.43;
+      --fall-duration: 17s;
+      --sway-duration: 4.6s;
+      --start-rot: -12deg;
+      --end-rot: 6deg;
+      left: 82%;
+      animation-delay: -4s;
+      width: 46px;
+      height: 64px;
+    }
+
+    .falling-card:nth-child(12) {
+      --card-color: rgba(120, 190, 145, 0.29);
+      --card-rgb: 120, 190, 145;
+      --max-opacity: 0.39;
+      --fall-duration: 14s;
+      --sway-duration: 4.1s;
+      --start-rot: 6deg;
+      --end-rot: -10deg;
+      left: 38%;
+      animation-delay: -10s;
+      width: 44px;
+      height: 60px;
+    }
+
+    /* Copper/Warm Cards */
+    .falling-card:nth-child(13) {
+      --card-color: rgba(180, 130, 100, 0.34);
+      --card-rgb: 180, 130, 100;
+      --max-opacity: 0.45;
+      --fall-duration: 18s;
+      --sway-duration: 4.8s;
+      --start-rot: -9deg;
+      --end-rot: 8deg;
+      left: 92%;
+      animation-delay: -6s;
+      width: 48px;
+      height: 66px;
+    }
+
+    .falling-card:nth-child(14) {
+      --card-color: rgba(200, 150, 120, 0.31);
+      --card-rgb: 200, 150, 120;
+      --max-opacity: 0.42;
+      --fall-duration: 15s;
+      --sway-duration: 4.3s;
+      --start-rot: 13deg;
+      --end-rot: -7deg;
+      left: 18%;
+      animation-delay: -12s;
+      width: 44px;
+      height: 62px;
+    }
+
+    /* Soft Blue Cards */
+    .falling-card:nth-child(15) {
+      --card-color: rgba(120, 150, 195, 0.33);
+      --card-rgb: 120, 150, 195;
+      --max-opacity: 0.44;
+      --fall-duration: 19s;
+      --sway-duration: 5.1s;
+      --start-rot: -11deg;
+      --end-rot: 10deg;
+      left: 52%;
+      animation-delay: -1s;
+      width: 50px;
+      height: 68px;
+    }
+
+    .falling-card:nth-child(16) {
+      --card-color: rgba(140, 170, 215, 0.27);
+      --card-rgb: 140, 170, 215;
+      --max-opacity: 0.37;
+      --fall-duration: 16s;
+      --sway-duration: 4s;
+      --start-rot: 8deg;
+      --end-rot: -11deg;
+      left: 72%;
+      animation-delay: -14s;
+      width: 42px;
+      height: 58px;
+    }
+
+    /* Extra Gold Accents */
+    .falling-card:nth-child(17) {
+      --card-color: rgba(220, 185, 110, 0.26);
+      --card-rgb: 220, 185, 110;
+      --max-opacity: 0.35;
+      --fall-duration: 21s;
+      --sway-duration: 5.3s;
+      --start-rot: -6deg;
+      --end-rot: 12deg;
+      left: 28%;
+      animation-delay: -17s;
+      width: 40px;
+      height: 56px;
+    }
+
+    .falling-card:nth-child(18) {
+      --card-color: rgba(240, 208, 144, 0.24);
+      --card-rgb: 240, 208, 144;
+      --max-opacity: 0.33;
+      --fall-duration: 17s;
+      --sway-duration: 4.5s;
+      --start-rot: 10deg;
+      --end-rot: -8deg;
+      left: 62%;
+      animation-delay: -19s;
+      width: 38px;
+      height: 54px;
+    }
+
+    /* ════════════════════════════════════════ */
+    /* ████ FLOATING EMBERS (KEPT FOR ATMOSPHERE) **/
+    /* ════════════════════════════════════════ */
+    .particles {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+      overflow: hidden;
+    }
+
+    .ember {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      border-radius: 50%;
+      opacity: 0;
+      animation: floatEmber 12s ease-in-out infinite;
+    }
+
+    .ember:nth-child(1) { 
+      left: 20%; top: 80%; 
+      background: #d4a84b; 
+      box-shadow: 0 0 6px #d4a84b, 0 0 12px rgba(212, 168, 75, 0.3);
+      animation-delay: 0s; animation-duration: 11s; 
+    }
+    .ember:nth-child(2) { 
+      left: 70%; top: 85%; 
+      background: #e8c56d; 
+      box-shadow: 0 0 6px #e8c56d, 0 0 12px rgba(232, 197, 109, 0.3);
+      animation-delay: 2s; animation-duration: 13s; 
+    }
+    .ember:nth-child(3) { 
+      left: 45%; top: 75%; 
+      background: #c9956c; 
+      box-shadow: 0 0 6px #c9956c, 0 0 12px rgba(201, 149, 108, 0.3);
+      animation-delay: 4s; animation-duration: 10s; 
+    }
+    .ember:nth-child(4) { 
+      left: 85%; top: 70%; 
+      background: #d4765a; 
+      box-shadow: 0 0 6px #d4765a, 0 0 12px rgba(212, 118, 90, 0.25);
+      animation-delay: 1s; animation-duration: 14s; 
+    }
+    .ember:nth-child(5) { 
+      left: 15%; top: 65%; 
+      background: #ddb988; 
+      box-shadow: 0 0 6px #ddb988, 0 0 12px rgba(221, 185, 136, 0.3);
+      animation-delay: 3s; animation-duration: 12s; 
+    }
+    .ember:nth-child(6) { 
+      left: 55%; top: 82%; 
+      background: #d4a84b; 
+      box-shadow: 0 0 6px #d4a84b, 0 0 12px rgba(212, 168, 75, 0.3);
+      animation-delay: 5s; animation-duration: 11s; 
+    }
+    .ember:nth-child(7) { 
+      left: 35%; top: 78%; 
+      background: #e0a87c; 
+      box-shadow: 0 0 6px #e0a87c, 0 0 12px rgba(224, 168, 124, 0.3);
+      animation-delay: 2.5s; animation-duration: 13s; 
+    }
+    .ember:nth-child(8) { 
+      left: 65%; top: 72%; 
+      background: #c98c64; 
+      box-shadow: 0 0 6px #c98c64, 0 0 12px rgba(201, 140, 100, 0.25);
+      animation-delay: 4.5s; animation-duration: 12s; 
+    }
+    .ember:nth-child(9) { 
+      left: 28%; top: 88%; 
+      background: #bf6a4f; 
+      box-shadow: 0 0 6px #bf6a4f, 0 0 12px rgba(191, 106, 79, 0.2);
+      animation-delay: 6s; animation-duration: 11s; 
+    }
+    .ember:nth-child(10) { 
+      left: 78%; top: 76%; 
+      background: #f0d090; 
+      box-shadow: 0 0 6px #f0d090, 0 0 12px rgba(240, 208, 144, 0.3);
+      animation-delay: 3.5s; animation-duration: 14s; 
+    }
+
+    @keyframes floatEmber {
+      0% {
+        opacity: 0;
+        transform: translateY(0) scale(1);
+      }
+      20% {
+        opacity: 0.6;
+      }
+      80% {
+        opacity: 0.25;
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(-120px) scale(0.5);
+      }
+    }
+
+    /* ════════════════════════════════════════ */
+    /* ████ MAIN CONTAINER ████████████████████ */
+    /* ════════════════════════════════════════ */
+    .screen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      width: 100%;
+      height: 100%;
+      position: relative;
+      z-index: 10;
+    }
+
+    /* ════════════════════════════════════════ */
+    /* ████ TITLE BLOCK - COLORED GLOW ████████ */
+    /* ════════════════════════════════════════ */
+    .title-block {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 48px;
+      position: relative;
+      animation: fadeUp 1.3s ease both;
+    }
+
+    .title-main {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 72px;
+      font-weight: 200;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      line-height: 1.1;
+      color: #f0e6d3;
+      position: relative;
+      text-shadow:
+        0 0 40px rgba(232, 197, 109, 0.4),
+        0 0 80px rgba(212, 168, 75, 0.25),
+        0 0 120px rgba(212, 118, 90, 0.12);
+      animation: titleBreath 6s ease-in-out infinite;
+    }
+
+    @keyframes titleBreath {
+      0%, 100% {
+        text-shadow:
+          0 0 40px rgba(232, 197, 109, 0.4),
+          0 0 80px rgba(212, 168, 75, 0.25),
+          0 0 120px rgba(212, 118, 90, 0.12);
+      }
+      50% {
+        text-shadow:
+          0 0 55px rgba(240, 208, 144, 0.5),
+          0 0 100px rgba(212, 168, 75, 0.3),
+          0 0 140px rgba(212, 118, 90, 0.18);
+      }
+    }
+
+    .title-world {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 16px;
+      font-weight: 300;
+      letter-spacing: 0.6em;
+      text-transform: uppercase;
+      color: #9b8bab;
+      margin-top: 20px;
+      opacity: 0.75;
+      text-shadow: 0 0 15px rgba(155, 139, 171, 0.3);
+    }
+
+    .title-world::before {
+      content: '— ';
+      opacity: 0.5;
+      margin-right: 4px;
+    }
+
+    .title-world::after {
+      content: ' —';
+      opacity: 0.5;
+      margin-left: 4px;
+    }
+
+    .title-divider {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-top: 28px;
+      opacity: 0.4;
+    }
+
+    .divider-line {
+      width: 90px;
+      height: 1px;
+      background: linear-gradient(
+        to right,
+        transparent,
+        #c9a86a,
+        transparent
+      );
+    }
+
+    .divider-diamond {
+      width: 5px;
+      height: 5px;
+      background: #e8c56d;
+      transform: rotate(45deg);
+      box-shadow: 0 0 8px rgba(232, 197, 109, 0.5);
+    }
+
+    /* ════════════════════════════════════════ */
+    /* ████ MENU - NO BOX, CLEAN BUTTON ███████ */
+    /* ════════════════════════════════════════ */
+    .menu {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+      padding: 0;
+      position: relative;
+      animation: fadeUp 1.3s ease 0.4s both;
+    }
+
+    .menu-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 26px;
+      font-weight: 400;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #e8e0d3;
+      padding: 12px 52px;
+      position: relative;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      outline: none;
+    }
+
+    .menu-btn:hover {
+      color: #ffffff;
+      text-shadow: 
+        0 0 20px rgba(255, 255, 255, 0.5),
+        0 0 40px rgba(232, 220, 200, 0.25);
+      letter-spacing: 0.2em;
+    }
+
+    .menu-btn::before {
+      content: '';
+      position: absolute;
+      bottom: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 1px;
+      background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.6), transparent);
+      transition: width 0.4s ease;
+    }
+
+    .menu-btn:hover::before {
+      width: 85%;
+    }
+
+    /* ════════════════════════════════════════ */
+    /* ████ CORNER ORNAMENTS - WARMED UP ██████ */
+    /* ════════════════════════════════════════ */
+    .corner {
+      position: fixed;
+      width: 24px;
+      height: 24px;
+      opacity: 0.28;
+      z-index: 100;
+    }
+    
+    .corner.tl { 
+      top: 28px; 
+      left: 28px; 
+      border-top: 1px solid #c9a86a; 
+      border-left: 1px solid #c9a86a; 
+    }
+    .corner.tr { 
+      top: 28px; 
+      right: 28px; 
+      border-top: 1px solid #c9a86a; 
+      border-right: 1px solid #c9a86a; 
+    }
+    .corner.bl { 
+      bottom: 28px; 
+      left: 28px; 
+      border-bottom: 1px solid #c9a86a; 
+      border-left: 1px solid #c9a86a; 
+    }
+    .corner.br { 
+      bottom: 28px; 
+      right: 28px; 
+      border-bottom: 1px solid #c9a86a; 
+      border-right: 1px solid #c9a86a; 
+    }
+
+    /* ════════════════════════════════════════ */
+    /* ████ FOOTER - SOFT DATA █████████████████ */
+    /* ════════════════════════════════════════ */
+    .footer {
+      position: fixed;
+      bottom: 28px;
+      left: 0; 
+      right: 0;
+      display: flex;
+      justify-content: center;
+      gap: 36px;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      color: #6b6070;
+      text-transform: uppercase;
+      z-index: 100;
+      opacity: 0.6;
+      animation: fadeUp 1.3s ease 0.6s both;
+    }
+
+    /* ════════════════════════════════════════ */
+    /* ████ ENTRANCE ANIMATIONS ███████████████ */
+    /* ════════════════════════════════════════ */
+    @keyframes fadeUp {
+      from { 
+        opacity: 0; 
+        transform: translateY(18px); 
+      }
+      to   { 
+        opacity: 1; 
+        transform: translateY(0); 
+      }
+    }
+
+    .particles { animation: fadeIn 2s ease 1s both; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- Visual Layers -->
+  <div class="crt-warmth"></div>
+  <div class="vignette"></div>
+
+  <!-- FALLING CARDS RAIN -->
+  <div class="cards-rain">
+    <div class="falling-card"></div>
+    <div class="falling-card"></div>
+    <div class="falling-card"></div>
+    <div class="falling-card"></div>
+    <div class="falling-card"></div>
+    <div class="falling-card"></div>
+    <div class="falling-card"></div>
+    <div class="falling-card"></div>
+    <div class="falling-card"></div>
+    <div class="falling-card"></div>
+    <div class="falling-card"></div>
+    <div class="falling-card"></div>
+    <div class="falling-card"></div>
+    <div class="falling-card"></div>
+    <div class="falling-card"></div>
+    <div class="falling-card"></div>
+    <div class="falling-card"></div>
+    <div class="falling-card"></div>
+  </div>
+
+  <!-- Floating Embers -->
+  <div class="particles">
+    <div class="ember"></div>
+    <div class="ember"></div>
+    <div class="ember"></div>
+    <div class="ember"></div>
+    <div class="ember"></div>
+    <div class="ember"></div>
+    <div class="ember"></div>
+    <div class="ember"></div>
+    <div class="ember"></div>
+    <div class="ember"></div>
+ </div>
+
+  <!-- Corner Ornaments -->
+  <div class="corner tl"></div>
+  <div class="corner tr"></div>
+  <div class="corner bl"></div>
+  <div class="corner br"></div>
+
+  <div class="screen">
+
+    <!-- Title -->
+    <div class="title-block">
+      
+      <div class="title-main">Declared Tactics</div>
+      
+      <div class="title-world">Avormore</div>
+      
+      <div class="title-divider">
+        <div class="divider-line"></div>
+        <div class="divider-diamond"></div>
+        <div class="divider-line"></div>
+      </div>
+    </div>
+
+    <!-- Menu - Clean Button Only -->
+    <nav class="menu">
+      <button class="menu-btn">New Game</button>
+    </nav>
+
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <span>v0.1.0</span>
+    <span>© 2026</span>
+  </div>
+
+</body>
+</html>

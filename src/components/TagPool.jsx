@@ -5,7 +5,7 @@
 // ============================================================
 
 import { ui_registry, UI_DEFAULT } from '../battle/registry/ui_registry';
-import { STATUS_DEFAULT as DEFAULT_ICON } from '../asssets';
+import { STATUS_DEFAULT as DEFAULT_ICON } from '../assets';
 
 const FULL_SZ = {
   tile:         'calc((24rem - 7 * 0.375rem) / 8)',

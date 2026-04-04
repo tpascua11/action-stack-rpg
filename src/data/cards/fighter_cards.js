@@ -11,7 +11,7 @@ export const FIGHTER_CARDS = [
     tag_type: ['PHYSICAL', 'SLASH'],
     cost: {},
     icon: '⚔️',
-    image: require('../../asssets/FOX_SUMMURAI/fox_summurai_4.png'),
+    image: require('../../assets/FOX_SUMMURAI/fox_summurai_4.png'),
     color: '#e94560',
     desc: 'A powerful slash attack.',
     tags: {
@@ -30,7 +30,7 @@ export const FIGHTER_CARDS = [
     tag_type: ['PHYSICAL', 'SLASH'],
     cost: {},
     icon: '🔪',
-    image: require('../../asssets/FOX_SUMMURAI/fox_summurai_21.png'),
+    image: require('../../assets/FOX_SUMMURAI/fox_summurai_21.png'),
     color: '#ff6b35',
     desc: 'A fast light slash.',
     tags: {
@@ -47,7 +47,7 @@ export const FIGHTER_CARDS = [
     tag_type: ['MAGIC'],
     cost: {},
     icon: '💖',
-    image: require('../../asssets/FOX_SUMMURAI/fox_summurai_40.png'),
+    image: require('../../assets/FOX_SUMMURAI/fox_summurai_40.png'),
     color: '#4caf50',
     desc: 'Restore 100 HP.',
     tags: {
@@ -65,7 +65,7 @@ export const FIGHTER_CARDS = [
     tag_type: ['WIZARD_PREP', 'SPELL', 'MAGIC', 'CHARGING'],
     cost: {},
     icon: '✨',
-    image: require('../../asssets/FOX_SUMMURAI/fox_summurai_3.png'),
+    image: require('../../assets/FOX_SUMMURAI/fox_summurai_3.png'),
     color: '#7c3aed',
     desc: 'Charge next MAGIC attack by 20%. Restore 25 mana.',
     tags: {
@@ -83,7 +83,7 @@ export const FIGHTER_CARDS = [
     tag_type: ['WIZARD_PREP', 'SPELL', 'MAGIC', 'CHARGING'],
     cost: {},
     icon: '🔥',
-    image: require('../../asssets/FOX_SUMMURAI/fox_summurai_41.png'),
+    image: require('../../assets/FOX_SUMMURAI/fox_summurai_41.png'),
     color: '#f97316',
     desc: 'Add +50 flat damage to next FIRE attack.',
     tags: {
@@ -100,7 +100,7 @@ export const FIGHTER_CARDS = [
     tag_type: ['PHYSICAL'],
     cost: {},
     icon: '💨',
-    image: require('../../asssets/FOX_SUMMURAI/fox_summurai_9.png'),
+    image: require('../../assets/FOX_SUMMURAI/fox_summurai_9.png'),
     color: '#38bdf8',
     desc: 'Boost the speed of your next action by 50.',
     tags: {
@@ -117,7 +117,7 @@ export const FIGHTER_CARDS = [
     tag_type: ['WIZARD_PREP', 'SPELL', 'MAGIC'],
     cost: { WIZARD_MANA: 100 },
     icon: '🔥',
-    image: require('../../asssets/FOX_SUMMURAI/fox_summurai_1.png'),
+    image: require('../../assets/FOX_SUMMURAI/fox_summurai_1.png'),
     color: '#ef4444',
     desc: 'Strike target with fire for 150 damage.',
     tags: {

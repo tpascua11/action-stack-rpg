@@ -1,7 +1,7 @@
 // ============================================================
 //  VraxPortrait — Center focal point of player zone
 // ============================================================
-import { COOL_FOX as coolFoxImg } from '../asssets';
+import { COOL_FOX as coolFoxImg } from '../assets';
 
 export default function VraxPortrait({ player }) {
   const hpPct = Math.max(0, (player.health / player.max_health) * 100);

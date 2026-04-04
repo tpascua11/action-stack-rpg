@@ -2,7 +2,7 @@
 //  ENEMIES
 // ============================================================
 
-import { ENEMY_APPRENTICE_WITCH, ENEMY_FLAME_WITCH, ENEMY_FLAME_QUEEN } from '../../asssets';
+import { ENEMY_APPRENTICE_WITCH, ENEMY_FLAME_WITCH, ENEMY_FLAME_QUEEN } from '../../assets';
 
 export const EMBER_WITCH = {
   id: 'ember_witch',

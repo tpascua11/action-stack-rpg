@@ -6,11 +6,11 @@
 
 // --- Portraits ---
 export { default as COOL_FOX } from './Cool_Fox.png';
-export { default as UPSCALED_00005 } from './Upscaled_00005_.png';
-export { default as UPSCALED_00017 } from './Upscaled_00017_.png';
-export { default as UPSCALED_00028 } from './Upscaled_00028_.png';
-export { default as UPSCALED_00203 } from './Upscaled_00203_.png';
-export { default as UPSCALED_00235 } from './Upscaled_00235_.png';
+export { default as UPSCALED_00005 } from './PLAYER_PORTRAITS/Upscaled_00005_.png';
+export { default as UPSCALED_00017 } from './PLAYER_PORTRAITS/Upscaled_00017_.png';
+export { default as UPSCALED_00028 } from './PLAYER_PORTRAITS/Upscaled_00028_.png';
+export { default as UPSCALED_00203 } from './PLAYER_PORTRAITS/Upscaled_00203_.png';
+export { default as UPSCALED_00235 } from './PLAYER_PORTRAITS/Upscaled_00235_.png';
 
 // --- Enemy Portraits ---
 export { default as ENEMY_APPRENTICE_WITCH } from './ENEMY/APPRENTICE_WITCH.png';
