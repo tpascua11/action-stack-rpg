@@ -4,6 +4,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { CLASS_REGISTRY } from '../data/classes/class_registry';
+import { useGame } from '../context/GameContext';
 
 import EnemyZone from '../components/battle/EnemyZone';
 import BattleLog from '../components/battle/BattleLog';
@@ -13,7 +14,8 @@ import VraxPortrait from '../components/battle/VraxPortrait';
 import ActionQueue from '../components/battle/ActionQueue';
 import Hand from '../components/battle/Hand';
 
-export default function BattleScreen({ gs, dispatch }) {
+export default function BattleScreen() {
+  const { gs, dispatch } = useGame();
   const [logOpen, setLogOpen] = useState(false);
   const [retargetingSlot, setRetargetingSlot] = useState(null);
   const [lineCoords, setLineCoords] = useState(null);
