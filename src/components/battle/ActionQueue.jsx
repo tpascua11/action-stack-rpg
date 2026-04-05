@@ -142,7 +142,7 @@ export default function ActionQueue({ queue, totalSlots, enemies, retargetingSlo
             bg-[#4da6ff] hover:scale-105 transition-transform shadow-lg"
           onClick={onExecute}
         >
-          NEW GAME
+          CONTINUE
         </button>
       ) : (
         <button

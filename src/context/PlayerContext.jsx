@@ -67,6 +67,8 @@ export function derivePlayerSnapshot(playerData) {
   // For now, card_unlocks is unused — player gets the full class base deck only
   const cards = classDef.cards;
 
+  const currentHealth = playerData.current_hp ?? maxHealth;
+
   return {
     id: 'vrax',
     name: 'VRAX',
@@ -74,7 +76,7 @@ export function derivePlayerSnapshot(playerData) {
     icon:               classDef.icon,
     faction:            'player',
     class_id:           classDef.id,
-    health:             maxHealth,
+    health:             currentHealth,
     max_health:         maxHealth,
     resources: Object.fromEntries(
       classDef.resources.map(r => [r.type, { current: r.starting, max: r.max }])
@@ -96,15 +98,20 @@ function playerReducer(state, action) {
     // Runs ONCE when the player picks their class at game start.
     // Only stores the minimal data needed — everything else is derived at runtime.
     case 'CONFIRM_CLASS': {
-      if (!CLASS_REGISTRY[action.classId]) return state;
+      const classDef = CLASS_REGISTRY[action.classId];
+      if (!classDef) return state;
       return {
         class_id:        action.classId,
+        current_hp:      classDef.base_health,
         card_unlocks:    [],
         stat_boosts:     [],
-        // TODO: completed_zones — track which map zones/levels the player has finished.
-        // Will be set and updated by MapScreen once that screen is built.
         completed_zones: [],
       };
+    }
+
+    // Called by MapScreen after a battle ends — updates HP and records result
+    case 'APPLY_BATTLE_RESULT': {
+      return { ...state, current_hp: action.currentHP };
     }
 
     // Add an unlocked card ID to the player's deck (post-battle reward, etc.)

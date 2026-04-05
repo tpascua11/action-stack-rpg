@@ -13,7 +13,8 @@ import {
   TurnResultCleanup,
   runPhaseOnTurnStart,
 } from './engine/battle_engine';
-import { buildEnemyQueue, buildInitialState, CURRENT_ENCOUNTER } from './initialState';
+import { buildEnemyQueue, buildInitialState } from './initialState';
+import EMBER_KEEP from '../data/scenarios/ember_keep.json';
 import { CLASS_REGISTRY } from '../data/classes/class_registry';
 
 export function battleReducer(state, action) {
@@ -202,7 +203,7 @@ export function battleReducer(state, action) {
     // buildInitialState is a temporary placeholder — replace this with a proper
     // between-fight reset that preserves the player's persistent state.
     case 'RESET':
-      return buildInitialState(CURRENT_ENCOUNTER);
+      return buildInitialState(EMBER_KEEP);
 
     default:
       return state;

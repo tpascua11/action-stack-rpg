@@ -38,6 +38,30 @@ PHASE 2 — PlayerContext
     - Read-only everywhere else (especially BattleScreen)
 
 --------------------------------------------------------------------------------
+PHASE 2.5 — Scenario + Enemy Registry
+--------------------------------------------------------------------------------
+
+[x] 3b. Create enemy registry (src/data/characters/enemy_registry.js)
+    - Maps enemy ID strings → enemy definition objects
+    - e.g. { ember_witch: EMBER_WITCH, flame_queen: FLAME_QUEEN, ... }
+    - Same pattern as CLASS_REGISTRY
+
+[x] 3c. Convert scenarios to JSON (src/data/scenarios/*.json)
+    - Enemies referenced by ID string, not JS imports
+    - Shape: { id, name, stages: [{ enemies: [...ids], event? }], rewards }
+    - One file per scenario
+
+[x] 3d. Update buildInitialState to resolve enemy IDs via ENEMY_REGISTRY
+    - scenario.stages[0].enemies is now string IDs
+    - Resolve each ID through ENEMY_REGISTRY before building battle state
+
+[ ] 3e. Convert enemy definitions to JSON (src/data/characters/enemies/*.json)
+    - One file per enemy: ember_witch.json, flame_witch.json, flame_queen.json
+    - portrait field stores asset key string (e.g. "ENEMY_APPRENTICE_WITCH")
+    - enemy_registry.js imports each JSON + resolves portrait keys via assets index
+    - Same resolution pattern as CLASS_REGISTRY
+
+--------------------------------------------------------------------------------
 PHASE 3 — BattleScreen Refactor
 --------------------------------------------------------------------------------
 

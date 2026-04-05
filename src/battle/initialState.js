@@ -2,15 +2,14 @@
 //  initialState — builds the starting game state and enemy queues
 // ============================================================
 
-import { EMBER_WITCH, FLAME_WITCH, FLAME_QUEEN } from '../data/characters/enemies';
 import { SAMURAI } from '../data/classes/samurai';
+import EMBER_KEEP from '../data/scenarios/ember_keep.json';
+import { ENEMY_REGISTRY } from '../data/characters/enemy_registry';
 import { buildPlayer } from '../data/player';
 import { derivePlayerSnapshot } from '../context/PlayerContext';
 import { calcSpeed } from './engine/battle_engine';
 
-// ── CURRENT ENCOUNTER ──
 const MAX_ENEMIES = 5;
-export const CURRENT_ENCOUNTER = [EMBER_WITCH, EMBER_WITCH, FLAME_QUEEN, EMBER_WITCH, FLAME_WITCH];
 
 // ── BUILD ENEMY QUEUE ──
 export function buildEnemyQueue(enemy) {
@@ -26,13 +25,19 @@ export function buildEnemyQueue(enemy) {
 }
 
 // ── BUILD INITIAL STATE ──
-// playerData: persistent player from PlayerContext (post class-select).
-//   If null (debug / first load before class select), falls back to SAMURAI.
-export function buildInitialState(enemies = CURRENT_ENCOUNTER, playerData = null) {
-  const builtEnemies = enemies.slice(0, MAX_ENEMIES).map((def, i) => ({
-    ...JSON.parse(JSON.stringify(def)),
-    id: `${def.id}_${i + 1}`,
-  }));
+// scenario: a scenario JSON from src/data/scenarios/ — defaults to EMBER_KEEP for debug.
+// playerData: persistent player from PlayerContext — falls back to SAMURAI if null.
+export function buildInitialState(scenario = EMBER_KEEP, playerData = null) {
+  // Resolve enemy ID strings → full enemy objects via ENEMY_REGISTRY.
+  // Pull from first stage only for now — multi-stage + bench handled later.
+  const enemyIds = scenario?.stages?.[0]?.enemies ?? [];
+  const builtEnemies = enemyIds.slice(0, MAX_ENEMIES)
+    .map(id => ENEMY_REGISTRY[id])
+    .filter(Boolean)
+    .map((def, i) => ({
+      ...JSON.parse(JSON.stringify(def)),
+      id: `${def.id}_${i + 1}`,
+    }));
 
   // Derive full runtime player from stored minimal data, or fall back to SAMURAI for debug
   const player = playerData

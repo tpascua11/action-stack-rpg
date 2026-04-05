@@ -15,7 +15,7 @@ import ActionQueue from '../components/battle/ActionQueue';
 import Hand from '../components/battle/Hand';
 
 export default function BattleScreen() {
-  const { gs, dispatch } = useGame();
+  const { gs, dispatch, onBattleEnd } = useGame();
   const [logOpen, setLogOpen] = useState(false);
   const [retargetingSlot, setRetargetingSlot] = useState(null);
   const [lineCoords, setLineCoords] = useState(null);
@@ -98,7 +98,7 @@ export default function BattleScreen() {
 
   function handleExecute() {
     if (gs.phase === 'RESULT') {
-      dispatch({ type: 'RESET' });
+      onBattleEnd(player.health, gs.result === 'WIN');
       return;
     }
     if (gs.phase !== 'QUEUE_SETUP') return;
