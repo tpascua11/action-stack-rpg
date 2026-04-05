@@ -1,6 +1,7 @@
 import './CharacterSelectScreen.css';
 import { useState, useCallback, useEffect } from 'react';
 import { useGame } from '../context/GameContext';
+import { CURRENT_ENCOUNTER } from '../battle/initialState';
 import { usePlayer } from '../context/PlayerContext';
 import {
   CLASS_ICON_SAMURAI, CLASS_ICON_WARRIOR, CLASS_ICON_FIGHTER, CLASS_ICON_MONK,
@@ -114,7 +115,7 @@ function TypewriterText({ text, className, style }) {
 
 // ── Screen ───────────────────────────────────────────────────────
 export default function CharacterSelectScreen() {
-  const { dispatch } = useGame();
+  const { dispatch, goToBattle } = useGame();
   const { playerData, playerDispatch } = usePlayer();
 
   const [selectedId, setSelectedId]       = useState(null);
@@ -126,7 +127,7 @@ export default function CharacterSelectScreen() {
   // Step 2: once CONFIRM_CLASS has resolved and playerData is ready, go to battle
   useEffect(() => {
     if (pendingBattle && playerData) {
-      dispatch({ type: 'GO_TO_BATTLE', playerData });
+      goToBattle(playerData, CURRENT_ENCOUNTER);
       setPendingBattle(false);
     }
   }, [pendingBattle, playerData, dispatch]);

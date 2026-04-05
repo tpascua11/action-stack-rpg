@@ -7,6 +7,7 @@ import { PlayerProvider } from './context/PlayerContext';
 import TitleScreen from './screens/TitleScreen';
 import CharacterSelectScreen from './screens/CharacterSelectScreen';
 import BattleScreen from './screens/BattleScreen';
+import MapScreen from './screens/MapScreen';
 
 function PhaseRouter() {
   const { gs } = useGame();
@@ -16,6 +17,8 @@ function PhaseRouter() {
       return <TitleScreen />;
     case 'CHARACTER_SELECT':
       return <CharacterSelectScreen />;
+    case 'MAP':
+      return <MapScreen />;
     case 'QUEUE_SETUP':
     case 'BATTLE':
     case 'RESULT':

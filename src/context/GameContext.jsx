@@ -20,8 +20,17 @@ function initGameState() {
 
 export function GameProvider({ children }) {
   const [gs, dispatch] = useReducer(battleReducer, undefined, initGameState);
+
+  const goToBattle = (playerData, scenario) => {
+    dispatch({ type: 'GO_TO_BATTLE', payload: { playerData, scenario } });
+  };
+
+  const onBattleEnd = (currentHP, victory) => {
+    dispatch({ type: 'BATTLE_END', payload: { currentHP, victory } });
+  };
+
   return (
-    <GameContext.Provider value={{ gs, dispatch }}>
+    <GameContext.Provider value={{ gs, dispatch, goToBattle, onBattleEnd }}>
       {children}
     </GameContext.Provider>
   );

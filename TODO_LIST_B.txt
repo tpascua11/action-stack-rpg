@@ -1,0 +1,64 @@
+================================================================================
+  GLOBAL CONTEXT REBUILD — AVORMORE: DECLARED TACTICS
+================================================================================
+
+GOAL: Establish GameContext + PlayerContext as the permanent data backbone,
+      wire BattleScreen to consume both, and expose goToBattle() as the
+      universal entry point into a fight.
+
+--------------------------------------------------------------------------------
+PHASE 1 — GameContext
+--------------------------------------------------------------------------------
+
+[ ] 1. Build/refactor GameContext (src/context/GameContext.jsx)
+    - State: { phase, playerData, scenario }
+    - Expose goToBattle(playerData, scenario):
+        dispatches GO_TO_BATTLE → sets phase to BATTLE,
+        stores playerData + scenario in context state
+    - Expose onBattleEnd(currentHP, victory):
+        transitions phase back to MAP (or RESULT for now),
+        passes result up for MapScreen to consume
+    - All phases routed through here: TITLE, CLASS_SELECT, MAP, BATTLE, RESULT
+
+[ ] 2. Update App.jsx phase router
+    - Add BATTLE case → <BattleScreen />
+    - Add MAP case → <MapScreen /> (placeholder ok for now)
+    - Ensure GameProvider wraps everything
+
+--------------------------------------------------------------------------------
+PHASE 2 — PlayerContext
+--------------------------------------------------------------------------------
+
+[ ] 3. Finalize PlayerContext (src/context/PlayerContext.jsx)
+    - State: { class, baseStats, deck, unlockedCards }
+    - Persists to localStorage
+    - Written to only by:
+        a. CharacterSelectScreen (on class pick)
+        b. MapScreen (after onBattleEnd — HP update, rewards)
+    - Read-only everywhere else (especially BattleScreen)
+
+--------------------------------------------------------------------------------
+PHASE 3 — BattleScreen Refactor
+--------------------------------------------------------------------------------
+
+[ ] 4. Refactor buildInitialState (src/battle/initialState.js)
+    - Accept (playerData, scenario) as arguments
+    - Remove hardcoded CURRENT_ENCOUNTER and SAMURAI references
+    - Build enemy queue from scenario, build player from playerData
+
+[ ] 5. Refactor BattleScreen (src/screens/BattleScreen.jsx)
+    - Read playerData + scenario from GameContext on mount
+    - Pass into buildInitialState to initialize battle reducer
+    - On battle end: call onBattleEnd(currentHP, victory) from GameContext
+    - BattleScreen never writes to PlayerContext
+
+--------------------------------------------------------------------------------
+PHASE 4 — MapScreen (stub, full build later)
+--------------------------------------------------------------------------------
+
+[ ] 6. Create MapScreen stub (src/screens/MapScreen.jsx)
+    - Hardcode 1-2 encounter nodes for testing
+    - Each node calls goToBattle(playerData, scenario)
+    - Receives onBattleEnd result and updates PlayerContext (HP, rewards)
+
+================================================================================

@@ -15,7 +15,6 @@ import {
 } from './engine/battle_engine';
 import { buildEnemyQueue, buildInitialState, CURRENT_ENCOUNTER } from './initialState';
 import { CLASS_REGISTRY } from '../data/classes/class_registry';
-import { derivePlayerSnapshot } from '../context/PlayerContext';
 
 export function battleReducer(state, action) {
   switch (action.type) {
@@ -177,19 +176,19 @@ export function battleReducer(state, action) {
       return { ...state, phase: 'CHARACTER_SELECT' };
 
     case 'GO_TO_BATTLE': {
-      // !! IMPORTANT — this case should eventually own the FULL battle initialization:
-      // building enemies from the map node encounter, hydrating player from PlayerContext,
-      // clearing logs, resetting turn/stepCount/queue/etc. Battle state should not be
-      // fully active until this fires. buildInitialState is a temporary idle shell.
-      // Once MapScreen exists, GO_TO_BATTLE will receive an encounter payload from the
-      // chosen map node and do everything in one shot here.
-      //
-      // playerData (minimal stored data) comes from PlayerContext.
-      // derivePlayerSnapshot builds the full runtime player from it — applying stat
-      // boosts, resolving cards, pulling portrait/icon from CLASS_REGISTRY, etc.
-      const player = derivePlayerSnapshot(action.playerData);
-      const chars = state.characters.map(c => c.faction === 'player' ? player : c);
-      return { ...state, characters: chars, phase: 'QUEUE_SETUP' };
+      // Builds a full fresh battle state from playerData + scenario.
+      // playerData: minimal stored data from PlayerContext.
+      // scenario: array of enemy definitions from the selected map node.
+      const { playerData, scenario } = action.payload;
+      const freshState = buildInitialState(scenario, playerData);
+      return { ...freshState, phase: 'QUEUE_SETUP' };
+    }
+
+    case 'BATTLE_END': {
+      // Called by BattleScreen when fight is over.
+      // MapScreen reads battleResult to apply rewards, HP carryover, progression.
+      const { currentHP, victory } = action.payload;
+      return { ...state, phase: 'MAP', battleResult: { currentHP, victory } };
     }
 
     // !! IMPORTANT — RESET must NOT rebuild the player from scratch once progression exists.
