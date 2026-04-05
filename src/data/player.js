@@ -3,11 +3,11 @@
 //  Creates a runtime player instance from a class definition.
 // ============================================================
 
-export function buildPlayer(classDef, { id = 'player', name, portrait }) {
+export function buildPlayer(classDef, { id = 'player', name, portrait } = {}) {
   return {
     id,
     name,
-    portrait,
+    portrait: portrait ?? classDef.portrait ?? null,
     icon: classDef.icon,
     faction: 'player',
     class_id: classDef.id,

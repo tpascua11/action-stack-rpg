@@ -4,11 +4,13 @@
 
 import { SAMURAI_CARDS } from '../cards/samurai_cards';
 import SamuraiResourceBar from '../../components/resources/SamuraiResourceBar';
+import { PORTRAIT_SUMURAI } from '../../assets';
 
 export const SAMURAI = {
   id: 'samurai',
   name: 'Samurai',
   icon: '⚔️',
+  portrait: PORTRAIT_SUMURAI,
   base_health: 350,
   total_action_slots: 3,
   resources: [

@@ -10,7 +10,7 @@ import EnemyZone from '../components/battle/EnemyZone';
 import BattleLog from '../components/battle/BattleLog';
 import BattleQueue from '../components/battle/BattleQueue';
 import TagPool from '../components/battle/TagPool';
-import VraxPortrait from '../components/battle/VraxPortrait';
+import PlayerPortrait from '../components/battle/PlayerPortrait';
 import ActionQueue from '../components/battle/ActionQueue';
 import Hand from '../components/battle/Hand';
 
@@ -190,7 +190,7 @@ export default function BattleScreen() {
             </div>
 
             {/* CENTER — Character column */}
-            <VraxPortrait player={player} />
+            <PlayerPortrait player={player} />
 
             {/* RIGHT — Advanced tag column + Slot column */}
             <div style={{ width: '340px', paddingLeft: '12px', display: 'flex', flexDirection: 'row', alignItems: 'flex-end', gap: '12px' }}>

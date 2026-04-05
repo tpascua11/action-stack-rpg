@@ -1,10 +1,11 @@
 // ============================================================
-//  VraxPortrait — Center focal point of player zone
+//  PlayerPortrait — Center focal point of player zone
 // ============================================================
-import { COOL_FOX as coolFoxImg } from '../../assets';
+import { COOL_FOX as fallbackImg } from '../../assets';
 
-export default function VraxPortrait({ player }) {
+export default function PlayerPortrait({ player }) {
   const hpPct = Math.max(0, (player.health / player.max_health) * 100);
+  const portrait = player.portrait ?? fallbackImg;
 
   return (
     <div className="flex flex-col items-center">
@@ -13,7 +14,7 @@ export default function VraxPortrait({ player }) {
         shadow-[0_0_60px_rgba(77,166,255,0.5)] overflow-hidden">
 
         {/* Portrait fills entire card */}
-        <img src={coolFoxImg} alt="Vrax" className="absolute inset-0 w-full h-full object-cover" />
+        <img src={portrait} alt={player.name} className="absolute inset-0 w-full h-full object-cover" />
 
         {/* Overlay UI */}
         <div className="absolute inset-0 flex flex-col justify-between">
@@ -42,7 +43,6 @@ export default function VraxPortrait({ player }) {
                 {player.health} / {player.max_health} HP
               </span>
             </div>
-
           </div>
 
         </div>

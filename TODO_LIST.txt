@@ -2,6 +2,21 @@
   DAQ-GAME TODO LIST
 ================================================================================
 
+[ ] Battle state lifecycle — GO_TO_BATTLE should own full battle initialization:
+    building enemies from the map node encounter, hydrating player from PlayerContext,
+    clearing logs, resetting turn/queue/etc. buildInitialState should be a minimal
+    idle shell only. Battle state should not be fully built until GO_TO_BATTLE fires.
+    After battle, state tears down when player returns to Map. This becomes the real
+    implementation once MapScreen exists — the current setup is a testing shortcut.
+
+[ ] PlayerContext localStorage — portrait storage: don't store portrait URLs in
+    localStorage. Webpack asset hashes change between builds, breaking saved portrait
+    URLs. Fix: store only class_id, derive portrait from CLASS_REGISTRY at runtime.
+
+[ ] PlayerContext localStorage — cards storage: card objects may contain
+    non-serializable data (component refs, functions). Long-term, store only card IDs
+    and resolve full card objects from a card registry at runtime.
+
 [x] Create a centralized image/asset index file (e.g. src/asssets/index.js) that
     exports all image imports in one place, so components don't each need their
     own import statements for icons, status images, portraits, etc.

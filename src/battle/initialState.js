@@ -4,8 +4,8 @@
 
 import { EMBER_WITCH, FLAME_WITCH, FLAME_QUEEN } from '../data/characters/enemies';
 import { SAMURAI } from '../data/classes/samurai';
-import { CLASS_REGISTRY } from '../data/classes/class_registry';
 import { buildPlayer } from '../data/player';
+import { derivePlayerSnapshot } from '../context/PlayerContext';
 import { calcSpeed } from './engine/battle_engine';
 
 // ── CURRENT ENCOUNTER ──
@@ -34,34 +34,12 @@ export function buildInitialState(enemies = CURRENT_ENCOUNTER, playerData = null
     id: `${def.id}_${i + 1}`,
   }));
 
-  let vrax;
-  if (playerData) {
-    // Player already built and persisted — reconstruct battle instance from their data
-    vrax = {
-      id: 'vrax',
-      name: playerData.name,
-      portrait: playerData.portrait ?? null,
-      icon: CLASS_REGISTRY[playerData.class_id]?.icon ?? '⚔️',
-      faction: 'player',
-      class_id: playerData.class_id,
-      health: playerData.max_health,
-      max_health: playerData.max_health,
-      resources: Object.fromEntries(
-        (CLASS_REGISTRY[playerData.class_id]?.resources ?? []).map(r => [r.type, { current: r.starting, max: r.max }])
-      ),
-      total_action_slots: playerData.total_action_slots,
-      active_tag_pool: [...playerData.permanent_tags],
-      combat_start_tags: [...(CLASS_REGISTRY[playerData.class_id]?.combat_start_tags ?? [])],
-      permanent_tags: [...playerData.permanent_tags],
-      cards: playerData.cards,
-      queue: [],
-    };
-  } else {
-    // Fallback: no player data yet (debug mode or pre-class-select)
-    vrax = buildPlayer(SAMURAI, { id: 'vrax', name: 'VRAX', portrait: null });
-  }
+  // Derive full runtime player from stored minimal data, or fall back to SAMURAI for debug
+  const player = playerData
+    ? derivePlayerSnapshot(playerData)
+    : buildPlayer(SAMURAI, { id: 'vrax', name: 'VRAX' });
 
-  const characters = [vrax, ...builtEnemies];
+  const characters = [player, ...builtEnemies];
   return {
     phase: new URLSearchParams(window.location.search).has('debug') ? 'QUEUE_SETUP' : 'TITLE',
     turn: 1,

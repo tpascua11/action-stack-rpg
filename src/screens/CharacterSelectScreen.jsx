@@ -115,12 +115,21 @@ function TypewriterText({ text, className, style }) {
 // ── Screen ───────────────────────────────────────────────────────
 export default function CharacterSelectScreen() {
   const { dispatch } = useGame();
-  const { playerDispatch } = usePlayer();
+  const { playerData, playerDispatch } = usePlayer();
 
-  const [selectedId, setSelectedId]     = useState(null);
-  const [showcasedId, setShowcasedId]   = useState(null);
+  const [selectedId, setSelectedId]       = useState(null);
+  const [showcasedId, setShowcasedId]     = useState(null);
   const [isTransitioning, setTransitioning] = useState(false);
-  const [fadeOut, setFadeOut]           = useState(false);
+  const [fadeOut, setFadeOut]             = useState(false);
+  const [pendingBattle, setPendingBattle] = useState(false);
+
+  // Step 2: once CONFIRM_CLASS has resolved and playerData is ready, go to battle
+  useEffect(() => {
+    if (pendingBattle && playerData) {
+      dispatch({ type: 'GO_TO_BATTLE', playerData });
+      setPendingBattle(false);
+    }
+  }, [pendingBattle, playerData, dispatch]);
 
   const showDescription = useCallback((id) => {
     if (isTransitioning) return;
@@ -207,8 +216,9 @@ export default function CharacterSelectScreen() {
                   className="start-button"
                   type="button"
                   onClick={() => {
+                    // Step 1: build + persist the player — GO_TO_BATTLE fires once playerData is ready
                     playerDispatch({ type: 'CONFIRM_CLASS', classId: selectedId });
-                    dispatch({ type: 'GO_TO_BATTLE' });
+                    setPendingBattle(true);
                   }}
                 >
                   <span className="start-text">START</span>

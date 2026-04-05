@@ -2,18 +2,26 @@
 //  PlayerContext — persistent player data across fights + sessions
 //  Backed by localStorage under the key 'daq_player'.
 //
-//  What lives here (persistent, survives page refresh + between fights):
-//    class_id, name, max_health, total_action_slots, cards,
-//    permanent_tags, map_progress
+//  WHAT WE STORE (minimal — IDs and deltas only, never full objects):
+//    class_id        → string, e.g. 'samurai'
+//    card_unlocks    → array of card IDs the player has unlocked beyond their base deck
+//    stat_boosts     → array of { stat, amount } deltas applied on top of class base stats
+//    completed_zones → TODO: not built yet — will track which map zones/levels are done
 //
-//  What does NOT live here:
-//    Battle-scoped state (queue, active_tag_pool, resources.current,
-//    health, logs) — those stay in GameContext and reset each fight.
+//  WHAT WE DERIVE AT RUNTIME (never stored):
+//    portrait        → CLASS_REGISTRY[class_id].portrait
+//    base cards      → CLASS_REGISTRY[class_id].cards
+//    full deck       → base cards + card_unlocks resolved from card registry by ID
+//    max_health      → CLASS_REGISTRY[class_id].base_health + sum of stat_boosts
+//    icon, resources, permanent_tags, etc. → all from CLASS_REGISTRY
+//
+//  WHY: storing full card objects or asset URLs in localStorage breaks on
+//  production builds (webpack hashes change). Storing only IDs means we always
+//  resolve fresh data from the source of truth at runtime.
 // ============================================================
 
 import { createContext, useContext, useReducer, useEffect } from 'react';
 import { CLASS_REGISTRY } from '../data/classes/class_registry';
-import { buildPlayer } from '../data/player';
 
 const STORAGE_KEY = 'daq_player';
 
@@ -38,39 +46,78 @@ function saveToStorage(playerData) {
   }
 }
 
+// ── Helpers ──────────────────────────────────────────────────
+
+// Derives the full runtime player snapshot from stored minimal data.
+// Call this whenever you need the full picture (e.g. GO_TO_BATTLE).
+export function derivePlayerSnapshot(playerData) {
+  const classDef = CLASS_REGISTRY[playerData.class_id];
+  if (!classDef) return null;
+
+  // Apply stat boosts on top of class base stats
+  const maxHealth = (playerData.stat_boosts ?? [])
+    .filter(b => b.stat === 'max_health')
+    .reduce((total, b) => total + b.amount, classDef.base_health);
+
+  const totalActionSlots = (playerData.stat_boosts ?? [])
+    .filter(b => b.stat === 'total_action_slots')
+    .reduce((total, b) => total + b.amount, classDef.total_action_slots);
+
+  // TODO: resolve card_unlocks from a card registry by ID and append to base deck
+  // For now, card_unlocks is unused — player gets the full class base deck only
+  const cards = classDef.cards;
+
+  return {
+    id: 'vrax',
+    name: 'VRAX',
+    portrait:           classDef.portrait ?? null,
+    icon:               classDef.icon,
+    faction:            'player',
+    class_id:           classDef.id,
+    health:             maxHealth,
+    max_health:         maxHealth,
+    resources: Object.fromEntries(
+      classDef.resources.map(r => [r.type, { current: r.starting, max: r.max }])
+    ),
+    total_action_slots: totalActionSlots,
+    active_tag_pool:    [...classDef.permanent_tags],
+    combat_start_tags:  [...classDef.combat_start_tags],
+    permanent_tags:     [...classDef.permanent_tags],
+    cards,
+    queue: [],
+  };
+}
+
 // ── Reducer ──────────────────────────────────────────────────
 
 function playerReducer(state, action) {
   switch (action.type) {
 
     // Runs ONCE when the player picks their class at game start.
-    // Builds the full player from CLASS_REGISTRY and persists it.
+    // Only stores the minimal data needed — everything else is derived at runtime.
     case 'CONFIRM_CLASS': {
-      const classDef = CLASS_REGISTRY[action.classId];
-      if (!classDef) return state;
-      const built = buildPlayer(classDef, { id: 'vrax', name: 'VRAX', portrait: null });
+      if (!CLASS_REGISTRY[action.classId]) return state;
       return {
-        class_id:           built.class_id,
-        name:               built.name,
-        max_health:         built.max_health,
-        total_action_slots: built.total_action_slots,
-        cards:              built.cards,
-        permanent_tags:     built.permanent_tags,
-        map_progress:       {},
+        class_id:        action.classId,
+        card_unlocks:    [],
+        stat_boosts:     [],
+        // TODO: completed_zones — track which map zones/levels the player has finished.
+        // Will be set and updated by MapScreen once that screen is built.
+        completed_zones: [],
       };
     }
 
-    // Future: add a card to the player's deck after a reward
+    // Add an unlocked card ID to the player's deck (post-battle reward, etc.)
     case 'UNLOCK_CARD':
-      return { ...state, cards: [...state.cards, action.card] };
+      return { ...state, card_unlocks: [...state.card_unlocks, action.cardId] };
 
-    // Future: upgrade a numeric stat (max_health, total_action_slots, etc.)
+    // Apply a stat upgrade delta — stacks, never replaces
     case 'UPGRADE_STAT':
-      return { ...state, [action.stat]: state[action.stat] + action.amount };
+      return { ...state, stat_boosts: [...state.stat_boosts, { stat: action.stat, amount: action.amount }] };
 
-    // Future: record which map nodes have been visited / completed
+    // TODO: called by MapScreen to record zone/level completion
     case 'SAVE_MAP_PROGRESS':
-      return { ...state, map_progress: { ...state.map_progress, ...action.progress } };
+      return { ...state, completed_zones: [...(state.completed_zones ?? []), action.zoneId] };
 
     // Wipe everything — called on true new game
     case 'NEW_GAME':
