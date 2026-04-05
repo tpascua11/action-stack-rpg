@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useGame } from '../context/GameContext';
 import { usePlayer } from '../context/PlayerContext';
-import EMBER_KEEP from '../data/scenarios/ember_keep.json';
+import EMBER_WITCH_TEST from '../data/scenarios/ember_witch_test.json';
 
 export default function MapScreen() {
   const { gs, goToBattle } = useGame();
@@ -25,7 +25,7 @@ export default function MapScreen() {
         </p>
       )}
       <button
-        onClick={() => goToBattle(EMBER_KEEP)}
+        onClick={() => goToBattle(EMBER_WITCH_TEST)}
         className="px-6 py-3 bg-red-700 hover:bg-red-600 rounded text-white font-bold"
       >
         [DEBUG] Go To Battle

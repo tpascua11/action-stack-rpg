@@ -1,0 +1,10 @@
+{
+  "id": "ember_witch_test",
+  "name": "Ember Witch Test",
+  "stages": [
+    {
+      "enemies": ["ember_witch", "ember_witch", "ember_witch", "ember_witch", "ember_witch"]
+    }
+  ],
+  "rewards": {}
+}

@@ -1,17 +1,19 @@
 // ============================================================
-//  Enemy Registry — maps enemy ID strings to enemy definitions
-//  Used to resolve scenario JSON (which stores IDs) into
-//  full enemy objects at runtime.
+//  Enemy Registry — resolves enemy_list.json into runtime objects
+//  Portraits stored as asset key strings in JSON are resolved
+//  to actual image imports here via the assets index.
 //
 //  To add a new enemy:
-//    1. Define it in enemies.js (or its own file)
-//    2. Import it here and add it to ENEMY_REGISTRY
+//    1. Add its definition to enemy_list.json
+//    2. Make sure its portrait key exists in src/assets/index.js
 // ============================================================
 
-import { EMBER_WITCH, FLAME_WITCH, FLAME_QUEEN } from './enemies';
+import ENEMY_LIST from './enemy_list.json';
+import * as ASSETS from '../../assets';
 
-export const ENEMY_REGISTRY = {
-  ember_witch: EMBER_WITCH,
-  flame_witch: FLAME_WITCH,
-  flame_queen: FLAME_QUEEN,
-};
+export const ENEMY_REGISTRY = Object.fromEntries(
+  ENEMY_LIST.map(def => [
+    def.id,
+    { ...def, portrait: ASSETS[def.portrait] ?? null },
+  ])
+);

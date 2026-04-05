@@ -1,7 +1,7 @@
 import './CharacterSelectScreen.css';
 import { useState, useCallback, useEffect } from 'react';
 import { useGame } from '../context/GameContext';
-import EMBER_KEEP from '../data/scenarios/ember_keep.json';
+import EMBER_WITCH_TEST from '../data/scenarios/ember_witch_test.json';
 import { usePlayer } from '../context/PlayerContext';
 import {
   CLASS_ICON_SAMURAI, CLASS_ICON_WARRIOR, CLASS_ICON_FIGHTER, CLASS_ICON_MONK,
@@ -127,7 +127,7 @@ export default function CharacterSelectScreen() {
   // Step 2: once CONFIRM_CLASS has resolved and playerData is ready, go to battle
   useEffect(() => {
     if (pendingBattle && playerData) {
-      goToBattle(EMBER_KEEP);
+      goToBattle(EMBER_WITCH_TEST);
       setPendingBattle(false);
     }
   }, [pendingBattle, playerData, dispatch]);
