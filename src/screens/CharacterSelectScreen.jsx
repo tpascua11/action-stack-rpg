@@ -4,6 +4,9 @@ import { useGame } from '../context/GameContext';
 import {
   CLASS_ICON_SAMURAI, CLASS_ICON_WARRIOR, CLASS_ICON_FIGHTER, CLASS_ICON_MONK,
   CLASS_ICON_ROGUE, CLASS_ICON_TEMPLAR, CLASS_ICON_PALADIN, CLASS_ICON_WIZARD,
+  PORTRAIT_SUMURAI, PORTRAIT_PALADIN, PORTRAIT_ROGUE,
+  PORTRAIT_WARRIOR, PORTRAIT_FIGHTER, PORTRAIT_MONK,
+  PORTRAIT_TEMPLAR, PORTRAIT_WIZARD,
 } from '../assets/index';
 
 function useTypewriter(text, speed = 18, delay = 500) {
@@ -28,42 +31,42 @@ function useTypewriter(text, speed = 18, delay = 500) {
 // ── Character data ───────────────────────────────────────────────
 const CHARACTER_DATA = {
   samurai: {
-    name: 'Samurai', classTitle: 'Way of the Blade', icon: CLASS_ICON_SAMURAI,
+    name: 'Samurai', classTitle: 'Way of the Blade', icon: CLASS_ICON_SAMURAI, portrait: PORTRAIT_SUMURAI,
     bgStart: '45, 20, 25', bgEnd: '30, 15, 20', accent: '200, 80, 80',
     description: 'Bound by honor and the ancient code of Bushido, these warriors walk the path of perfect discipline. Their steel sings with the weight of generations—each strike a meditation, each victory a testament to unwavering resolve.',
   },
   warrior: {
-    name: 'Warrior', classTitle: 'Master of Arms', icon: CLASS_ICON_WARRIOR,
+    name: 'Warrior', classTitle: 'Master of Arms', icon: CLASS_ICON_WARRIOR, portrait: PORTRAIT_WARRIOR,
     bgStart: '25, 30, 40', bgEnd: '18, 22, 32', accent: '130, 150, 180',
     description: 'Forged in countless battles, the Warrior stands as an unbreakable wall between allies and annihilation. No tactic too simple, no enemy too formidable—they face the tide of war with raw strength and indomitable will.',
   },
   fighter: {
-    name: 'Fighter', classTitle: 'Versatile Combatant', icon: CLASS_ICON_FIGHTER,
+    name: 'Fighter', classTitle: 'Versatile Combatant', icon: CLASS_ICON_FIGHTER, portrait: PORTRAIT_FIGHTER,
     bgStart: '40, 28, 18', bgEnd: '30, 20, 14', accent: '210, 140, 80',
     description: 'Adaptable, relentless, unpredictable—the Fighter masters no single style but excels in all. From tavern brawls to duels of honor, they write their legend in sweat, blood, and the scars of a hundred different disciplines.',
   },
   monk: {
-    name: 'Monk', classTitle: 'Disciple of Spirit', icon: CLASS_ICON_MONK,
+    name: 'Monk', classTitle: 'Disciple of Spirit', icon: CLASS_ICON_MONK, portrait: PORTRAIT_MONK,
     bgStart: '20, 35, 28', bgEnd: '15, 26, 20', accent: '100, 170, 130',
     description: 'Through years of meditation and physical perfection, Monks channel inner energy into devastating force. They need no weapon—their body is the instrument, their mind the forge where flesh and spirit become one.',
   },
   rogue: {
-    name: 'Rogue', classTitle: 'Shadow Walker', icon: CLASS_ICON_ROGUE,
+    name: 'Rogue', classTitle: 'Shadow Walker', icon: CLASS_ICON_ROGUE, portrait: PORTRAIT_ROGUE,
     bgStart: '30, 22, 38', bgEnd: '22, 16, 30', accent: '155, 120, 185',
     description: 'In the spaces between light and darkness, Rogues find their truth. Masters of misdirection and precision strikes, they turn the battlefield into a dance where only they know the steps—and the blade always finds its mark.',
   },
   templar: {
-    name: 'Templar', classTitle: 'Holy Enforcer', icon: CLASS_ICON_TEMPLAR,
+    name: 'Templar', classTitle: 'Holy Enforcer', icon: CLASS_ICON_TEMPLAR, portrait: PORTRAIT_TEMPLAR,
     bgStart: '35, 30, 18', bgEnd: '26, 22, 14', accent: '220, 185, 110',
     description: 'Sworn to sacred duty, Templars blend martial prowess with divine authority. They are the sword arm of faith itself—judging, purging, and protecting with the weight of conviction that burns brighter than any earthly fire.',
   },
   paladin: {
-    name: 'Paladin', classTitle: 'Beacon of Light', icon: CLASS_ICON_PALADIN,
+    name: 'Paladin', classTitle: 'Beacon of Light', icon: CLASS_ICON_PALADIN, portrait: PORTRAIT_PALADIN,
     bgStart: '28, 32, 42', bgEnd: '20, 24, 32', accent: '190, 210, 235',
     description: 'Radiating hope in the darkest hours, Paladins stand as living embodiments of courage and compassion. Their oath is their strength—shielding the innocent, smiting the wicked, and inspiring all who witness their luminous example.',
   },
   wizard: {
-    name: 'Wizard', classTitle: 'Arcane Scholar', icon: CLASS_ICON_WIZARD,
+    name: 'Wizard', classTitle: 'Arcane Scholar', icon: CLASS_ICON_WIZARD, portrait: PORTRAIT_WIZARD,
     bgStart: '32, 24, 42', bgEnd: '24, 18, 32', accent: '160, 130, 220',
     description: 'Keepers of forbidden knowledge and weavers of reality itself, Wizards perceive the threads of magic that bind all existence. With gesture and word, they reshape the impossible—scholars whose curiosity rivals the stars themselves.',
   },
@@ -179,7 +182,11 @@ export default function CharacterSelectScreen() {
             } : {}}
           >
             <div className={`showcase-portrait${!showcaseData ? ' showcase-portrait--empty' : ''}`} style={fadeStyle}>
-              {showcaseData && <div className="large-portrait-placeholder">{showcaseData.icon}</div>}
+              {showcaseData && (
+                showcaseData.portrait
+                  ? <img className="showcase-portrait-img" src={showcaseData.portrait} alt={showcaseData.name} />
+                  : <div className="large-portrait-placeholder">{showcaseData.icon}</div>
+              )}
             </div>
             {!showcaseData && (
               <div className="showcase-info showcase-info--empty">

@@ -6,7 +6,14 @@
 
 // --- Portraits ---
 export { default as COOL_FOX } from './Cool_Fox.png';
-export { default as UPSCALED_00005 } from './PLAYER_PORTRAITS/Upscaled_00005_.png';
+export { default as PORTRAIT_SUMURAI } from './PLAYER_PORTRAITS/SUMURAI.png';
+export { default as PORTRAIT_PALADIN } from './PLAYER_PORTRAITS/PALADIN.png';
+export { default as PORTRAIT_ROGUE } from './PLAYER_PORTRAITS/ROGUE.png';
+export { default as PORTRAIT_WARRIOR } from './PLAYER_PORTRAITS/WARRIOR.png';
+export { default as PORTRAIT_FIGHTER } from './PLAYER_PORTRAITS/FIGHTER.png';
+export { default as PORTRAIT_MONK } from './PLAYER_PORTRAITS/MONK.png';
+export { default as PORTRAIT_TEMPLAR } from './PLAYER_PORTRAITS/TEMPLAR.png';
+export { default as PORTRAIT_WIZARD } from './PLAYER_PORTRAITS/WIZARD.png';
 export { default as UPSCALED_00017 } from './PLAYER_PORTRAITS/Upscaled_00017_.png';
 export { default as UPSCALED_00028 } from './PLAYER_PORTRAITS/Upscaled_00028_.png';
 export { default as UPSCALED_00203 } from './PLAYER_PORTRAITS/Upscaled_00203_.png';
