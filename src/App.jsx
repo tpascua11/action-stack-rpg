@@ -3,6 +3,7 @@
 // ============================================================
 
 import { GameProvider, useGame } from './context/GameContext';
+import { PlayerProvider } from './context/PlayerContext';
 import TitleScreen from './screens/TitleScreen';
 import CharacterSelectScreen from './screens/CharacterSelectScreen';
 import BattleScreen from './screens/BattleScreen';
@@ -26,8 +27,10 @@ function PhaseRouter() {
 
 export default function App() {
   return (
-    <GameProvider>
-      <PhaseRouter />
-    </GameProvider>
+    <PlayerProvider>
+      <GameProvider>
+        <PhaseRouter />
+      </GameProvider>
+    </PlayerProvider>
   );
 }

@@ -1,6 +1,7 @@
 import './CharacterSelectScreen.css';
 import { useState, useCallback, useEffect } from 'react';
 import { useGame } from '../context/GameContext';
+import { usePlayer } from '../context/PlayerContext';
 import {
   CLASS_ICON_SAMURAI, CLASS_ICON_WARRIOR, CLASS_ICON_FIGHTER, CLASS_ICON_MONK,
   CLASS_ICON_ROGUE, CLASS_ICON_TEMPLAR, CLASS_ICON_PALADIN, CLASS_ICON_WIZARD,
@@ -114,6 +115,7 @@ function TypewriterText({ text, className, style }) {
 // ── Screen ───────────────────────────────────────────────────────
 export default function CharacterSelectScreen() {
   const { dispatch } = useGame();
+  const { playerDispatch } = usePlayer();
 
   const [selectedId, setSelectedId]     = useState(null);
   const [showcasedId, setShowcasedId]   = useState(null);
@@ -204,7 +206,10 @@ export default function CharacterSelectScreen() {
                 <button
                   className="start-button"
                   type="button"
-                  onClick={() => dispatch({ type: 'GO_TO_BATTLE' })}
+                  onClick={() => {
+                    playerDispatch({ type: 'CONFIRM_CLASS', classId: selectedId });
+                    dispatch({ type: 'GO_TO_BATTLE' });
+                  }}
                 >
                   <span className="start-text">START</span>
                   <span className="start-glow" />

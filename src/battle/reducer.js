@@ -177,6 +177,16 @@ export function battleReducer(state, action) {
     case 'GO_TO_BATTLE':
       return { ...state, phase: 'QUEUE_SETUP' };
 
+    // !! IMPORTANT — RESET must NOT rebuild the player from scratch once progression exists.
+    // Player data is persistent across fights: unlocked cards, max_health upgrades,
+    // total_action_slots, permanent_tags, etc. must survive between battles.
+    // Only battle-scoped fields should reset per fight:
+    //   - queue            → clear
+    //   - active_tag_pool  → restore to permanent_tags only (not combat_start_tags)
+    //   - resources.current → back to starting value (not max)
+    //   - health           → back to max_health
+    // buildInitialState is a temporary placeholder — replace this with a proper
+    // between-fight reset that preserves the player's persistent state.
     case 'RESET':
       return buildInitialState(CURRENT_ENCOUNTER);
 
