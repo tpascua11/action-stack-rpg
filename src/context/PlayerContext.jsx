@@ -3,25 +3,27 @@
 //  Backed by localStorage under the key 'daq_player'.
 //
 //  WHAT WE STORE (minimal — IDs and deltas only, never full objects):
+//    name            → string, player-chosen character name
 //    class_id        → string, e.g. 'samurai'
-//    card_unlocks    → array of card IDs the player has unlocked beyond their base deck
+//    current_hp      → number, persisted between fights
+//    card_unlocks    → array of card IDs unlocked beyond the class base deck
 //    stat_boosts     → array of { stat, amount } deltas applied on top of class base stats
-//    completed_zones → TODO: not built yet — will track which map zones/levels are done
+//    completed_zones → array of zone IDs cleared on the map
 //
 //  WHAT WE DERIVE AT RUNTIME (never stored):
 //    portrait        → CLASS_REGISTRY[class_id].portrait
 //    base cards      → CLASS_REGISTRY[class_id].cards
-//    full deck       → base cards + card_unlocks resolved from card registry by ID
-//    max_health      → CLASS_REGISTRY[class_id].base_health + sum of stat_boosts
+//    full deck       → base cards + card_unlocks resolved via CARD_REGISTRY
+//    max_health      → class base_health + sum of stat_boosts
 //    icon, resources, permanent_tags, etc. → all from CLASS_REGISTRY
 //
-//  WHY: storing full card objects or asset URLs in localStorage breaks on
-//  production builds (webpack hashes change). Storing only IDs means we always
-//  resolve fresh data from the source of truth at runtime.
+//  WHY: image keys are plain strings — localStorage-safe. Storing only IDs means
+//  we always resolve fresh asset URLs from the registry at runtime.
 // ============================================================
 
 import { createContext, useContext, useReducer, useEffect } from 'react';
 import { CLASS_REGISTRY } from '../data/classes/class_registry';
+import { CARD_REGISTRY } from '../data/cards/card_registry';
 
 const STORAGE_KEY = 'daq_player';
 
@@ -63,15 +65,16 @@ export function derivePlayerSnapshot(playerData) {
     .filter(b => b.stat === 'total_action_slots')
     .reduce((total, b) => total + b.amount, classDef.total_action_slots);
 
-  // TODO: resolve card_unlocks from a card registry by ID and append to base deck
-  // For now, card_unlocks is unused — player gets the full class base deck only
-  const cards = classDef.cards;
+  const unlockedCards = (playerData.card_unlocks ?? [])
+    .map(id => CARD_REGISTRY[id])
+    .filter(Boolean);
+  const cards = [...classDef.cards, ...unlockedCards];
 
   const currentHealth = playerData.current_hp ?? maxHealth;
 
   return {
     id: 'vrax',
-    name: 'VRAX',
+    name: playerData.name ?? 'VRAX',
     portrait:           classDef.portrait ?? null,
     icon:               classDef.icon,
     faction:            'player',
@@ -101,6 +104,7 @@ function playerReducer(state, action) {
       const classDef = CLASS_REGISTRY[action.classId];
       if (!classDef) return state;
       return {
+        name:            action.name ?? 'VRAX',
         class_id:        action.classId,
         current_hp:      classDef.base_health,
         card_unlocks:    [],
