@@ -4,13 +4,12 @@
 
 import { FIGHTER_CARDS } from '../cards/fighter_cards';
 import FighterResourceBar from '../../components/resources/FighterResourceBar';
-import { PORTRAIT_FIGHTER } from '../../assets';
 
 export const FIGHTER = {
   id: 'fighter',
   name: 'Fighter',
   icon: '⚔️',
-  portrait: PORTRAIT_FIGHTER,
+  portrait: 'PORTRAIT_FIGHTER',
   base_health: 350,
   total_action_slots: 3,
   resources: [

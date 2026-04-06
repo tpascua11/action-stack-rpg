@@ -2,7 +2,7 @@
 //  initialState — builds the starting game state and enemy queues
 // ============================================================
 
-import { SAMURAI } from '../data/classes/samurai';
+import { CLASS_REGISTRY } from '../data/classes/class_registry';
 import EMBER_KEEP from '../data/scenarios/ember_keep.json';
 import EMBER_WITCH_TEST from '../data/scenarios/ember_witch_test.json';
 import { ENEMY_REGISTRY } from '../data/characters/enemy_registry';
@@ -43,7 +43,7 @@ export function buildInitialState(scenario = EMBER_WITCH_TEST, playerData = null
   // Derive full runtime player from stored minimal data, or fall back to SAMURAI for debug
   const player = playerData
     ? derivePlayerSnapshot(playerData)
-    : buildPlayer(SAMURAI, { id: 'vrax', name: 'VRAX' });
+    : buildPlayer(CLASS_REGISTRY.samurai, { id: 'vrax', name: 'VRAX' });
 
   const characters = [player, ...builtEnemies];
   return {
