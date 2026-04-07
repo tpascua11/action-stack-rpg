@@ -15,6 +15,7 @@ import {
   MAP_ICON_GRASS_4, MAP_ICON_GRASS_5, MAP_ICON_GRASS_6,
 } from '../assets';
 import './MapScreen.css';
+import menuMapTheme from '../assets/MUSIC/Menu Map Theme.mp3';
 
 const MAP_ICON_LOOKUP = {
   GARDEN_TOWN:    MAP_ICON_GARDEN_TOWN,
@@ -140,7 +141,7 @@ function getNeighbors(id) {
   return n;
 }
 
-const DEBUG_UNLOCK_ALL = true;
+const DEBUG_UNLOCK_ALL = false;
 
 // Converts playerData.completed_zones ({ "0": [0,1] }) into
 // zoneStates and levelStates the component can render directly.
@@ -229,7 +230,7 @@ const ZoneCell = ({ zone, zoneState, zoneType, isPlayerHere, isSelected, progres
       transition: "all 0.2s ease",
       userSelect: "none",
     };
-    if (isLocked) return { ...base, background: "#05080f", borderColor: "#0c1018" };
+    if (isLocked) return { ...base, background: zoneType.dim, borderColor: `${zoneType.color}30`, filter: "saturate(0.35) brightness(0.6)" };
     if (isCleared) {
       return {
         ...base,
@@ -265,7 +266,7 @@ const ZoneCell = ({ zone, zoneState, zoneType, isPlayerHere, isSelected, progres
             position: "absolute", inset: 0,
             width: "100%", height: "100%",
             objectFit: "cover",
-            opacity: isLocked ? 0.12 : isCleared ? 0.45 : 0.75,
+            opacity: isLocked ? 0.55 : isCleared ? 0.45 : 0.75,
             pointerEvents: "none",
           }}
         />
@@ -274,7 +275,7 @@ const ZoneCell = ({ zone, zoneState, zoneType, isPlayerHere, isSelected, progres
       <div style={{
         position: "absolute", inset: 0,
         background: isLocked
-          ? "rgba(5,8,15,0.80)"
+          ? "rgba(5,8,15,0.45)"
           : isCleared
             ? "rgba(5,8,15,0.50)"
             : (isPlayerHere || isSelected)
@@ -283,14 +284,12 @@ const ZoneCell = ({ zone, zoneState, zoneType, isPlayerHere, isSelected, progres
         pointerEvents: "none",
       }} />
 
-      {!isLocked && (
-        <div style={{
-          position: "absolute", top: 0, left: 0, right: 0, height: 3,
-          background: `linear-gradient(90deg,transparent,${zoneType.color},transparent)`,
-          opacity: 0.8,
-          zIndex: 1,
-        }} />
-      )}
+      <div style={{
+        position: "absolute", top: 0, left: 0, right: 0, height: 3,
+        background: `linear-gradient(90deg,transparent,${zoneType.color},transparent)`,
+        opacity: isLocked ? 0.35 : 0.8,
+        zIndex: 1,
+      }} />
 
       {!isLocked ? (
         <>
@@ -351,7 +350,21 @@ const ZoneCell = ({ zone, zoneState, zoneType, isPlayerHere, isSelected, progres
           </div>
         </>
       ) : (
-        <div style={{ fontSize: 18, opacity: 0.25, position: "relative", zIndex: 1 }}>🔒</div>
+        <>
+          <div style={{
+            fontSize: 11, letterSpacing: 1.5, textAlign: "center",
+            color: `${zoneType.color}55`, fontWeight: "bold",
+            position: "relative", zIndex: 1, padding: "0 4px",
+          }}>
+            {zone.name}
+          </div>
+          <div style={{
+            position: "relative", zIndex: 1,
+            display: "flex", flexDirection: "column", alignItems: "center", gap: 2,
+          }}>
+            <div style={{ fontSize: 18, opacity: 0.6 }}>🔒</div>
+          </div>
+        </>
       )}
     </div>
   );
@@ -429,6 +442,14 @@ export default function MapScreen() {
   const [flashMsg,      setFlashMsg]      = useState("");
   const [flashOn,       setFlashOn]       = useState(false);
   const [activeMenu,    setActiveMenu]    = useState(null);
+
+  const audioRef = useRef(null);
+  useEffect(() => {
+    const audio = audioRef.current;
+    audio.volume = 0.1;
+    audio.play().catch(() => {});
+    return () => { audio.pause(); audio.currentTime = 0; };
+  }, []);
 
   const ftRef    = useRef(null);
 
@@ -582,6 +603,7 @@ export default function MapScreen() {
   // ── Render ────────────────────────────────────────────────
   return (
     <div style={STATIC_STYLES.root}>
+      <audio ref={audioRef} src={menuMapTheme} loop />
       <div style={STATIC_STYLES.scanlines} />
 
       {/* TOPBAR */}
