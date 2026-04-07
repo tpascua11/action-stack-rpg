@@ -23,8 +23,8 @@ export function GameProvider({ children }) {
   const [gs, dispatch] = useReducer(battleReducer, undefined, initGameState);
   const { playerData } = usePlayer();
 
-  const goToBattle = (scenario) => {
-    dispatch({ type: 'GO_TO_BATTLE', payload: { playerData, scenario } });
+  const goToBattle = (scenario, sourceZone = null) => {
+    dispatch({ type: 'GO_TO_BATTLE', payload: { playerData, scenario, sourceZone } });
   };
 
   const onBattleEnd = (currentHP, victory) => {

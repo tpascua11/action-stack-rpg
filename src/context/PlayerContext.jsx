@@ -105,7 +105,7 @@ function playerReducer(state, action) {
         current_hp:      classDef.base_health,
         card_unlocks:    [],
         stat_boosts:     [],
-        completed_zones: [],
+        completed_zones: {},
       };
     }
 
@@ -122,9 +122,19 @@ function playerReducer(state, action) {
     case 'UPGRADE_STAT':
       return { ...state, stat_boosts: [...state.stat_boosts, { stat: action.stat, amount: action.amount }] };
 
-    // TODO: called by MapScreen to record zone/level completion
-    case 'SAVE_MAP_PROGRESS':
-      return { ...state, completed_zones: [...(state.completed_zones ?? []), action.zoneId] };
+    // Called by MapScreen to record zone/level completion after a victory.
+    // completed_zones shape: { [zoneId]: [clearedLevelIndex, ...] }
+    case 'SAVE_MAP_PROGRESS': {
+      const existing = state.completed_zones?.[action.zoneId] ?? [];
+      if (existing.includes(action.levelIndex)) return state;
+      return {
+        ...state,
+        completed_zones: {
+          ...(state.completed_zones ?? {}),
+          [action.zoneId]: [...existing, action.levelIndex],
+        },
+      };
+    }
 
     // Wipe everything — called on true new game
     case 'NEW_GAME':

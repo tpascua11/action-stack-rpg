@@ -180,9 +180,10 @@ export function battleReducer(state, action) {
       // Builds a full fresh battle state from playerData + scenario.
       // playerData: minimal stored data from PlayerContext.
       // scenario: array of enemy definitions from the selected map node.
-      const { playerData, scenario } = action.payload;
+      // sourceZone: { zoneId, levelIndex } — which map node launched this fight.
+      const { playerData, scenario, sourceZone } = action.payload;
       const freshState = buildInitialState(scenario, playerData);
-      return { ...freshState, phase: 'QUEUE_SETUP' };
+      return { ...freshState, phase: 'QUEUE_SETUP', sourceZone: sourceZone ?? null };
     }
 
     case 'BATTLE_END': {
@@ -191,6 +192,9 @@ export function battleReducer(state, action) {
       const { currentHP, victory } = action.payload;
       return { ...state, phase: 'MAP', battleResult: { currentHP, victory } };
     }
+
+    case 'CLEAR_BATTLE_RESULT':
+      return { ...state, battleResult: null };
 
     // !! IMPORTANT — RESET must NOT rebuild the player from scratch once progression exists.
     // Player data is persistent across fights: unlocked cards, max_health upgrades,

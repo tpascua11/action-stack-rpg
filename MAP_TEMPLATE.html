@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>World Map - Optimized Version</title>
+  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #080c14; overflow: hidden; font-family: 'Courier New', monospace; }
+    
+    /* CSS Animations - moved from JS to CSS for better performance */
+    @keyframes modalIn {
+      from { opacity: 0; transform: scale(0.92) translateY(20px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    @keyframes btnPulse {
+      0%, 100% { box-shadow: 0 2px 15px var(--glow); }
+      50% { box-shadow: 0 2px 25px var(--glow), 0 0 30px var(--glow); }
+    }
+    
+    @keyframes tokenGlow {
+      0%, 100% { box-shadow: 0 0 16px rgba(77,166,255,0.3); }
+      50% { box-shadow: 0 0 24px rgba(77,166,255,0.5); }
+    }
+    
+    .modal-content { animation: modalIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    .enter-btn-cell { animation: btnPulse 2s ease-in-out infinite; }
+    .token-glow { animation: tokenGlow 3s ease-in-out infinite; }
+    
+    .menu-btn { transition: all 0.2s ease; }
+    .menu-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 20px rgba(77,166,255,0.15); }
+    .menu-btn.active { background: rgba(77,166,255,0.12); border-color: rgba(77,166,255,0.4); }
+    
+    /* Reusable CSS classes to reduce inline styles */
+    .cell-base {
+      border: 2px solid;
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.2s ease;
+      user-select: none;
+    }
+    
+    .cell-locked {
+      background: #05080f;
+      border-color: #0c1018;
+      cursor: not-allowed;
+    }
+    
+    .cell-available {
+      cursor: pointer;
+    }
+    
+    .level-bar {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      border: 2px solid;
+      border-radius: 8px;
+      padding: 18px 20px;
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+    }
+    
+    .flash-message {
+      position: fixed;
+      bottom: calc(15vh + 20px);
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(135deg, #0a1020, #0c1525);
+      border-radius: 6px;
+      padding: 10px 24px;
+      font-size: 10px;
+      letter-spacing: 2px;
+      color: #4da6ff;
+      z-index: 600;
+      pointer-events: none;
+      transition: all 0.3s ease;
+    }
+    
+    .flash-active {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+      box-shadow: 0 4px 30px rgba(77,166,255,0.2);
+    }
+    
+    .flash-inactive {
+      opacity: 0;
+      transform: translateX(-50%) translateY(10px);
+      box-shadow: none;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  
+  <script type="text/babel">
+    const { useState, useEffect, useRef, useMemo, useCallback } = React;
+
+    // Constants defined outside component
+    const COLS = 6;
+    const ROWS = 4;
+
+    const ZONE_TYPES = {
+      COMBAT:    { label:"COMBAT",    color:"#e94560", dim:"rgba(233,69,96,0.08)",   icon:"⚔️", glow:"rgba(233,69,96,0.4)" },
+      CHALLENGE: { label:"CHALLENGE", color:"#c084fc", dim:"rgba(192,132,252,0.08)", icon:"💀", glow:"rgba(192,132,252,0.4)" },
+      EXPLORE:   { label:"EXPLORE",   color:"#4da6ff", dim:"rgba(77,166,255,0.08)",  icon:"🏛️", glow:"rgba(77,166,255,0.4)" },
+      RESTORE:   { label:"RESTORE",   color:"#69d99a", dim:"rgba(105,217,154,0.08)", icon:"💖", glow:"rgba(105,217,154,0.4)" },
+      SHOP:      { label:"SHOP",      color:"#ffd700", dim:"rgba(255,215,0,0.08)",   icon:"⬡", glow:"rgba(255,215,0,0.4)" },
+      BOSS:      { label:"BOSS",      color:"#e94560", dim:"rgba(233,69,96,0.14)",   icon:"👑", glow:"rgba(233,69,96,0.5)" },
+    };
+
+    const LEVELS_BY_TYPE = { COMBAT: 3, CHALLENGE: 4, EXPLORE: 2, RESTORE: 1, SHOP: 1, BOSS: 1 };
+
+    // Cache level descriptions and rewards
+    const LEVEL_DESC_CACHE = {};
+    const LEVEL_REWARD_CACHE = {};
+
+    function getLevelDesc(type, i) {
+      const key = `${type}_${i}`;
+      if (!LEVEL_DESC_CACHE[key]) {
+        const descs = {
+          COMBAT: ["First contact. Light resistance.", "Reinforcements arrive mid-fight.", "The commander joins the battle."],
+          CHALLENGE: ["The outer guard. Deceptively fast.", "Two elite soldiers. No breaks.", "A veteran with new tricks.", "Final form. Bring everything."],
+          EXPLORE: ["Survey the area for hidden caches.", "Deeper in — something valuable remains."],
+          RESTORE: ["Rest at the altar and recover."],
+          SHOP: ["Browse the merchant's current stock."],
+          BOSS: ["End of the campaign. The warlord waits."],
+        };
+        LEVEL_DESC_CACHE[key] = (descs[type] || ["Unknown encounter."])[i] || "Unknown encounter.";
+      }
+      return LEVEL_DESC_CACHE[key];
+    }
+
+    function getLevelReward(type, i, isLast) {
+      if (isLast) return "ZONE CLEAR — unlocks neighboring zones";
+      const key = `${type}_${i}`;
+      if (!LEVEL_REWARD_CACHE[key]) {
+        const rewards = {
+          COMBAT: ["+20 Gold", "+30 Gold + card slot"],
+          CHALLENGE: ["+30 Gold", "+40 Gold", "Unlocks mechanic upgrade"],
+          EXPLORE: ["Unlocks 1 card"],
+          RESTORE: [], SHOP: [], BOSS: []
+        };
+        LEVEL_REWARD_CACHE[key] = (rewards[type] || [])[i] || "+Gold";
+      }
+      return LEVEL_REWARD_CACHE[key];
+    }
+
+    function makeLevels(type) {
+      const count = LEVELS_BY_TYPE[type] || 3;
+      return Array.from({ length: count }, (_, i) => ({ 
+        id: i, 
+        desc: getLevelDesc(type, i), 
+        reward: getLevelReward(type, i, i === count - 1) 
+      }));
+    }
+
+    // Pre-compute zones
+    const ZONES_DATA = [
+      { id:0, name:"IRON GATE", type:"COMBAT" }, { id:1, name:"DUST TRAIL", type:"EXPLORE" }, { id:2, name:"WOLF HOLLOW", type:"CHALLENGE" }, { id:3, name:"CROSSROADS", type:"SHOP" }, { id:4, name:"WATCHTOWER", type:"COMBAT" }, { id:5, name:"EMBER PASS", type:"EXPLORE" },
+      { id:6, name:"THE BREACH", type:"COMBAT" }, { id:7, name:"RUINED SHRINE", type:"RESTORE" }, { id:8, name:"SIEGE CAMP", type:"COMBAT" }, { id:9, name:"THE VAULT", type:"CHALLENGE" }, { id:10, name:"ARMORY", type:"EXPLORE" }, { id:11, name:"DARK HOLLOW", type:"COMBAT" },
+      { id:12, name:"MARKET ROW", type:"SHOP" }, { id:13, name:"BONE FIELD", type:"COMBAT" }, { id:14, name:"STORM PEAK", type:"CHALLENGE" }, { id:15, name:"TIDE CAVE", type:"EXPLORE" }, { id:16, name:"LAST SHRINE", type:"RESTORE" }, { id:17, name:"WAR CAMP", type:"COMBAT" },
+      { id:18, name:"EMBER RUINS", type:"EXPLORE" }, { id:19, name:"WARLORD ROAD", type:"COMBAT" }, { id:20, name:"IRON DEPTHS", type:"CHALLENGE" }, { id:21, name:"SUPPLY CACHE", type:"SHOP" }, { id:22, name:"FINAL MARCH", type:"COMBAT" }, { id:23, name:"THE THRONE", type:"BOSS" },
+    ];
+
+    const ZONES = ZONES_DATA.map(z => ({ ...z, levels: makeLevels(z.type) }));
+
+    // Pre-compute neighbor cache
+    const NEIGHBOR_CACHE = {};
+    function getNeighbors(id) {
+      if (!NEIGHBOR_CACHE[id]) {
+        const col = id % COLS, row = Math.floor(id / COLS);
+        const n = [];
+        if (row > 0) n.push(id - COLS);
+        if (row < ROWS - 1) n.push(id + COLS);
+        if (col > 0) n.push(id - 1);
+        if (col < COLS - 1) n.push(id + 1);
+        NEIGHBOR_CACHE[id] = n;
+      }
+      return NEIGHBOR_CACHE[id];
+    }
+
+    // Initialize states once
+    const INIT_ZONE_STATES = (() => { 
+      const s = {}; 
+      ZONES.forEach(z => s[z.id] = "locked"); 
+      s[0] = "available"; 
+      return s; 
+    })();
+    
+    const INIT_LEVEL_STATES = (() => { 
+      const ls = {}; 
+      ZONES.forEach(z => { 
+        ls[z.id] = {}; 
+        z.levels.forEach((_, i) => ls[z.id][i] = i === 0 ? "available" : "locked"); 
+      }); 
+      return ls; 
+    })();
+
+    const MENU_ITEMS = [
+      { id:'deck', label:'DECK', icon:'🃏', color:'#4da6ff' },
+      { id:'shop', label:'SHOP', icon:'⬡', color:'#ffd700' },
+      { id:'inventory', label:'INVENTORY', icon:'🎒', color:'#69d99a' },
+      { id:'skills', label:'SKILLS', icon:'✦', color:'#c084fc' },
+      { id:'settings', label:'SETTINGS', icon:'⚙', color:'#667788' },
+    ];
+
+    // Static styles extracted outside component
+    const STATIC_STYLES = {
+      root: {
+        background: "#080c14",
+        color: "#dde",
+        width: "100vw",
+        height: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        overflow: "hidden",
+        position: "relative"
+      },
+      scanlines: {
+        position: "absolute",
+        inset: 0,
+        zIndex: 99,
+        pointerEvents: "none",
+        background: "repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.07) 2px,rgba(0,0,0,0.07) 4px)"
+      },
+      topbar: {
+        height: 46,
+        flexShrink: 0,
+        background: "#050810",
+        borderBottom: "1px solid rgba(77,166,255,0.12)",
+        display: "flex",
+        alignItems: "center",
+        padding: "0 24px",
+        gap: 20,
+        zIndex: 100,
+        position: "relative"
+      },
+      main: {
+        flex: 1,
+        display: "flex",
+        flexDirection: "column",
+        overflow: "hidden",
+        position: "relative"
+      },
+      grid: {
+        width: "100%",
+        maxWidth: 900,
+        aspectRatio: `${COLS}/${ROWS}`,
+        display: "grid",
+        gridTemplateColumns: `repeat(${COLS},1fr)`,
+        gridTemplateRows: `repeat(${ROWS},1fr)`,
+        gap: 10,
+        position: "relative"
+      },
+      bottom: {
+        height: "15vh",
+        minHeight: 100,
+        flexShrink: 0,
+        background: "linear-gradient(180deg,#050810,#0a0f18)",
+        borderTop: "1px solid rgba(77,166,255,0.12)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: 12,
+        padding: "0 24px",
+        zIndex: 100,
+        position: "relative"
+      }
+    };
+
+    // Memoized Cell Component
+    const ZoneCell = React.memo(({ 
+      zone, 
+      zoneState, 
+      zoneType, 
+      isPlayerHere, 
+      isSelected, 
+      progress, 
+      isPlayerCell, 
+      playerTypeColor, 
+      playerGlow, 
+      onClick, 
+      onEnter,
+      cellRef
+    }) => {
+      const isLocked = zoneState === "locked";
+      const isCleared = zoneState === "cleared";
+      
+      // Build style object conditionally with useMemo
+      const cellStyle = useMemo(() => {
+        const base = {
+          border: "2px solid",
+          borderRadius: 8,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: 4,
+          position: "relative",
+          overflow: "hidden",
+          cursor: isLocked ? "not-allowed" : "pointer",
+          transition: "all 0.2s ease",
+          userSelect: "none"
+        };
+        
+        if (isLocked) {
+          return { ...base, background: "#05080f", borderColor: "#0c1018" };
+        }
+        
+        if (isCleared) {
+          return {
+            ...base,
+            background: isPlayerHere || isSelected ? zoneType.dim : "#070b13",
+            borderColor: (isPlayerHere || isSelected) ? zoneType.color : "rgba(77,166,255,0.15)",
+            opacity: isPlayerHere ? 1 : (isSelected ? 1 : 0.5),
+            boxShadow: isPlayerHere ? `0 0 30px ${zoneType.glow}` : (isSelected ? `0 0 20px ${zoneType.glow}` : "none")
+          };
+        }
+        
+        // Available state
+        return {
+          ...base,
+          background: (isPlayerHere || isSelected) ? zoneType.dim : "#0a0f1a",
+          borderColor: (isPlayerHere || isSelected) ? zoneType.color : "rgba(26,42,58,0.9)",
+          boxShadow: isPlayerHere 
+            ? `0 0 30px ${zoneType.glow}, inset 0 0 20px ${zoneType.dim}` 
+            : isSelected ? `0 0 20px ${zoneType.glow}` : "none",
+          transform: (isPlayerHere || isSelected) ? "scale(1.02)" : "scale(1)"
+        };
+      }, [isLocked, isCleared, isPlayerHere, isSelected, zoneType]);
+      
+      return (
+        <div 
+          ref={cellRef}
+          className={`cell-base ${isLocked ? 'cell-locked' : 'cell-available'}`} 
+          style={cellStyle} 
+          onClick={onClick}
+        >
+          {!isLocked && (
+            <div style={{ 
+              position: "absolute", 
+              top: 0, left: 0, right: 0, 
+              height: 3, 
+              background: `linear-gradient(90deg,transparent,${zoneType.color},transparent)`, 
+              opacity: 0.8 
+            }} />
+          )}
+          
+          {!isLocked ? (
+            <>
+              <div style={{ fontSize: 36, lineHeight: 1 }}>{zoneType.icon}</div>
+              <div style={{ 
+                fontSize: 9, 
+                letterSpacing: 1.5, 
+                textAlign: "center", 
+                padding: "0 6px", 
+                lineHeight: 1.3, 
+                color: isCleared ? "rgba(77,166,255,0.35)" : isPlayerHere ? zoneType.color : "#8aaabb", 
+                fontWeight: "bold" 
+              }}>
+                {zone.name}
+              </div>
+              <div style={{ fontSize: 8, letterSpacing: 1, color: "#2a4060" }}>
+                {progress.done}/{progress.total}
+              </div>
+              
+              {isPlayerCell && (
+                <button
+                  className="enter-btn-cell"
+                  onClick={(e) => { e.stopPropagation(); onEnter(); }}
+                  style={{
+                    marginTop: 4,
+                    padding: "6px 16px",
+                    border: `1.5px solid ${playerTypeColor || "#4da6ff"}`,
+                    borderRadius: 5,
+                    fontSize: 9,
+                    letterSpacing: 2,
+                    cursor: "pointer",
+                    background: `${playerTypeColor || "#4da6ff"}15`,
+                    color: playerTypeColor || "#4da6ff",
+                    fontWeight: "bold",
+                    whiteSpace: "nowrap",
+                    "--glow": playerGlow || "rgba(77,166,255,0.3)",
+                    transition: "all 0.15s"
+                  }}
+                >
+                  ENTER ▶
+                </button>
+              )}
+            </>
+          ) : (
+            <div style={{ fontSize: 18, opacity: 0.25 }}>🔒</div>
+          )}
+        </div>
+      );
+    });
+
+    // Memoized Level Bar Component
+    const LevelBar = React.memo(({ level, index, levelState, isSelected, zoneType, onClick }) => {
+      const barStyle = useMemo(() => {
+        const base = {
+          display: "flex",
+          alignItems: "center",
+          gap: 16,
+          border: "2px solid",
+          borderRadius: 8,
+          padding: "18px 20px",
+          cursor: levelState === "locked" ? "default" : "pointer",
+          transition: "all 0.2s ease",
+          flexShrink: 0
+        };
+        
+        if (levelState === "cleared") {
+          return { 
+            ...base, 
+            background: "linear-gradient(135deg,#06090e,#080c12)", 
+            borderColor: "rgba(77,166,255,0.1)", 
+            opacity: 0.45 
+          };
+        }
+        
+        if (isSelected) {
+          return {
+            ...base,
+            background: `linear-gradient(135deg,${zoneType?.dim||"#0a0f1a"},${zoneType?.color}11)`,
+            borderColor: zoneType?.color||"#4da6ff",
+            boxShadow: `0 0 30px ${zoneType?.glow||"transparent"}44,inset 0 0 20px ${zoneType?.dim||"transparent"}`,
+            transform: "scale(1.02)"
+          };
+        }
+        
+        if (levelState === "locked") {
+          return { 
+            ...base, 
+            background: "linear-gradient(135deg,#06090e,#050810)", 
+            borderColor: "#0d1420", 
+            opacity: 0.35 
+          };
+        }
+        
+        return { 
+          ...base, 
+          background: "linear-gradient(135deg,#0a0f1a,#0c1424)", 
+          borderColor: "#1e2a3a" 
+        };
+      }, [levelState, isSelected, zoneType]);
+      
+      return (
+        <div 
+          className="level-bar" 
+          style={barStyle} 
+          onClick={onClick}
+        >
+          <div style={{
+            minWidth: 36,
+            height: 36,
+            borderRadius: 8,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontSize: 14,
+            fontWeight: "bold",
+            fontVariantNumeric: "tabular-nums",
+            background: levelState==="cleared" 
+              ? "rgba(77,166,255,0.05)" 
+              : levelState==="locked" 
+                ? "rgba(20,30,40,0.5)" 
+                : isSelected 
+                  ? `${zoneType?.color}22` 
+                  : "rgba(77,166,255,0.08)",
+            border: `1px solid ${
+              levelState==="cleared" 
+                ? "rgba(77,166,255,0.15)" 
+                : levelState==="locked" 
+                  ? "rgba(20,30,40,0.5)" 
+                  : isSelected 
+                    ? zoneType?.color||"#4da6ff" 
+                    : "rgba(77,166,255,0.2)"
+            }`,
+            color: levelState==="cleared" 
+              ? "rgba(77,166,255,0.3)" 
+              : levelState==="locked" 
+                ? "#1a2030" 
+                : isSelected 
+                  ? zoneType?.color||"#4da6ff" 
+                  : "#4da6ff"
+          }}>
+            {String(index+1).padStart(2,"0")}
+          </div>
+          <div style={{ flex: 1 }}>
+            <div style={{ 
+              fontSize: 13, 
+              letterSpacing: 0.5, 
+              color: levelState==="cleared" 
+                ? "rgba(77,166,255,0.3)" 
+                : levelState==="locked" 
+                  ? "#1a2030" 
+                  : isSelected 
+                    ? zoneType?.color||"#4da6ff" 
+                    : "#c0d0e0", 
+              marginBottom: 6, 
+              lineHeight: 1.4, 
+              fontWeight: isSelected ? "600" : "400" 
+            }}>
+              {level.desc}
+            </div>
+            <div style={{ 
+              fontSize: 10, 
+              letterSpacing: 0.5, 
+              color: levelState==="cleared" 
+                ? "rgba(77,166,255,0.2)" 
+                : levelState==="locked" 
+                  ? "#0d1420" 
+                  : zoneType?.color||"#4da6ff", 
+              opacity: levelState==="cleared" ? 0.5 : 0.85 
+            }}>
+              ⬡ {level.reward}
+            </div>
+          </div>
+          <div style={{ 
+            fontSize: 10, 
+            letterSpacing: 1, 
+            minWidth: 48, 
+            textAlign: "right", 
+            color: levelState==="cleared" 
+              ? "rgba(77,166,255,0.3)" 
+              : levelState==="locked" 
+                ? "#0d1420" 
+                : isSelected 
+                  ? zoneType?.color||"#4da6ff" 
+                  : "#2a4060", 
+            fontWeight: isSelected ? "bold" : "normal" 
+          }}>
+            {levelState==="cleared" 
+              ? "✓ DONE" 
+              : levelState==="locked" 
+                ? "— LOCKED" 
+                : isSelected 
+                  ? "▶ SELECTED" 
+                  : "READY"}
+          </div>
+        </div>
+      );
+    });
+
+    function WorldMap() {
+      const [zoneStates, setZoneStates] = useState(INIT_ZONE_STATES);
+      const [levelStates, setLevelStates] = useState(INIT_LEVEL_STATES);
+      const [playerZone, setPlayerZone] = useState(0);
+      const [selectedZone, setSelectedZone] = useState(null);
+      const [selectedLevel, setSelectedLevel] = useState(null);
+      const [modalOpen, setModalOpen] = useState(false);
+      const [tokenPos, setTokenPos] = useState({ x: 0, y: 0 });
+      const [isMoving, setIsMoving] = useState(false);
+      const cellRefs = useRef({});
+      const gridRef = useRef(null);
+      const [flashMsg, setFlashMsg] = useState("");
+      const [flashOn, setFlashOn] = useState(false);
+      const ftRef = useRef(null);
+      const [activeMenu, setActiveMenu] = useState(null);
+
+      // Memoized flash function
+      const flash = useCallback((msg) => { 
+        setFlashMsg(msg); 
+        setFlashOn(true); 
+        clearTimeout(ftRef.current); 
+        ftRef.current = setTimeout(() => setFlashOn(false), 2200); 
+      }, []);
+
+      // Memoized token position calculator
+      const computeTokenPos = useCallback((zid) => {
+        const el = cellRefs.current[zid], gr = gridRef.current;
+        if (!el || !gr) return null;
+        const r = el.getBoundingClientRect(), g = gr.getBoundingClientRect();
+        return { x: r.right - g.left - 18, y: r.top - g.top - 22 };
+      }, []);
+
+      useEffect(() => { 
+        setTimeout(() => { 
+          const p = computeTokenPos(0); 
+          if (p) setTokenPos(p); 
+        }, 50); 
+      }, [computeTokenPos]);
+
+      // Memoized zone data
+      const zoneData = useMemo(() => selectedZone !== null ? ZONES[selectedZone] : null, [selectedZone]);
+      const zoneTypeConfig = useMemo(() => zoneData ? ZONE_TYPES[zoneData.type] : null, [zoneData]);
+      const playerZoneData = useMemo(() => ZONES[playerZone], [playerZone]);
+      const playerTypeConfig = useMemo(() => ZONE_TYPES[playerZoneData?.type], [playerZoneData]);
+
+      // Memoized progress calculator
+      const getProgress = useCallback((zid) => {
+        const ls = levelStates[zid], t = ZONES[zid].levels.length;
+        return { 
+          done: Object.values(ls).filter(s => s === "cleared").length, 
+          total: t 
+        };
+      }, [levelStates]);
+
+      // Memoized cleared count
+      const clearedCount = useMemo(() => 
+        Object.values(zoneStates).filter(s => s === "cleared").length,
+        [zoneStates]
+      );
+
+      // Memoized canEnter check
+      const canEnter = useMemo(() => 
+        selectedLevel !== null && levelStates[selectedZone]?.[selectedLevel] === "available",
+        [selectedLevel, selectedZone, levelStates]
+      );
+
+      // Stable event handlers with useCallback
+      const handleCellClick = useCallback((zid) => {
+        const st = zoneStates[zid];
+        
+        if (st === "locked") {
+          flash("🔒 ZONE LOCKED");
+          return;
+        }
+        
+        if (modalOpen) {
+          setModalOpen(false);
+        }
+        
+        setPlayerZone(zid);
+        setSelectedZone(zid);
+        setSelectedLevel(null);
+        
+        const p = computeTokenPos(zid);
+        if (p) { 
+          setIsMoving(true); 
+          setTokenPos(p); 
+          setTimeout(() => setIsMoving(false), 400); 
+        }
+      }, [zoneStates, modalOpen, flash, computeTokenPos]);
+
+      const openModal = useCallback(() => { 
+        if (zoneStates[playerZone] !== "locked") { 
+          setSelectedZone(playerZone); 
+          setModalOpen(true); 
+        } 
+      }, [zoneStates, playerZone]);
+      
+      const closeModal = useCallback(() => { 
+        setModalOpen(false); 
+      }, []);
+      
+      const handleBackdropClick = useCallback((e) => { 
+        if (e.target === e.currentTarget) closeModal(); 
+      }, [closeModal]);
+
+      const handleLevelClick = useCallback((lid) => {
+        if (levelStates[selectedZone]?.[lid] === "locked") return;
+        setSelectedLevel(lid === selectedLevel ? null : lid);
+      }, [levelStates, selectedZone, selectedLevel]);
+
+      const handleEnter = useCallback(() => {
+        if (selectedZone === null || selectedLevel === null) return;
+        const zid = selectedZone, lid = selectedLevel, zone = ZONES[zid], total = zone.levels.length;
+
+        setLevelStates(prev => {
+          const next = { ...prev, [zid]: { ...prev[zid], [lid]: "cleared" } };
+          if (lid + 1 < total) next[zid][lid + 1] = "available";
+          return next;
+        });
+
+        const willClear = zone.levels.every((_, i) => i === lid || levelStates[zid][i] === "cleared");
+        if (willClear) {
+          setZoneStates(prev => { 
+            const next = { ...prev, [zid]: "cleared" }; 
+            getNeighbors(zid).forEach(n => { 
+              if (next[n] === "locked") next[n] = "available"; 
+            }); 
+            return next; 
+          });
+          flash("ZONE CLEARED — NEIGHBORS UNLOCKED");
+        } else {
+          flash("LEVEL CLEARED");
+        }
+        
+        setSelectedLevel(null);
+      }, [selectedZone, selectedLevel, levelStates, flash]);
+
+      // Memoized grid wrap style with blur effect
+      const gridWrapStyle = useMemo(() => ({
+        flex: 1,
+        padding: "20px 24px",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        filter: modalOpen ? "blur(5px) brightness(0.7)" : "none",
+        transition: "filter 0.3s ease"
+      }), [modalOpen]);
+
+      // Memoized backdrop style
+      const backdropStyle = useMemo(() => ({
+        position: "absolute",
+        top: 0, left: 0, right: 0, bottom: 0,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        zIndex: 500,
+        pointerEvents: modalOpen ? "auto" : "none"
+      }), [modalOpen]);
+
+      // Memoized modal style
+      const modalStyle = useMemo(() => ({
+        width: "100%",
+        maxWidth: 520,
+        maxHeight: "85%",
+        background: "linear-gradient(180deg,#0c1220,#080c14)",
+        border: `1px solid ${zoneTypeConfig?.color}33`,
+        borderRadius: 12,
+        overflow: "hidden",
+        display: "flex",
+        flexDirection: "column",
+        boxShadow: `0 25px 80px rgba(0,0,0,0.7), 0 0 60px ${zoneTypeConfig?.glow || "rgba(77,166,255,0.15)"}`
+      }), [zoneTypeConfig]);
+
+      // Memoized flash message style
+      const flashStyle = useMemo(() => ({
+        position: "fixed",
+        bottom: "calc(15vh + 20px)",
+        left: "50%",
+        transform: `translateX(-50%) translateY(${flashOn ? 0 : 10}px)`,
+        background: "linear-gradient(135deg,#0a1020,#0c1525)",
+        border: `1px solid rgba(77,166,255,${flashOn ? 0.5 : 0.2})`,
+        borderRadius: 6,
+        padding: "10px 24px",
+        fontSize: 10,
+        letterSpacing: 2,
+        color: "#4da6ff",
+        zIndex: 600,
+        pointerEvents: "none",
+        transition: "all 0.3s ease",
+        opacity: flashOn ? 1 : 0,
+        boxShadow: flashOn ? "0 4px 30px rgba(77,166,255,0.2)" : "none"
+      }), [flashOn]);
+
+      return (
+        <div style={STATIC_STYLES.root}>
+          <div style={STATIC_STYLES.scanlines} />
+          
+          {/* TOPBAR */}
+          <div style={STATIC_STYLES.topbar}>
+            <div style={{ fontSize: 11, letterSpacing: 4, color: "#4da6ff", fontWeight: "bold" }}>WORLD MAP</div>
+            <div style={{ flex: 1 }} />
+            <div style={{ fontSize: 9, letterSpacing: 2, color: "#1e3050" }}>ZONE I — THE IRON WASTES</div>
+            <div style={{ fontSize: 9, letterSpacing: 2, color: "#2a4060", marginLeft: 16 }}>
+              {clearedCount}/{ZONES.length} CLEARED
+            </div>
+          </div>
+
+          {/* MAIN AREA */}
+          <div style={STATIC_STYLES.main}>
+            <div style={gridWrapStyle}>
+              <div ref={gridRef} style={STATIC_STYLES.grid}>
+                {ZONES.map(z => {
+                  const st = zoneStates[z.id];
+                  const t = ZONE_TYPES[z.type];
+                  const prog = getProgress(z.id);
+                  const isPlayerCell = playerZone === z.id && !modalOpen;
+                  
+                  return (
+                    <ZoneCell
+                      key={z.id}
+                      zone={z}
+                      zoneState={st}
+                      zoneType={t}
+                      isPlayerHere={playerZone === z.id}
+                      isSelected={selectedZone === z.id}
+                      progress={prog}
+                      isPlayerCell={isPlayerCell}
+                      playerTypeColor={playerTypeConfig?.color}
+                      playerGlow={playerTypeConfig?.glow}
+                      onClick={() => handleCellClick(z.id)}
+                      onEnter={openModal}
+                      cellRef={el => cellRefs.current[z.id] = el}
+                    />
+                  );
+                })}
+
+                {/* PLAYER TOKEN */}
+                <div style={{ 
+                  position: "absolute", 
+                  left: tokenPos.x, 
+                  top: tokenPos.y, 
+                  zIndex: 10, 
+                  display: "flex", 
+                  flexDirection: "column", 
+                  alignItems: "center", 
+                  pointerEvents: "none", 
+                  transition: isMoving 
+                    ? "left 0.35s cubic-bezier(0.4,0,0.2,1),top 0.35s cubic-bezier(0.4,0,0.2,1)" 
+                    : "none" 
+                }}>
+                  <div style={{ 
+                    width: 44, 
+                    height: 64, 
+                    borderRadius: 6, 
+                    background: "#080c14", 
+                    padding: 3, 
+                    display: "flex", 
+                    alignItems: "center", 
+                    justifyContent: "center", 
+                    border: "1px solid rgba(77,166,255,0.2)" 
+                  }}>
+                    <div className="token-glow" style={{ 
+                      width: 38, 
+                      height: 56, 
+                      border: "2px solid #4da6ff", 
+                      borderRadius: 4, 
+                      background: "linear-gradient(180deg,#0a1525,#061018)", 
+                      display: "flex", 
+                      alignItems: "center", 
+                      justifyContent: "center", 
+                      fontSize: 24 
+                    }}>🦊</div>
+                  </div>
+                  <div style={{ width: 1, height: 6, background: "rgba(77,166,255,0.4)" }} />
+                  <div style={{ 
+                    background: "#080c14", 
+                    border: "1px solid rgba(77,166,255,0.3)", 
+                    borderRadius: 3, 
+                    padding: "2px 6px", 
+                    fontSize: 7, 
+                    letterSpacing: 2, 
+                    color: "#4da6ff" 
+                  }}>VRAX</div>
+                </div>
+              </div>
+            </div>
+
+            {/* MODAL */}
+            <div style={backdropStyle} onClick={handleBackdropClick}>
+              {modalOpen && zoneData && (
+                <div className="modal-content" style={modalStyle} onClick={e => e.stopPropagation()}>
+                  {/* Header */}
+                  <div style={{ 
+                    padding: "22px 26px 18px", 
+                    borderBottom: `1px solid ${zoneTypeConfig.color}22`, 
+                    position: "relative", 
+                    background: `linear-gradient(135deg,${zoneTypeConfig.dim}00,${zoneTypeConfig.dim}44)` 
+                  }}>
+                    <button 
+                      onClick={closeModal} 
+                      style={{ 
+                        position: "absolute", 
+                        top: 16, right: 16, 
+                        width: 28, height: 28, 
+                        borderRadius: 6, 
+                        border: "1px solid rgba(255,255,255,0.1)", 
+                        background: "rgba(255,255,255,0.03)", 
+                        color: "#556677", 
+                        fontSize: 14, 
+                        cursor: "pointer", 
+                        display: "flex", 
+                        alignItems: "center", 
+                        justifyContent: "center", 
+                        transition: "all 0.2s" 
+                      }} 
+                      onMouseEnter={e => { 
+                        e.target.style.borderColor="#e94560"; 
+                        e.target.style.color="#e94560"; 
+                      }} 
+                      onMouseLeave={e => { 
+                        e.target.style.borderColor="rgba(255,255,255,0.1)"; 
+                        e.target.style.color="#556677"; 
+                      }}
+                    >
+                      ✕
+                    </button>
+                    
+                    <div style={{ 
+                      display: "inline-flex", 
+                      alignItems: "center", 
+                      gap: 8, 
+                      fontSize: 8, 
+                      letterSpacing: 2, 
+                      padding: "3px 10px", 
+                      borderRadius: 4, 
+                      background: zoneTypeConfig.dim, 
+                      color: zoneTypeConfig.color, 
+                      marginBottom: 10, 
+                      border: `1px solid ${zoneTypeConfig.color}33` 
+                    }}>
+                      <span>{zoneTypeConfig.icon}</span>
+                      {zoneData.type}
+                    </div>
+                    <div style={{ 
+                      fontSize: 22, 
+                      letterSpacing: 3, 
+                      color: zoneTypeConfig.color, 
+                      fontWeight: "bold", 
+                      lineHeight: 1.2 
+                    }}>
+                      {zoneData.name}
+                    </div>
+                    <div style={{ 
+                      fontSize: 10, 
+                      letterSpacing: 1, 
+                      color: "#3a5a7a", 
+                      marginTop: 8 
+                    }}>
+                      {getProgress(selectedZone).done}/{zoneData.levels.length} LEVELS CLEARED
+                    </div>
+                    <div style={{ 
+                      marginTop: 10, 
+                      height: 3, 
+                      background: "#1a2030", 
+                      borderRadius: 2, 
+                      overflow: "hidden" 
+                    }}>
+                      <div style={{ 
+                        height: "100%", 
+                        borderRadius: 2, 
+                        background: `linear-gradient(90deg,${zoneTypeConfig.color}88,${zoneTypeConfig.color})`, 
+                        width: `${(getProgress(selectedZone).done/zoneData.levels.length)*100}%`, 
+                        transition: "width 0.5s ease", 
+                        boxShadow: `0 0 10px ${zoneTypeConfig.glow}` 
+                      }} />
+                    </div>
+                  </div>
+
+                  {/* Levels */}
+                  <div style={{ 
+                    flex: 1, 
+                    display: "flex", 
+                    flexDirection: "column", 
+                    gap: 10, 
+                    padding: "20px 24px", 
+                    overflowY: "auto" 
+                  }}>
+                    {zoneData.levels.map((lv, i) => (
+                      <LevelBar
+                        key={i}
+                        level={lv}
+                        index={i}
+                        levelState={levelStates[selectedZone][i]}
+                        isSelected={selectedLevel === i}
+                        zoneType={zoneTypeConfig}
+                        onClick={() => handleLevelClick(i)}
+                      />
+                    ))}
+                  </div>
+
+                  {/* Footer */}
+                  <div style={{ 
+                    borderTop: "1px solid #1a2a3a", 
+                    padding: "20px 24px", 
+                    display: "flex", 
+                    alignItems: "center",
+                    justifyContent: "center",
+                    background: "rgba(0,0,0,0.2)",
+                    flexShrink: 0
+                  }}>
+                    <button
+                      onClick={canEnter ? handleEnter : undefined}
+                      disabled={!canEnter}
+                      style={{
+                        padding: "14px 48px",
+                        border: `2px solid ${canEnter ? (zoneTypeConfig?.color||"#4da6ff") : "#1a2a3a"}`,
+                        borderRadius: 10,
+                        fontSize: 12,
+                        letterSpacing: 4,
+                        cursor: canEnter ? "pointer" : "not-allowed",
+                        background: canEnter 
+                          ? `linear-gradient(135deg,${zoneTypeConfig?.dim||"#0a0f1a"},${zoneTypeConfig?.color}22)` 
+                          : "transparent",
+                        color: canEnter 
+                          ? (zoneTypeConfig?.color||"#4da6ff") 
+                          : "#2a3a4a",
+                        fontWeight: "bold",
+                        textShadow: canEnter ? `0 0 20px ${zoneTypeConfig?.glow||"rgba(77,166,255,0.3)"}` : "none",
+                        boxShadow: canEnter ? `0 4px 20px ${zoneTypeConfig?.glow||"rgba(77,166,255,0.2)"}` : "none",
+                        transition: "all 0.2s",
+                        opacity: canEnter ? 1 : 0.45,
+                      }}
+                      onMouseEnter={e => {
+                        if (canEnter) {
+                          e.currentTarget.style.transform = "translateY(-2px)";
+                          e.currentTarget.style.boxShadow = `0 8px 40px ${zoneTypeConfig?.glow||"rgba(77,166,255,0.35)"}`;
+                        }
+                      }}
+                      onMouseLeave={e => {
+                        if (canEnter) {
+                          e.currentTarget.style.transform = "translateY(0)";
+                          e.currentTarget.style.boxShadow = `0 4px 20px ${zoneTypeConfig?.glow||"rgba(77,166,255,0.2)"}`;
+                        }
+                      }}
+                    >
+                      ▶ ENTER ZONE
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* BOTTOM BAR */}
+          <div style={STATIC_STYLES.bottom}>
+            <div style={{ 
+              display: "flex", 
+              alignItems: "center", 
+              gap: 10, 
+              width: "100%", 
+              maxWidth: 800 
+            }}>
+              {MENU_ITEMS.map(item => (
+                <button 
+                  key={item.id} 
+                  className={`menu-btn ${activeMenu===item.id?'active':''}`} 
+                  onClick={() => setActiveMenu(activeMenu===item.id?null:item.id)} 
+                  style={{ 
+                    flex: 1, 
+                    padding: "12px 8px", 
+                    border: `1px solid ${activeMenu===item.id?item.color+"55":"rgba(255,255,255,0.06)"}`, 
+                    borderRadius: 8, 
+                    fontSize: 9, 
+                    letterSpacing: 2, 
+                    cursor: "pointer", 
+                    background: activeMenu===item.id?item.color+"15":"rgba(255,255,255,0.02)", 
+                    color: activeMenu===item.id?item.color:"#4a6a8a", 
+                    display: "flex", 
+                    flexDirection: "column", 
+                    alignItems: "center", 
+                    gap: 4, 
+                    minHeight: 60 
+                  }}
+                >
+                  <span style={{ fontSize: 18 }}>{item.icon}</span>
+                  <span>{item.label}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* FLASH MESSAGE */}
+          <div 
+            className={`flash-message ${flashOn ? 'flash-active' : 'flash-inactive'}`}
+            style={flashStyle}
+          >
+            {flashMsg}
+          </div>
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<WorldMap />);
+  </script>
+</body>
+</html>
