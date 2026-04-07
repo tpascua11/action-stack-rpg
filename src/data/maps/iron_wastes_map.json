@@ -8,6 +8,7 @@
       "id": 0,
       "name": "IRON GATE",
       "type": "COMBAT",
+      "map_icon": "CITADEL_1",
       "levels": [
         { "desc": "First contact. Light resistance.", "reward": "+20 Gold", "scenario_id": "ember_witch_test" },
         { "desc": "Reinforcements arrive mid-fight.", "reward": "+30 Gold + card slot", "scenario_id": "ember_witch_test" },
@@ -18,6 +19,7 @@
       "id": 1,
       "name": "DUST TRAIL",
       "type": "EXPLORE",
+      "map_icon": "PATH_1",
       "levels": [
         { "desc": "Survey the area for hidden caches.", "reward": "Unlocks 1 card", "scenario_id": null },
         { "desc": "Deeper in — something valuable remains.", "reward": "ZONE CLEAR — unlocks neighboring zones", "scenario_id": null }
@@ -27,6 +29,7 @@
       "id": 2,
       "name": "WOLF HOLLOW",
       "type": "CHALLENGE",
+      "map_icon": "FOREST_1",
       "levels": [
         { "desc": "The outer guard. Deceptively fast.", "reward": "+30 Gold", "scenario_id": "ember_witch_test" },
         { "desc": "Two elite soldiers. No breaks.", "reward": "+40 Gold", "scenario_id": "ember_witch_test" },
@@ -38,6 +41,7 @@
       "id": 3,
       "name": "CROSSROADS",
       "type": "SHOP",
+      "map_icon": "GARDEN_TOWN",
       "levels": [
         { "desc": "Browse the merchant's current stock.", "reward": "ZONE CLEAR — unlocks neighboring zones", "scenario_id": null }
       ]
@@ -46,6 +50,7 @@
       "id": 4,
       "name": "WATCHTOWER",
       "type": "COMBAT",
+      "map_icon": "CASTLE_1",
       "levels": [
         { "desc": "First contact. Light resistance.", "reward": "+20 Gold", "scenario_id": "ember_witch_test" },
         { "desc": "Reinforcements arrive mid-fight.", "reward": "+30 Gold + card slot", "scenario_id": "ember_witch_test" },
@@ -56,6 +61,7 @@
       "id": 5,
       "name": "EMBER PASS",
       "type": "EXPLORE",
+      "map_icon": "DESERT",
       "levels": [
         { "desc": "Survey the area for hidden caches.", "reward": "Unlocks 1 card", "scenario_id": null },
         { "desc": "Deeper in — something valuable remains.", "reward": "ZONE CLEAR — unlocks neighboring zones", "scenario_id": null }
@@ -65,6 +71,7 @@
       "id": 6,
       "name": "THE BREACH",
       "type": "COMBAT",
+      "map_icon": "CITADEL_2",
       "levels": [
         { "desc": "First contact. Light resistance.", "reward": "+20 Gold", "scenario_id": "ember_witch_test" },
         { "desc": "Reinforcements arrive mid-fight.", "reward": "+30 Gold + card slot", "scenario_id": "ember_witch_test" },
@@ -75,6 +82,7 @@
       "id": 7,
       "name": "RUINED SHRINE",
       "type": "RESTORE",
+      "map_icon": "RUINS",
       "levels": [
         { "desc": "Rest at the altar and recover.", "reward": "ZONE CLEAR — unlocks neighboring zones", "scenario_id": null }
       ]
@@ -83,6 +91,7 @@
       "id": 8,
       "name": "SIEGE CAMP",
       "type": "COMBAT",
+      "map_icon": "DESERT_CASTLE_1",
       "levels": [
         { "desc": "First contact. Light resistance.", "reward": "+20 Gold", "scenario_id": "ember_witch_test" },
         { "desc": "Reinforcements arrive mid-fight.", "reward": "+30 Gold + card slot", "scenario_id": "ember_witch_test" },
@@ -93,6 +102,7 @@
       "id": 9,
       "name": "THE VAULT",
       "type": "CHALLENGE",
+      "map_icon": "CITADEL_3",
       "levels": [
         { "desc": "The outer guard. Deceptively fast.", "reward": "+30 Gold", "scenario_id": "ember_witch_test" },
         { "desc": "Two elite soldiers. No breaks.", "reward": "+40 Gold", "scenario_id": "ember_witch_test" },
@@ -104,6 +114,7 @@
       "id": 10,
       "name": "ARMORY",
       "type": "EXPLORE",
+      "map_icon": "COOL_1",
       "levels": [
         { "desc": "Survey the area for hidden caches.", "reward": "Unlocks 1 card", "scenario_id": null },
         { "desc": "Deeper in — something valuable remains.", "reward": "ZONE CLEAR — unlocks neighboring zones", "scenario_id": null }
@@ -113,6 +124,7 @@
       "id": 11,
       "name": "DARK HOLLOW",
       "type": "COMBAT",
+      "map_icon": "FOREST_2",
       "levels": [
         { "desc": "First contact. Light resistance.", "reward": "+20 Gold", "scenario_id": "ember_witch_test" },
         { "desc": "Reinforcements arrive mid-fight.", "reward": "+30 Gold + card slot", "scenario_id": "ember_witch_test" },
@@ -123,6 +135,7 @@
       "id": 12,
       "name": "MARKET ROW",
       "type": "SHOP",
+      "map_icon": "GARDEN_TOWN_2",
       "levels": [
         { "desc": "Browse the merchant's current stock.", "reward": "ZONE CLEAR — unlocks neighboring zones", "scenario_id": null }
       ]
@@ -131,6 +144,7 @@
       "id": 13,
       "name": "BONE FIELD",
       "type": "COMBAT",
+      "map_icon": "GRASS_3",
       "levels": [
         { "desc": "First contact. Light resistance.", "reward": "+20 Gold", "scenario_id": "ember_witch_test" },
         { "desc": "Reinforcements arrive mid-fight.", "reward": "+30 Gold + card slot", "scenario_id": "ember_witch_test" },
@@ -141,6 +155,7 @@
       "id": 14,
       "name": "STORM PEAK",
       "type": "CHALLENGE",
+      "map_icon": "MOUNTAIN_ARC_1",
       "levels": [
         { "desc": "The outer guard. Deceptively fast.", "reward": "+30 Gold", "scenario_id": "ember_witch_test" },
         { "desc": "Two elite soldiers. No breaks.", "reward": "+40 Gold", "scenario_id": "ember_witch_test" },
@@ -152,6 +167,7 @@
       "id": 15,
       "name": "TIDE CAVE",
       "type": "EXPLORE",
+      "map_icon": "ISLAND_1",
       "levels": [
         { "desc": "Survey the area for hidden caches.", "reward": "Unlocks 1 card", "scenario_id": null },
         { "desc": "Deeper in — something valuable remains.", "reward": "ZONE CLEAR — unlocks neighboring zones", "scenario_id": null }
@@ -161,6 +177,7 @@
       "id": 16,
       "name": "LAST SHRINE",
       "type": "RESTORE",
+      "map_icon": "SUNSET_VILLAGE",
       "levels": [
         { "desc": "Rest at the altar and recover.", "reward": "ZONE CLEAR — unlocks neighboring zones", "scenario_id": null }
       ]
@@ -169,6 +186,7 @@
       "id": 17,
       "name": "WAR CAMP",
       "type": "COMBAT",
+      "map_icon": "GRASS_4",
       "levels": [
         { "desc": "First contact. Light resistance.", "reward": "+20 Gold", "scenario_id": "ember_witch_test" },
         { "desc": "Reinforcements arrive mid-fight.", "reward": "+30 Gold + card slot", "scenario_id": "ember_witch_test" },
@@ -179,6 +197,7 @@
       "id": 18,
       "name": "EMBER RUINS",
       "type": "EXPLORE",
+      "map_icon": "TREE_1",
       "levels": [
         { "desc": "Survey the area for hidden caches.", "reward": "Unlocks 1 card", "scenario_id": null },
         { "desc": "Deeper in — something valuable remains.", "reward": "ZONE CLEAR — unlocks neighboring zones", "scenario_id": null }
@@ -188,6 +207,7 @@
       "id": 19,
       "name": "WARLORD ROAD",
       "type": "COMBAT",
+      "map_icon": "GRASS_1",
       "levels": [
         { "desc": "First contact. Light resistance.", "reward": "+20 Gold", "scenario_id": "ember_witch_test" },
         { "desc": "Reinforcements arrive mid-fight.", "reward": "+30 Gold + card slot", "scenario_id": "ember_witch_test" },
@@ -198,6 +218,7 @@
       "id": 20,
       "name": "IRON DEPTHS",
       "type": "CHALLENGE",
+      "map_icon": "GRASS_2",
       "levels": [
         { "desc": "The outer guard. Deceptively fast.", "reward": "+30 Gold", "scenario_id": "ember_witch_test" },
         { "desc": "Two elite soldiers. No breaks.", "reward": "+40 Gold", "scenario_id": "ember_witch_test" },
@@ -209,6 +230,7 @@
       "id": 21,
       "name": "SUPPLY CACHE",
       "type": "SHOP",
+      "map_icon": "TREE_2",
       "levels": [
         { "desc": "Browse the merchant's current stock.", "reward": "ZONE CLEAR — unlocks neighboring zones", "scenario_id": null }
       ]
@@ -217,6 +239,7 @@
       "id": 22,
       "name": "FINAL MARCH",
       "type": "COMBAT",
+      "map_icon": "GRASS_5",
       "levels": [
         { "desc": "First contact. Light resistance.", "reward": "+20 Gold", "scenario_id": "ember_witch_test" },
         { "desc": "Reinforcements arrive mid-fight.", "reward": "+30 Gold + card slot", "scenario_id": "ember_witch_test" },
@@ -227,6 +250,7 @@
       "id": 23,
       "name": "THE THRONE",
       "type": "BOSS",
+      "map_icon": "NOT_SURE_1",
       "levels": [
         { "desc": "End of the campaign. The warlord waits.", "reward": "ZONE CLEAR — unlocks neighboring zones", "scenario_id": "ember_witch_test" }
       ]

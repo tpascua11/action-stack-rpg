@@ -4,7 +4,45 @@ import { usePlayer } from '../context/PlayerContext';
 import MAP_DATA from '../data/maps/iron_wastes_map.json';
 import { SCENARIO_REGISTRY } from '../data/maps/scenario_registry';
 import { CLASS_REGISTRY } from '../data/classes/class_registry';
+import {
+  MAP_ICON_GARDEN_TOWN, MAP_ICON_GARDEN_TOWN_2, MAP_ICON_SUNSET_VILLAGE,
+  MAP_ICON_FOREST_1, MAP_ICON_FOREST_2,
+  MAP_ICON_CITADEL_1, MAP_ICON_CITADEL_2, MAP_ICON_CITADEL_3,
+  MAP_ICON_RUINS, MAP_ICON_ISLAND_1, MAP_ICON_CASTLE_1, MAP_ICON_PATH_1,
+  MAP_ICON_TREE_1, MAP_ICON_TREE_2, MAP_ICON_DESERT_CASTLE_1, MAP_ICON_DESERT,
+  MAP_ICON_COOL_1, MAP_ICON_MOUNTAIN_ARC_1, MAP_ICON_NOT_SURE_1,
+  MAP_ICON_GRASS_1, MAP_ICON_GRASS_2, MAP_ICON_GRASS_3,
+  MAP_ICON_GRASS_4, MAP_ICON_GRASS_5, MAP_ICON_GRASS_6,
+} from '../assets';
 import './MapScreen.css';
+
+const MAP_ICON_LOOKUP = {
+  GARDEN_TOWN:    MAP_ICON_GARDEN_TOWN,
+  GARDEN_TOWN_2:  MAP_ICON_GARDEN_TOWN_2,
+  SUNSET_VILLAGE: MAP_ICON_SUNSET_VILLAGE,
+  FOREST_1:       MAP_ICON_FOREST_1,
+  FOREST_2:       MAP_ICON_FOREST_2,
+  CITADEL_1:      MAP_ICON_CITADEL_1,
+  CITADEL_2:      MAP_ICON_CITADEL_2,
+  CITADEL_3:      MAP_ICON_CITADEL_3,
+  RUINS:          MAP_ICON_RUINS,
+  ISLAND_1:       MAP_ICON_ISLAND_1,
+  CASTLE_1:       MAP_ICON_CASTLE_1,
+  PATH_1:         MAP_ICON_PATH_1,
+  TREE_1:         MAP_ICON_TREE_1,
+  TREE_2:         MAP_ICON_TREE_2,
+  DESERT_CASTLE_1:MAP_ICON_DESERT_CASTLE_1,
+  DESERT:         MAP_ICON_DESERT,
+  COOL_1:         MAP_ICON_COOL_1,
+  MOUNTAIN_ARC_1: MAP_ICON_MOUNTAIN_ARC_1,
+  NOT_SURE_1:     MAP_ICON_NOT_SURE_1,
+  GRASS_1:        MAP_ICON_GRASS_1,
+  GRASS_2:        MAP_ICON_GRASS_2,
+  GRASS_3:        MAP_ICON_GRASS_3,
+  GRASS_4:        MAP_ICON_GRASS_4,
+  GRASS_5:        MAP_ICON_GRASS_5,
+  GRASS_6:        MAP_ICON_GRASS_6,
+};
 
 // ── Constants ────────────────────────────────────────────────
 
@@ -102,10 +140,21 @@ function getNeighbors(id) {
   return n;
 }
 
+const DEBUG_UNLOCK_ALL = true;
+
 // Converts playerData.completed_zones ({ "0": [0,1] }) into
 // zoneStates and levelStates the component can render directly.
 function deriveStates(completedZones = {}) {
   const zs = {}, ls = {};
+
+  if (DEBUG_UNLOCK_ALL) {
+    MAP_DATA.zones.forEach(z => {
+      zs[z.id] = "available";
+      ls[z.id] = {};
+      z.levels.forEach((_, i) => { ls[z.id][i] = "available"; });
+    });
+    return { zoneStates: zs, levelStates: ls };
+  }
 
   // Initialize everything locked
   MAP_DATA.zones.forEach(z => {
@@ -161,7 +210,7 @@ function deriveStates(completedZones = {}) {
 
 // ── ZoneCell ─────────────────────────────────────────────────
 
-const ZoneCell = ({ zone, zoneState, zoneType, isPlayerHere, isSelected, progress, isPlayerCell, playerTypeColor, playerGlow, tokenPortrait, tokenName, onClick, onEnter }) => {
+const ZoneCell = ({ zone, zoneState, zoneType, isPlayerHere, isSelected, progress, isPlayerCell, playerTypeColor, playerGlow, tokenPortrait, tokenName, mapIconSrc, onClick, onEnter }) => {
   const isLocked  = zoneState === "locked";
   const isCleared = zoneState === "cleared";
 
@@ -207,18 +256,46 @@ const ZoneCell = ({ zone, zoneState, zoneType, isPlayerHere, isSelected, progres
       style={cellStyle}
       onClick={onClick}
     >
+      {/* Background icon image */}
+      {mapIconSrc && (
+        <img
+          src={mapIconSrc}
+          alt=""
+          style={{
+            position: "absolute", inset: 0,
+            width: "100%", height: "100%",
+            objectFit: "cover",
+            opacity: isLocked ? 0.12 : isCleared ? 0.45 : 0.75,
+            pointerEvents: "none",
+          }}
+        />
+      )}
+      {/* Dark overlay so text/UI stays readable */}
+      <div style={{
+        position: "absolute", inset: 0,
+        background: isLocked
+          ? "rgba(5,8,15,0.80)"
+          : isCleared
+            ? "rgba(5,8,15,0.50)"
+            : (isPlayerHere || isSelected)
+              ? `linear-gradient(160deg,rgba(5,8,15,0.30),${zoneType.dim})`
+              : "rgba(5,8,15,0.35)",
+        pointerEvents: "none",
+      }} />
+
       {!isLocked && (
         <div style={{
           position: "absolute", top: 0, left: 0, right: 0, height: 3,
           background: `linear-gradient(90deg,transparent,${zoneType.color},transparent)`,
           opacity: 0.8,
+          zIndex: 1,
         }} />
       )}
 
       {!isLocked ? (
         <>
           {/* Top: zone name + progress */}
-          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2, width: "100%" }}>
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2, width: "100%", position: "relative", zIndex: 1 }}>
             <div style={{
               fontSize: 12, letterSpacing: 1.5, textAlign: "center",
               padding: "0 4px", lineHeight: 1.3, fontWeight: "bold",
@@ -232,7 +309,7 @@ const ZoneCell = ({ zone, zoneState, zoneType, isPlayerHere, isSelected, progres
           </div>
 
           {/* Bottom: portrait (if player is here) + enter button */}
-          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 4, width: "100%" }}>
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 4, width: "100%", position: "relative", zIndex: 1 }}>
             {isPlayerCell && (
               <div className="map-token-glow" style={{
                 width: 50, height: 70,
@@ -274,7 +351,7 @@ const ZoneCell = ({ zone, zoneState, zoneType, isPlayerHere, isSelected, progres
           </div>
         </>
       ) : (
-        <div style={{ fontSize: 18, opacity: 0.25 }}>🔒</div>
+        <div style={{ fontSize: 18, opacity: 0.25, position: "relative", zIndex: 1 }}>🔒</div>
       )}
     </div>
   );
@@ -540,6 +617,7 @@ export default function MapScreen() {
                   playerGlow={playerTypeCfg?.glow}
                   tokenPortrait={isPlayerCell ? tokenPortrait : null}
                   tokenName={tokenName}
+                  mapIconSrc={z.map_icon ? MAP_ICON_LOOKUP[z.map_icon] : null}
                   onClick={() => handleCellClick(z.id)}
                   onEnter={openModal}
                 />

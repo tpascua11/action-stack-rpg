@@ -47,6 +47,33 @@ export { default as CLASS_ICON_TEMPLAR } from './CLASS_ICONS/TEMPLAR.png';
 export { default as CLASS_ICON_WIZARD } from './CLASS_ICONS/WIZARD.png';
 export { default as CLASS_ICON_FIGHTER } from './CLASS_ICONS/FIGHTER.png';
 
+// --- Map Icons ---
+export { default as MAP_ICON_GARDEN_TOWN }    from './MAP_ICONS/GARDEN_TOWN.png';
+export { default as MAP_ICON_GARDEN_TOWN_2 }  from './MAP_ICONS/GARDEN_TOWN_2.png';
+export { default as MAP_ICON_SUNSET_VILLAGE }  from './MAP_ICONS/SUNSET_VILLAGE.png';
+export { default as MAP_ICON_FOREST_1 }        from './MAP_ICONS/FOREST_1.png';
+export { default as MAP_ICON_FOREST_2 }        from './MAP_ICONS/FOREST_2.png';
+export { default as MAP_ICON_CITADEL_1 }       from './MAP_ICONS/CITADEL_1.png';
+export { default as MAP_ICON_CITADEL_2 }       from './MAP_ICONS/CITADEL_2.png';
+export { default as MAP_ICON_CITADEL_3 }       from './MAP_ICONS/CITADEL_3.png';
+export { default as MAP_ICON_RUINS }           from './MAP_ICONS/RUINS.png';
+export { default as MAP_ICON_ISLAND_1 }        from './MAP_ICONS/ISLAND_1.png';
+export { default as MAP_ICON_CASTLE_1 }        from './MAP_ICONS/CASTLE_1.png';
+export { default as MAP_ICON_PATH_1 }          from './MAP_ICONS/PATH_1.png';
+export { default as MAP_ICON_TREE_1 }          from './MAP_ICONS/TREE_1.png';
+export { default as MAP_ICON_TREE_2 }          from './MAP_ICONS/TREE_2.png';
+export { default as MAP_ICON_DESERT_CASTLE_1 } from './MAP_ICONS/DESERT_CASTLE_1.png';
+export { default as MAP_ICON_DESERT }          from './MAP_ICONS/DESERT.png';
+export { default as MAP_ICON_COOL_1 }          from './MAP_ICONS/COOL_1.png';
+export { default as MAP_ICON_MOUNTAIN_ARC_1 }  from './MAP_ICONS/MOUNTAIN_ARC_1.png';
+export { default as MAP_ICON_NOT_SURE_1 }      from './MAP_ICONS/NOT_SURE_1.png';
+export { default as MAP_ICON_GRASS_1 }         from './MAP_ICONS/GRASS_1.png';
+export { default as MAP_ICON_GRASS_2 }         from './MAP_ICONS/GRASS_2.png';
+export { default as MAP_ICON_GRASS_3 }         from './MAP_ICONS/GRASS_3.png';
+export { default as MAP_ICON_GRASS_4 }         from './MAP_ICONS/GRASS_4.png';
+export { default as MAP_ICON_GRASS_5 }         from './MAP_ICONS/GRASS_5.png';
+export { default as MAP_ICON_GRASS_6 }         from './MAP_ICONS/GRASS_6.png';
+
 // --- Fox Summurai Animation Frames ---
 export { default as FOX_SUMMURAI_1 } from './FOX_SUMMURAI/fox_summurai_1.png';
 export { default as FOX_SUMMURAI_2 } from './FOX_SUMMURAI/fox_summurai_2.png';
