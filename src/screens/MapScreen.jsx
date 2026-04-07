@@ -3,6 +3,7 @@ import { useGame } from '../context/GameContext';
 import { usePlayer } from '../context/PlayerContext';
 import MAP_DATA from '../data/maps/iron_wastes_map.json';
 import { SCENARIO_REGISTRY } from '../data/maps/scenario_registry';
+import { CLASS_REGISTRY } from '../data/classes/class_registry';
 import './MapScreen.css';
 
 // ── Constants ────────────────────────────────────────────────
@@ -64,12 +65,12 @@ const STATIC_STYLES = {
   },
   grid: {
     width: "100%",
-    maxWidth: 900,
+    maxWidth: 1200,
     aspectRatio: `${MAP_DATA.cols}/${MAP_DATA.rows}`,
     display: "grid",
     gridTemplateColumns: `repeat(${MAP_DATA.cols},1fr)`,
     gridTemplateRows: `repeat(${MAP_DATA.rows},1fr)`,
-    gap: 10,
+    gap: 14,
     position: "relative",
   },
   bottom: {
@@ -160,7 +161,7 @@ function deriveStates(completedZones = {}) {
 
 // ── ZoneCell ─────────────────────────────────────────────────
 
-const ZoneCell = ({ zone, zoneState, zoneType, isPlayerHere, isSelected, progress, isPlayerCell, playerTypeColor, playerGlow, onClick, onEnter, cellRef }) => {
+const ZoneCell = ({ zone, zoneState, zoneType, isPlayerHere, isSelected, progress, isPlayerCell, playerTypeColor, playerGlow, tokenPortrait, tokenName, onClick, onEnter }) => {
   const isLocked  = zoneState === "locked";
   const isCleared = zoneState === "cleared";
 
@@ -171,8 +172,8 @@ const ZoneCell = ({ zone, zoneState, zoneType, isPlayerHere, isSelected, progres
       display: "flex",
       flexDirection: "column",
       alignItems: "center",
-      justifyContent: "center",
-      gap: 4,
+      justifyContent: "space-between",
+      padding: "8px 6px",
       position: "relative",
       overflow: "hidden",
       cursor: isLocked ? "not-allowed" : "pointer",
@@ -202,7 +203,6 @@ const ZoneCell = ({ zone, zoneState, zoneType, isPlayerHere, isSelected, progres
 
   return (
     <div
-      ref={cellRef}
       className={`map-cell-base ${isLocked ? 'map-cell-locked' : 'map-cell-available'}`}
       style={cellStyle}
       onClick={onClick}
@@ -217,41 +217,61 @@ const ZoneCell = ({ zone, zoneState, zoneType, isPlayerHere, isSelected, progres
 
       {!isLocked ? (
         <>
-          <div style={{ fontSize: 36, lineHeight: 1 }}>{zoneType.icon}</div>
-          <div style={{
-            fontSize: 9, letterSpacing: 1.5, textAlign: "center",
-            padding: "0 6px", lineHeight: 1.3, fontWeight: "bold",
-            color: isCleared ? "rgba(77,166,255,0.35)" : isPlayerHere ? zoneType.color : "#8aaabb",
-          }}>
-            {zone.name}
-          </div>
-          <div style={{ fontSize: 8, letterSpacing: 1, color: "#2a4060" }}>
-            {progress.done}/{progress.total}
+          {/* Top: zone name + progress */}
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2, width: "100%" }}>
+            <div style={{
+              fontSize: 12, letterSpacing: 1.5, textAlign: "center",
+              padding: "0 4px", lineHeight: 1.3, fontWeight: "bold",
+              color: isCleared ? "rgba(77,166,255,0.35)" : isPlayerHere ? zoneType.color : "#8aaabb",
+            }}>
+              {zone.name}
+            </div>
+            <div style={{ fontSize: 14, letterSpacing: 1, color: isCleared ? "rgba(77,166,255,0.4)" : `${zoneType.color}99` }}>
+              {progress.done}/{progress.total}
+            </div>
           </div>
 
-          {isPlayerCell && (
-            <button
-              className="map-enter-btn-cell"
-              onClick={e => { e.stopPropagation(); onEnter(); }}
-              style={{
-                marginTop: 4,
-                padding: "6px 16px",
-                border: `1.5px solid ${playerTypeColor || "#4da6ff"}`,
-                borderRadius: 5,
-                fontSize: 9,
-                letterSpacing: 2,
-                cursor: "pointer",
-                background: `${playerTypeColor || "#4da6ff"}15`,
-                color: playerTypeColor || "#4da6ff",
-                fontWeight: "bold",
-                whiteSpace: "nowrap",
-                "--glow": playerGlow || "rgba(77,166,255,0.3)",
-                transition: "all 0.15s",
-              }}
-            >
-              ENTER ▶
-            </button>
-          )}
+          {/* Bottom: portrait (if player is here) + enter button */}
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 4, width: "100%" }}>
+            {isPlayerCell && (
+              <div className="map-token-glow" style={{
+                width: 50, height: 70,
+                border: "2px solid #4da6ff", borderRadius: 6,
+                background: "linear-gradient(180deg,#0a1525,#061018)",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                overflow: "hidden",
+              }}>
+                {tokenPortrait
+                  ? <img src={tokenPortrait} alt={tokenName} style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top" }} />
+                  : <span style={{ fontSize: 24 }}>👤</span>
+                }
+              </div>
+            )}
+            {isPlayerCell ? (
+              <button
+                className="map-enter-btn-cell"
+                onClick={e => { e.stopPropagation(); onEnter(); }}
+                style={{
+                  padding: "5px 14px",
+                  border: `1.5px solid ${playerTypeColor || "#4da6ff"}`,
+                  borderRadius: 5,
+                  fontSize: 9,
+                  letterSpacing: 2,
+                  cursor: "pointer",
+                  background: `${playerTypeColor || "#4da6ff"}15`,
+                  color: playerTypeColor || "#4da6ff",
+                  fontWeight: "bold",
+                  whiteSpace: "nowrap",
+                  "--glow": playerGlow || "rgba(77,166,255,0.3)",
+                  transition: "all 0.15s",
+                }}
+              >
+                ENTER
+              </button>
+            ) : (
+              <div style={{ fontSize: 24, lineHeight: 1 }}>{zoneType.icon}</div>
+            )}
+          </div>
         </>
       ) : (
         <div style={{ fontSize: 18, opacity: 0.25 }}>🔒</div>
@@ -329,14 +349,10 @@ export default function MapScreen() {
   const [selectedZone,  setSelectedZone]  = useState(null);
   const [selectedLevel, setSelectedLevel] = useState(null);
   const [modalOpen,     setModalOpen]     = useState(false);
-  const [tokenPos,      setTokenPos]      = useState({ x: 0, y: 0 });
-  const [isMoving,      setIsMoving]      = useState(false);
   const [flashMsg,      setFlashMsg]      = useState("");
   const [flashOn,       setFlashOn]       = useState(false);
   const [activeMenu,    setActiveMenu]    = useState(null);
 
-  const cellRefs = useRef({});
-  const gridRef  = useRef(null);
   const ftRef    = useRef(null);
 
   // ── Battle return handler ──────────────────────────────────
@@ -377,21 +393,6 @@ export default function MapScreen() {
     dispatch({ type: 'CLEAR_BATTLE_RESULT' });
   }, []); // intentionally empty: runs once on mount to process a just-returned battle result
 
-  // ── Token position ────────────────────────────────────────
-  const computeTokenPos = useCallback((zid) => {
-    const el = cellRefs.current[zid], gr = gridRef.current;
-    if (!el || !gr) return null;
-    const r = el.getBoundingClientRect(), g = gr.getBoundingClientRect();
-    return { x: r.right - g.left - 18, y: r.top - g.top - 22 };
-  }, []);
-
-  useEffect(() => {
-    setTimeout(() => {
-      const p = computeTokenPos(playerZone);
-      if (p) setTokenPos(p);
-    }, 50);
-  }, [computeTokenPos, playerZone]);
-
   // ── Flash helper ─────────────────────────────────────────
   const flash = useCallback((msg) => {
     setFlashMsg(msg);
@@ -426,9 +427,7 @@ export default function MapScreen() {
     setPlayerZone(zid);
     setSelectedZone(zid);
     setSelectedLevel(null);
-    const p = computeTokenPos(zid);
-    if (p) { setIsMoving(true); setTokenPos(p); setTimeout(() => setIsMoving(false), 400); }
-  }, [zoneStates, modalOpen, flash, computeTokenPos]);
+  }, [zoneStates, modalOpen, flash]);
 
   const openModal    = useCallback(() => { if (zoneStates[playerZone] !== "locked") { setSelectedZone(playerZone); setModalOpen(true); } }, [zoneStates, playerZone]);
   const closeModal   = useCallback(() => { setModalOpen(false); }, []);
@@ -501,7 +500,7 @@ export default function MapScreen() {
   }), [zoneTypeConfig]);
 
   const tokenName = playerData ? (playerData.class_id?.toUpperCase() ?? "PLAYER") : "PLAYER";
-  const tokenIcon = playerData ? (playerData.class_id === "samurai" ? "🦊" : "🦊") : "🦊";
+  const tokenPortrait = playerData?.class_id ? (CLASS_REGISTRY[playerData.class_id]?.portrait ?? null) : null;
 
   // ── Render ────────────────────────────────────────────────
   return (
@@ -521,7 +520,7 @@ export default function MapScreen() {
       {/* MAIN */}
       <div style={STATIC_STYLES.main}>
         <div style={gridWrapStyle}>
-          <div ref={gridRef} style={STATIC_STYLES.grid}>
+          <div style={STATIC_STYLES.grid}>
             {MAP_DATA.zones.map(z => {
               const st   = zoneStates[z.id];
               const t    = ZONE_TYPES[z.type];
@@ -539,53 +538,14 @@ export default function MapScreen() {
                   isPlayerCell={isPlayerCell}
                   playerTypeColor={playerTypeCfg?.color}
                   playerGlow={playerTypeCfg?.glow}
+                  tokenPortrait={isPlayerCell ? tokenPortrait : null}
+                  tokenName={tokenName}
                   onClick={() => handleCellClick(z.id)}
                   onEnter={openModal}
-                  cellRef={el => { cellRefs.current[z.id] = el; }}
                 />
               );
             })}
 
-            {/* PLAYER TOKEN */}
-            <div style={{
-              position: "absolute",
-              left: tokenPos.x,
-              top: tokenPos.y,
-              zIndex: 10,
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              pointerEvents: "none",
-              transition: isMoving
-                ? "left 0.35s cubic-bezier(0.4,0,0.2,1),top 0.35s cubic-bezier(0.4,0,0.2,1)"
-                : "none",
-            }}>
-              <div style={{
-                width: 44, height: 64, borderRadius: 6,
-                background: "#080c14", padding: 3,
-                display: "flex", alignItems: "center", justifyContent: "center",
-                border: "1px solid rgba(77,166,255,0.2)",
-              }}>
-                <div className="map-token-glow" style={{
-                  width: 38, height: 56,
-                  border: "2px solid #4da6ff", borderRadius: 4,
-                  background: "linear-gradient(180deg,#0a1525,#061018)",
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                  fontSize: 24,
-                }}>
-                  {tokenIcon}
-                </div>
-              </div>
-              <div style={{ width: 1, height: 6, background: "rgba(77,166,255,0.4)" }} />
-              <div style={{
-                background: "#080c14",
-                border: "1px solid rgba(77,166,255,0.3)",
-                borderRadius: 3, padding: "2px 6px",
-                fontSize: 7, letterSpacing: 2, color: "#4da6ff",
-              }}>
-                {tokenName}
-              </div>
-            </div>
           </div>
         </div>
 

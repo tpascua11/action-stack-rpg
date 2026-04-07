@@ -1,7 +1,6 @@
 import './CharacterSelectScreen.css';
 import { useState, useCallback, useEffect } from 'react';
 import { useGame } from '../context/GameContext';
-import EMBER_WITCH_TEST from '../data/scenarios/ember_witch_test.json';
 import { usePlayer } from '../context/PlayerContext';
 import {
   CLASS_ICON_SAMURAI, CLASS_ICON_WARRIOR, CLASS_ICON_FIGHTER, CLASS_ICON_MONK,
@@ -115,22 +114,22 @@ function TypewriterText({ text, className, style }) {
 
 // ── Screen ───────────────────────────────────────────────────────
 export default function CharacterSelectScreen() {
-  const { dispatch, goToBattle } = useGame();
+  const { dispatch } = useGame();
   const { playerData, playerDispatch } = usePlayer();
 
   const [selectedId, setSelectedId]       = useState(null);
   const [showcasedId, setShowcasedId]     = useState(null);
   const [isTransitioning, setTransitioning] = useState(false);
   const [fadeOut, setFadeOut]             = useState(false);
-  const [pendingBattle, setPendingBattle] = useState(false);
+  const [pendingMap, setPendingMap] = useState(false);
 
-  // Step 2: once CONFIRM_CLASS has resolved and playerData is ready, go to battle
+  // Step 2: once CONFIRM_CLASS has resolved and playerData is ready, go to map
   useEffect(() => {
-    if (pendingBattle && playerData) {
-      goToBattle(EMBER_WITCH_TEST);
-      setPendingBattle(false);
+    if (pendingMap && playerData) {
+      dispatch({ type: 'GO_TO_MAP' });
+      setPendingMap(false);
     }
-  }, [pendingBattle, playerData, dispatch]);
+  }, [pendingMap, playerData, dispatch]);
 
   const showDescription = useCallback((id) => {
     if (isTransitioning) return;
@@ -217,9 +216,9 @@ export default function CharacterSelectScreen() {
                   className="start-button"
                   type="button"
                   onClick={() => {
-                    // Step 1: build + persist the player — GO_TO_BATTLE fires once playerData is ready
+                    // Step 1: build + persist the player — GO_TO_MAP fires once playerData is ready
                     playerDispatch({ type: 'CONFIRM_CLASS', classId: selectedId });
-                    setPendingBattle(true);
+                    setPendingMap(true);
                   }}
                 >
                   <span className="start-text">START</span>

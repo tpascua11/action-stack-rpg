@@ -176,6 +176,9 @@ export function battleReducer(state, action) {
     case 'START_NEW_GAME':
       return { ...state, phase: 'CHARACTER_SELECT' };
 
+    case 'GO_TO_MAP':
+      return { ...state, phase: 'MAP' };
+
     case 'GO_TO_BATTLE': {
       // Builds a full fresh battle state from playerData + scenario.
       // playerData: minimal stored data from PlayerContext.
