@@ -417,7 +417,7 @@ const LevelBar = ({ level, index, levelState, isSelected, zoneType, onClick }) =
           {level.desc}
         </div>
         <div style={{ fontSize: 10, letterSpacing: 0.5, color: rewColor, opacity: levelState === "cleared" ? 0.5 : 0.85 }}>
-          ⬡ {level.reward}
+          ⬡ {typeof level.reward === 'string' ? level.reward : "Card Unlock"}
         </div>
       </div>
       <div style={{ fontSize: 10, letterSpacing: 1, minWidth: 48, textAlign: "right", color: levelState === "cleared" ? "rgba(77,166,255,0.3)" : levelState === "locked" ? "#0d1420" : isSelected ? (zoneType?.color || "#4da6ff") : "#2a4060", fontWeight: isSelected ? "bold" : "normal" }}>
@@ -471,6 +471,12 @@ export default function MapScreen() {
         if (levelIndex + 1 < zone.levels.length) next[zoneId][levelIndex + 1] = "available";
         return next;
       });
+
+      const level = MAP_DATA.zones[zoneId].levels[levelIndex];
+      if (typeof level.reward === 'object' && level.reward !== null) {
+        const classUnlock = level.reward.unlocks?.find(u => u.class === playerData.class_id);
+        if (classUnlock) classUnlock.card_ids.forEach(id => playerDispatch({ type: 'UNLOCK_CARD', cardId: id }));
+      }
 
       const zone = MAP_DATA.zones[zoneId];
       const allLevelsCleared = zone.levels.every((_, i) => i === levelIndex || levelStates[zoneId][i] === "cleared");
@@ -564,7 +570,11 @@ export default function MapScreen() {
         });
         flash("ZONE CLEARED — NEIGHBORS UNLOCKED");
       } else {
-        flash(`${level.reward}`);
+        flash(typeof level.reward === 'string' ? level.reward : "LEVEL CLEARED");
+      }
+      if (typeof level.reward === 'object' && level.reward !== null) {
+        const classUnlock = level.reward.unlocks?.find(u => u.class === playerData.class_id);
+        if (classUnlock) classUnlock.card_ids.forEach(id => playerDispatch({ type: 'UNLOCK_CARD', cardId: id }));
       }
       playerDispatch({ type: 'SAVE_MAP_PROGRESS', zoneId: selectedZone, levelIndex: selectedLevel });
       setSelectedLevel(null);

@@ -10,9 +10,9 @@
       "type": "COMBAT",
       "map_icon": "CITADEL_1",
       "levels": [
-        { "desc": "First contact. Light resistance.", "reward": "+20 Gold", "scenario_id": "ember_witch_test" },
+        { "desc": "First contact. Light resistance.", "reward": { "general": { "type": "gold", "amount": 20 }, "unlocks": [{ "class": "samurai", "card_ids": ["freeze_slash", "magic_charge"] }] }, "scenario_id": "ember_witch_test" },
         { "desc": "Reinforcements arrive mid-fight.", "reward": "+30 Gold + card slot", "scenario_id": "ember_witch_test" },
-        { "desc": "The commander joins the battle.", "reward": "ZONE CLEAR — unlocks neighboring zones", "scenario_id": "ember_witch_test" }
+        { "desc": "The commander joins the battle.", "reward": { "unlocks": [{ "class": "samurai", "card_ids": ["fuel_to_the_flames"] }] }, "scenario_id": "ember_witch_test" }
       ]
     },
     {
