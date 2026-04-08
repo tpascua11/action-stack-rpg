@@ -1,0 +1,33 @@
+CARD TODO
+=========
+
+[ ] Update level reward structure in iron_wastes_map.json to support class-specific card unlocks.
+
+Shape:
+  "reward": {
+    "general": { "type": "gold", "amount": 20 },
+    "unlocks": [
+      { "class": "paladin", "card_id": "holy_smite" },
+      { "class": "samurai", "card_id": "swift_cut" },
+      { "class": "ranger",  "card_id": "arrow_volley" }
+    ]
+  }
+
+- "general" applies to all classes (gold, HP restore, card slot, etc.)
+- "unlocks" array — find the entry matching playerData.class, unlock that card_id
+- Not every level needs both; either field can be omitted
+- Wire resolution into handleEnter (non-combat) and the battle return useEffect (combat) in MapScreen.jsx
+- Dispatch unlock to PlayerContext so it persists
+
+[ ] Wire reward resolution into MapScreen.jsx (battle return useEffect + handleEnter)
+
+Code goes right after victory is confirmed, using zoneId/levelIndex to look up the level:
+  const level = MAP_DATA.zones[zoneId].levels[levelIndex];
+  if (level.reward?.general)  playerDispatch({ type: 'APPLY_REWARD', reward: level.reward.general });
+  const classUnlock = level.reward?.unlocks?.find(u => u.class === playerData.class);
+  if (classUnlock) playerDispatch({ type: 'UNLOCK_CARD', cardId: classUnlock.card_id });
+
+[ ] Add APPLY_REWARD case to PlayerContext reducer
+  - UNLOCK_CARD already exists (action.cardId)
+  - APPLY_REWARD is new — needs to handle: gold, HP restore, card slot, etc.
+  - Will need corresponding fields on playerData (e.g. gold, max_card_slots)

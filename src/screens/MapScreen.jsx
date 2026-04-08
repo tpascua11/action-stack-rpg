@@ -234,10 +234,13 @@ const ZoneCell = ({ zone, zoneState, zoneType, isPlayerHere, isSelected, progres
     if (isCleared) {
       return {
         ...base,
-        background: (isPlayerHere || isSelected) ? zoneType.dim : "#070b13",
-        borderColor: (isPlayerHere || isSelected) ? zoneType.color : "rgba(77,166,255,0.15)",
-        opacity: (isPlayerHere || isSelected) ? 1 : 0.5,
-        boxShadow: isPlayerHere ? `0 0 30px ${zoneType.glow}` : (isSelected ? `0 0 20px ${zoneType.glow}` : "none"),
+        background: (isPlayerHere || isSelected) ? zoneType.dim : "#0e1a26",
+        borderColor: (isPlayerHere || isSelected) ? zoneType.color : `${zoneType.color}40`,
+        boxShadow: isPlayerHere
+          ? `0 0 30px ${zoneType.glow}`
+          : isSelected
+            ? `0 0 20px ${zoneType.glow}`
+            : `0 0 8px ${zoneType.glow}44`,
       };
     }
     return {
@@ -266,7 +269,7 @@ const ZoneCell = ({ zone, zoneState, zoneType, isPlayerHere, isSelected, progres
             position: "absolute", inset: 0,
             width: "100%", height: "100%",
             objectFit: "cover",
-            opacity: isLocked ? 0.55 : isCleared ? 0.45 : 0.75,
+            opacity: isLocked ? 0.55 : isCleared ? 0.65 : 0.75,
             pointerEvents: "none",
           }}
         />
@@ -277,7 +280,7 @@ const ZoneCell = ({ zone, zoneState, zoneType, isPlayerHere, isSelected, progres
         background: isLocked
           ? "rgba(5,8,15,0.45)"
           : isCleared
-            ? "rgba(5,8,15,0.50)"
+            ? "rgba(5,8,15,0.25)"
             : (isPlayerHere || isSelected)
               ? `linear-gradient(160deg,rgba(5,8,15,0.30),${zoneType.dim})`
               : "rgba(5,8,15,0.35)",
@@ -298,11 +301,11 @@ const ZoneCell = ({ zone, zoneState, zoneType, isPlayerHere, isSelected, progres
             <div style={{
               fontSize: 12, letterSpacing: 1.5, textAlign: "center",
               padding: "0 4px", lineHeight: 1.3, fontWeight: "bold",
-              color: isCleared ? "rgba(77,166,255,0.35)" : isPlayerHere ? zoneType.color : "#8aaabb",
+              color: isCleared ? `${zoneType.color}cc` : isPlayerHere ? zoneType.color : "#8aaabb",
             }}>
               {zone.name}
             </div>
-            <div style={{ fontSize: 14, letterSpacing: 1, color: isCleared ? "rgba(77,166,255,0.4)" : `${zoneType.color}99` }}>
+            <div style={{ fontSize: 14, letterSpacing: 1, color: isCleared ? `${zoneType.color}bb` : `${zoneType.color}99` }}>
               {progress.done}/{progress.total}
             </div>
           </div>

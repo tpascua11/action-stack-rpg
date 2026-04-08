@@ -19,6 +19,7 @@ export const SAMURAI = {
     { tag_name: 'UNDYING_SPIRIT', tier: 'permanent' },
   ],
   combat_start_tags: [],
+  starting_cards: ['heavy_slice', 'quick_slice', 'mend', 'speed_up', 'flame_strike', 'focus_spirit'],
   cards: SAMURAI_CARDS,
   ResourceBar: SamuraiResourceBar,
 };

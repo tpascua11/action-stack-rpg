@@ -4,14 +4,14 @@
 //
 //  WHAT WE STORE (minimal — IDs and deltas only, never full objects):
 //    class_id        → string, e.g. 'samurai'
-//    card_unlocks    → array of card IDs the player has unlocked beyond their base deck
+//    unlocked_cards  → array of card IDs the player has unlocked beyond their starting deck
 //    stat_boosts     → array of { stat, amount } deltas applied on top of class base stats
 //    completed_zones → TODO: not built yet — will track which map zones/levels are done
 //
 //  WHAT WE DERIVE AT RUNTIME (never stored):
 //    portrait        → CLASS_REGISTRY[class_id].portrait
 //    base cards      → CLASS_REGISTRY[class_id].cards
-//    full deck       → base cards + card_unlocks resolved from card registry by ID
+//    full deck       → classDef.starting_cards + unlocked_cards, resolved from classDef.cards by ID
 //    max_health      → CLASS_REGISTRY[class_id].base_health + sum of stat_boosts
 //    icon, resources, permanent_tags, etc. → all from CLASS_REGISTRY
 //
@@ -63,9 +63,8 @@ export function derivePlayerSnapshot(playerData) {
     .filter(b => b.stat === 'total_action_slots')
     .reduce((total, b) => total + b.amount, classDef.total_action_slots);
 
-  // TODO: resolve card_unlocks from a card registry by ID and append to base deck
-  // For now, card_unlocks is unused — player gets the full class base deck only
-  const cards = classDef.cards;
+  const allCardIds = [...new Set([...(classDef.starting_cards ?? []), ...(playerData.unlocked_cards ?? [])])];
+  const cards = allCardIds.map(id => classDef.cards.find(c => c.id === id)).filter(Boolean);
 
   const currentHealth = playerData.current_hp ?? maxHealth;
 
@@ -103,7 +102,7 @@ function playerReducer(state, action) {
       return {
         class_id:        action.classId,
         current_hp:      classDef.base_health,
-        card_unlocks:    [],
+        unlocked_cards:  [],
         stat_boosts:     [],
         completed_zones: {},
       };
@@ -116,7 +115,7 @@ function playerReducer(state, action) {
 
     // Add an unlocked card ID to the player's deck (post-battle reward, etc.)
     case 'UNLOCK_CARD':
-      return { ...state, card_unlocks: [...state.card_unlocks, action.cardId] };
+      return { ...state, unlocked_cards: [...(state.unlocked_cards ?? []), action.cardId] };
 
     // Apply a stat upgrade delta — stacks, never replaces
     case 'UPGRADE_STAT':
