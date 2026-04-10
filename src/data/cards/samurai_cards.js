@@ -152,6 +152,23 @@ export const SAMURAI_CARDS = [
     },
   },
   {
+    id: 'battojutsu',
+    name: 'Battojutsu',
+    speed: 100,
+    tag_type: ['PHYSICAL', 'SLASH'],
+    cost: {},
+    icon: '🔦',
+    image: 'FOX_SUMMURAI_BATTOJUTSU',
+    color: '#c084fc',
+    desc: 'Enter a focused draw stance. Your next attack deals 75% more damage.',
+    tags: {
+      self: [
+        { tag_name: 'BATTOJUTSU', multiplier: 0.75, tier: 'advanced' },
+      ],
+      target: [],
+    },
+  },
+  {
     id: 'focus_spirit',
     name: 'Focus Spirit',
     speed: 70,

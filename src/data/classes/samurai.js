@@ -16,10 +16,10 @@ export const SAMURAI = {
     { type: 'BATTLE_SPIRIT', max: 10, starting: 0 },
   ],
   permanent_tags: [
-    { tag_name: 'UNDYING_SPIRIT', tier: 'permanent' },
+    { tag_name: 'UNDER_THE_SUN', tier: 'permanent' },
   ],
   combat_start_tags: [],
-  starting_cards: ['heavy_slice', 'quick_slice', 'mend', 'speed_up', 'flame_strike', 'focus_spirit'],
+  starting_cards: ['heavy_slice', 'quick_slice', 'mend', 'speed_up', 'flame_strike', 'focus_spirit', 'battojutsu'],
   cards: SAMURAI_CARDS,
   ResourceBar: SamuraiResourceBar,
 };

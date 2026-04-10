@@ -96,3 +96,27 @@ registerTag('FUEL_TO_THE_FLAMES', {
   onApply: FuelToTheFlamesOnApply,
   handlers: { INJECT_FLAT: FuelToTheFlamesHandler },
 });
+
+export function BattojutsuHandler(payload, character, tag) {
+  const boost = tag.multiplier * tag.stack_count;
+  payload.damages.forEach(d => {
+    d.power = Math.floor(d.power * (1 + boost));
+  });
+  return { payload, consumed: true };
+}
+
+export function BattojutsuOnApply(pool, tag) {
+  const existing = pool.find(t => t.tag_name === 'BATTOJUTSU');
+  if (existing) {
+    existing.stack_count += 1;
+  } else {
+    pool.push({ ...tag, stack_count: 1 });
+  }
+}
+
+registerTag('BATTOJUTSU', {
+  phases: ['INJECT_MULT'],
+  status_type: 'buff',
+  onApply: BattojutsuOnApply,
+  handlers: { INJECT_MULT: BattojutsuHandler },
+});

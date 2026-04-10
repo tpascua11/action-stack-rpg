@@ -6,7 +6,7 @@
 
 // --- Portraits ---
 export { default as COOL_FOX } from './Cool_Fox.png';
-export { default as PORTRAIT_SUMURAI } from './PLAYER_PORTRAITS/SUMURAI.png';
+export { default as PORTRAIT_SUMURAI } from './PLAYER_PORTRAITS/SUMURAI_2.png';
 export { default as PORTRAIT_PALADIN } from './PLAYER_PORTRAITS/PALADIN.png';
 export { default as PORTRAIT_ROGUE } from './PLAYER_PORTRAITS/ROGUE.png';
 export { default as PORTRAIT_WARRIOR } from './PLAYER_PORTRAITS/WARRIOR.png';
@@ -124,3 +124,4 @@ export { default as FOX_SUMMURAI_46 } from './FOX_SUMMURAI/fox_summurai_46.png';
 export { default as FOX_SUMMURAI_47 } from './FOX_SUMMURAI/fox_summurai_47.png';
 export { default as FOX_SUMMURAI_48 } from './FOX_SUMMURAI/fox_summurai_48.png';
 export { default as FOX_SUMMURAI_49 } from './FOX_SUMMURAI/fox_summurai_49.png';
+export { default as FOX_SUMMURAI_BATTOJUTSU } from './FOX_SUMMURAI/fox_battōjutsu.png';

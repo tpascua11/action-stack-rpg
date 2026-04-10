@@ -18,3 +18,18 @@ registerTag('UNDYING_SPIRIT', {
   phases: ['ON_RECEIVE'],
   handlers: { ON_RECEIVE: UndyingSpiritHandler },
 });
+
+function UnderTheSunHandler(context, tag) {
+  const owner = context.owner;
+  const res = owner.resources?.BATTLE_SPIRIT;
+  if (res) res.current = Math.min(res.current + 1, res.max);
+  return {
+    consumed: false,
+    logs: [{ msg: `☀️ ${owner.name} regains 1 Battle Spirit`, type: 'resource' }],
+  };
+}
+
+registerTag('UNDER_THE_SUN', {
+  phases: ['END_OF_TURN'],
+  handlers: { END_OF_TURN: UnderTheSunHandler },
+});

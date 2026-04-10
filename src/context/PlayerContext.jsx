@@ -110,7 +110,7 @@ function playerReducer(state, action) {
 
     // Called by MapScreen after a battle ends — updates HP and records result
     case 'APPLY_BATTLE_RESULT': {
-      return { ...state, current_hp: action.currentHP };
+      return { ...state, current_hp: null };
     }
 
     // Add an unlocked card ID to the player's deck (post-battle reward, etc.)
