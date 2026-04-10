@@ -139,9 +139,9 @@ export default function TagPool({ tags, compact, growRight }) {
   const advancedTags  = tags.filter(t => t.tier === 'advanced');
   const conditionTags = tags.filter(t => t.tier === 'condition');
 
-  // Chunk condition tags into columns of 8, newest rightmost
+  // Chunk condition tags into columns of 7, newest rightmost
   const columns = [];
-  for (let i = 0; i < conditionTags.length; i += 8) columns.push(conditionTags.slice(i, i + 8));
+  for (let i = 0; i < conditionTags.length; i += 7) columns.push(conditionTags.slice(i, i + 7));
   if (columns.length === 0) columns.push([]);
 
   const advancedColumn = advancedTags.length > 0 ? (
@@ -170,7 +170,7 @@ export default function TagPool({ tags, compact, growRight }) {
     <div className={`flex ${growRight ? 'flex-row' : 'flex-row-reverse'} ${sz.gap}`}>
       {columns.map((col, ci) => (
         <div key={ci} className={`flex flex-col-reverse ${sz.gap}`}>
-          {Array.from({ length: 8 }).map((_, si) => {
+          {Array.from({ length: 7 }).map((_, si) => {
             const tag = col[si];
             if (!tag) return <div key={si} style={{ width: sz.tile, height: sz.tile, flexShrink: 0 }} />;
             const display = ui_registry[tag.tag_name] || UI_DEFAULT;

@@ -10,7 +10,7 @@ export default function PlayerPortrait({ player }) {
   return (
     <div className="flex flex-col items-center">
       {/* w-64 h-96 = 256×384 = 2:3 card ratio */}
-      <div className="relative w-64 h-96 rounded-2xl border-4 border-[#4da6ff]
+      <div className="relative w-[14rem] h-[21rem] rounded-2xl border-4 border-[#4da6ff]
         shadow-[0_0_60px_rgba(77,166,255,0.5)] overflow-hidden">
 
         {/* Portrait fills entire card */}
