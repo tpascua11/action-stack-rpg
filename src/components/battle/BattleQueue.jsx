@@ -53,7 +53,7 @@ function simulateExecutionOrder(characters) {
   return order;
 }
 
-export default function BattleQueue({ characters, phase, onToggleLog, logOpen }) {
+export default function BattleQueue({ characters, phase }) {
   const allActions = phase === 'BATTLE' ? simulateExecutionOrder(characters) : [];
 
   return (
@@ -125,16 +125,6 @@ export default function BattleQueue({ characters, phase, onToggleLog, logOpen })
         </div>
       </div>
 
-      {/* Log toggle */}
-      <div className="flex-shrink-0 px-3 border-l border-white/10 h-full flex items-center">
-        <button
-          onClick={onToggleLog}
-          className="text-[8px] font-mono tracking-widest px-2 py-1 rounded border transition-colors"
-          style={{ borderColor: logOpen ? '#4da6ff' : '#374151', color: logOpen ? '#4da6ff' : '#4b5563' }}
-        >
-          LOG
-        </button>
-      </div>
     </div>
   );
 }

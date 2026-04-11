@@ -164,6 +164,7 @@ export default function BattleScreen() {
         <EnemyZone
           enemies={enemies}
           shakingEnemyId={gs.shakingEnemyId}
+          activeEnemyId={gs.activeEnemyId}
           selectedTargetId={gs.lastTargetId}
           phase={gs.phase}
           retargetingSlot={retargetingSlot}
@@ -174,8 +175,6 @@ export default function BattleScreen() {
         <BattleQueue
           characters={gs.characters}
           phase={gs.phase}
-          onToggleLog={() => setLogOpen(o => !o)}
-          logOpen={logOpen}
         />
 
         {/* BOTTOM — Player Zone */}
@@ -224,6 +223,23 @@ export default function BattleScreen() {
         </div>
 
       </div>
+
+      {/* FLOATING — Log toggle button */}
+      <button
+        onClick={() => setLogOpen(o => !o)}
+        className="text-[8px] font-mono tracking-widest px-2 py-1 rounded border transition-colors"
+        style={{
+          position: 'absolute',
+          bottom: '12px',
+          right: '12px',
+          zIndex: 50,
+          borderColor: logOpen ? '#4da6ff' : '#374151',
+          color: logOpen ? '#4da6ff' : '#4b5563',
+          background: 'rgba(9,9,15,0.85)',
+        }}
+      >
+        LOG
+      </button>
 
       {/* FLOATING — Battle Log modal (outside scaled container so fixed+drag coords are viewport-relative) */}
       <BattleLog
