@@ -6,5 +6,6 @@
       "enemies": ["ember_witch", "ember_witch", "flame_queen", "ember_witch", "flame_witch"]
     }
   ],
+  "music": "battle_theme",
   "rewards": {}
 }

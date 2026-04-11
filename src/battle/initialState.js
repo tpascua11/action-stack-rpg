@@ -48,6 +48,7 @@ export function buildInitialState(scenario = EMBER_WITCH_TEST, playerData = null
   const characters = [player, ...builtEnemies];
   return {
     phase: new URLSearchParams(window.location.search).has('debug') ? 'QUEUE_SETUP' : 'TITLE',
+    music: scenario?.music ?? null,
     turn: 1,
     result: null,          // WIN | LOSS
     characters,

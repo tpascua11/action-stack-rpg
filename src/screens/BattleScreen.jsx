@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from 'react';
 import { CLASS_REGISTRY } from '../data/classes/class_registry';
 import { useGame } from '../context/GameContext';
 
+import { MUSIC_REGISTRY } from '../assets/MUSIC/index';
 import EnemyZone from '../components/battle/EnemyZone';
 import BattleLog from '../components/battle/BattleLog';
 import BattleQueue from '../components/battle/BattleQueue';
@@ -20,6 +21,7 @@ export default function BattleScreen() {
   const [retargetingSlot, setRetargetingSlot] = useState(null);
   const [lineCoords, setLineCoords] = useState(null);
   const battleTimerRef = useRef(null);
+  const musicRef = useRef(null);
 
   const player = gs.characters.find(c => c.faction === 'player');
   const enemies = gs.characters.filter(c => c.faction === 'enemy');
@@ -31,6 +33,29 @@ export default function BattleScreen() {
     window.addEventListener('resize', onResize);
     return () => window.removeEventListener('resize', onResize);
   }, []);
+
+  // Battle music — start on mount, stop on RESULT or unmount
+  useEffect(() => {
+    const src = gs.music ? MUSIC_REGISTRY[gs.music] : null;
+    if (!src) return;
+    const audio = new Audio(src);
+    audio.loop = true;
+    audio.volume = 0.2;
+    audio.play().catch(() => {}); // ignore autoplay policy errors
+    musicRef.current = audio;
+    return () => {
+      audio.pause();
+      audio.currentTime = 0;
+      musicRef.current = null;
+    };
+  }, [gs.music]);
+
+  useEffect(() => {
+    if (gs.phase === 'RESULT' && musicRef.current) {
+      musicRef.current.pause();
+      musicRef.current.currentTime = 0;
+    }
+  }, [gs.phase]);
 
   // Drive battle loop with timed steps
   useEffect(() => {
