@@ -17,7 +17,6 @@ import Hand from '../components/battle/Hand';
 
 export default function BattleScreen() {
   const { gs, dispatch, onBattleEnd } = useGame();
-  const [logOpen, setLogOpen] = useState(false);
   const [retargetingSlot, setRetargetingSlot] = useState(null);
   const [lineCoords, setLineCoords] = useState(null);
   const battleTimerRef = useRef(null);
@@ -206,7 +205,10 @@ export default function BattleScreen() {
         <div className="flex-shrink-0 flex flex-col overflow-hidden">
 
           {/* Center row: Buff Column | Character Column | Slot Column */}
-          <div className="flex-1 flex items-end justify-center overflow-hidden pt-2 pb-4 max-h-[26rem]">
+          <div className="flex-1 flex items-end justify-center overflow-hidden pt-2 pb-4 max-h-[26rem]" style={{ position: 'relative' }}>
+
+            {/* Battle Log — absolutely positioned in left column space, does not affect flex layout */}
+            <BattleLog logs={gs.logs} turn={gs.turn} />
 
             {/* LEFT — Condition tag column (fixed width, right-aligned so buffs hug the gap) */}
             <div style={{ width: '340px', paddingRight: '12px', display: 'flex', justifyContent: 'flex-end', alignItems: 'flex-end', alignSelf: 'flex-end' }}>
@@ -249,30 +251,6 @@ export default function BattleScreen() {
 
       </div>
 
-      {/* FLOATING — Log toggle button */}
-      <button
-        onClick={() => setLogOpen(o => !o)}
-        className="text-[8px] font-mono tracking-widest px-2 py-1 rounded border transition-colors"
-        style={{
-          position: 'absolute',
-          bottom: '12px',
-          right: '12px',
-          zIndex: 50,
-          borderColor: logOpen ? '#4da6ff' : '#374151',
-          color: logOpen ? '#4da6ff' : '#4b5563',
-          background: 'rgba(9,9,15,0.85)',
-        }}
-      >
-        LOG
-      </button>
-
-      {/* FLOATING — Battle Log modal (outside scaled container so fixed+drag coords are viewport-relative) */}
-      <BattleLog
-        logs={gs.logs}
-        turn={gs.turn}
-        isOpen={logOpen}
-        onClose={() => setLogOpen(false)}
-      />
     </div>
   );
 }
