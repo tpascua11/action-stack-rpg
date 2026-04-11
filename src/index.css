@@ -74,6 +74,12 @@ body {
   50%       { stroke: rgba(77,166,255,1); }
 }
 
+/* Battle center card pulse */
+@keyframes centerGlow {
+  0%, 100% { opacity: 0.15; }
+  50%       { opacity: 0.45; }
+}
+
 /* Scrollbar */
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
