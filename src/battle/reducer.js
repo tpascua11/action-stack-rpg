@@ -86,7 +86,14 @@ export function battleReducer(state, action) {
       if (allEnemiesDeadAfterStart) {
         return { ...state, characters: startChars, phase: 'RESULT', result: 'WIN', logs: [...turnStartLogs, { msg: '🏆 VICTORY! ALL ENEMIES DEFEATED!', type: 'heal' }] };
       }
-      return { ...state, characters: startChars, phase: 'BATTLE', logs: turnStartLogs };
+      const firstSorted = SpeedCheckAllAvailableActions(startChars);
+      const firstAction = firstSorted[0] ?? null;
+      const firstOwner = firstAction ? startChars.find(c => c.id === firstAction.owner_id) : null;
+      const firstTarget = firstAction ? startChars.find(c => c.id === firstAction.target_id) : null;
+      const firstActiveEnemyId = firstOwner?.faction === 'enemy'
+        ? firstAction.owner_id
+        : firstTarget?.faction === 'enemy' ? firstAction.target_id : null;
+      return { ...state, characters: startChars, phase: 'BATTLE', logs: turnStartLogs, activeEnemyId: firstActiveEnemyId };
     }
 
     case 'BATTLE_STEP': {
@@ -109,6 +116,7 @@ export function battleReducer(state, action) {
           phase: 'QUEUE_SETUP',
           turn: state.turn + 1,
           logs: [...state.logs, ...cleanLogs, { msg: `━━━ TURN ${state.turn} END ━━━`, type: 'info' }],
+          activeEnemyId: null,
         };
       }
 
@@ -141,8 +149,21 @@ export function battleReducer(state, action) {
         }),
       };
 
-      const targetChar = actualTargetId ? state.characters.find(c => c.id === actualTargetId) : null;
+      const targetChar = actualTargetId ? newState.characters.find(c => c.id === actualTargetId) : null;
       const enemyWasHit = targetChar && targetChar.faction === 'enemy' && resultA !== 'NULLIFY';
+
+      // Active enemy: look ahead to the NEXT action so the nudge shows before it fires
+      // Resolve dead targets to a living enemy of the same faction (mirrors ExecuteAction retarget)
+      const nextSorted = SpeedCheckAllAvailableActions(newState.characters);
+      const nextAction = nextSorted[0] ?? null;
+      const nextOwner = nextAction ? newState.characters.find(c => c.id === nextAction.owner_id) : null;
+      const rawNextTarget = nextAction ? newState.characters.find(c => c.id === nextAction.target_id) : null;
+      const nextTarget = rawNextTarget?.health <= 0
+        ? newState.characters.find(c => c.faction === rawNextTarget.faction && c.health > 0) ?? null
+        : rawNextTarget;
+      const activeEnemyId = nextOwner?.faction === 'enemy'
+        ? nextAction.owner_id
+        : nextTarget?.faction === 'enemy' ? nextTarget.id : null;
 
       return {
         ...newState,
@@ -150,6 +171,7 @@ export function battleReducer(state, action) {
         stepCount: state.stepCount + 1,
         logs: [...state.logs, ...newLogs],
         shakingEnemyId: enemyWasHit ? actualTargetId : null,
+        activeEnemyId,
         fizzlingCard: fizzled ? actionA : null,
       };
     }

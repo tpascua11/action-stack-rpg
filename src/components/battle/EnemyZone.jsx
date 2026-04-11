@@ -27,10 +27,10 @@ function getMidCardOffset(enemies) {
   return totalWidth / 2 - midCardCenter;
 }
 
-export default function EnemyZone({ enemies, shakingEnemyId, selectedTargetId, phase, onSelectTarget }) {
+export default function EnemyZone({ enemies, shakingEnemyId, activeEnemyId, selectedTargetId, phase, onSelectTarget }) {
   const offset = getMidCardOffset(enemies);
   return (
-    <div className="flex-1 min-h-0 flex flex-row items-end justify-center gap-20 pb-2 border-b border-red-900/30"
+    <div className="flex-1 min-h-0 flex flex-row items-end justify-center gap-20 pb-10 border-b border-red-900/30"
       style={{
         background: 'radial-gradient(circle at center, #2a1520 0%, #0f0f1a 100%)',
       }}>
@@ -40,7 +40,8 @@ export default function EnemyZone({ enemies, shakingEnemyId, selectedTargetId, p
         const hpPct = Math.max(0, (enemy.health / enemy.max_health) * 100);
         const isDead = enemy.health <= 0;
         const isShaking = shakingEnemyId === enemy.id;
-        const isSelected = selectedTargetId === enemy.id && !isDead;
+        const isActive = activeEnemyId === enemy.id && !isDead;
+        const isSelected = selectedTargetId === enemy.id && !isDead && phase === 'QUEUE_SETUP';
         const isSelectable = phase === 'QUEUE_SETUP' && !isDead;
         const tags = enemy.active_tag_pool || [];
         const actions = enemy.queue || [];
@@ -51,7 +52,8 @@ export default function EnemyZone({ enemies, shakingEnemyId, selectedTargetId, p
         return (
           <div
             key={enemy.id}
-            className={`flex flex-row items-end gap-1.5 transition-opacity duration-500 ${isDead ? 'opacity-30' : 'opacity-100'} ${isSelectable ? 'cursor-pointer' : ''}`}
+            className={`flex flex-row items-end gap-1.5 transition-all duration-300 ${isDead ? 'opacity-30' : 'opacity-100'} ${isSelectable ? 'cursor-pointer' : ''}`}
+            style={{ transform: isActive ? 'translateY(35px)' : 'translateY(0)' }}
             onClick={e => { if (!isSelectable) return; e.stopPropagation(); onSelectTarget(enemy.id); }}
           >
 

@@ -1,0 +1,10 @@
+{
+  "id": "zone1_level1",
+  "name": "Iron Gate — Level 1",
+  "stages": [
+    {
+      "enemies": ["ember_witch", "ember_witch", "flame_queen", "ember_witch", "ember_witch"]
+    }
+  ],
+  "rewards": {}
+}

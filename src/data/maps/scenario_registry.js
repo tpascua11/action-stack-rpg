@@ -1,7 +1,8 @@
-import EMBER_WITCH_TEST from '../scenarios/ember_witch_test.json';
-import EMBER_KEEP from '../scenarios/ember_keep.json';
+const ctx = require.context('../scenarios', false, /\.json$/);
 
-export const SCENARIO_REGISTRY = {
-  ember_witch_test: EMBER_WITCH_TEST,
-  ember_keep: EMBER_KEEP,
-};
+export const SCENARIO_REGISTRY = Object.fromEntries(
+  ctx.keys().map(key => {
+    const scenario = ctx(key);
+    return [scenario.id, scenario];
+  })
+);

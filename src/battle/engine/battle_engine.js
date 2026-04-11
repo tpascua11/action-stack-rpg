@@ -243,10 +243,10 @@ export function ExecuteAction(action, interaction_result, state) {
     owner.resources[resourceType].current -= amount;
   }
 
-  // Retarget if original target is already dead
+  // Retarget if original target is already dead — prefer same faction as original target
   const resolvedTarget = target.health > 0
     ? target
-    : newState.characters.find(c => c.id !== action.owner_id && c.health > 0) ?? null;
+    : newState.characters.find(c => c.faction === target.faction && c.id !== action.owner_id && c.health > 0) ?? null;
   const retargeted = resolvedTarget && resolvedTarget.id !== target.id;
 
   // ── BUILD ──

@@ -58,7 +58,7 @@ export default function BattleQueue({ characters, phase }) {
 
   return (
     <div
-      className="h-[8.25rem] flex items-center border-y border-white/10"
+      className="h-[10rem] flex items-center border-y border-white/10"
       style={{ background: 'rgba(0,0,0,0.3)' }}
     >
       {/* Scrollable card row */}
