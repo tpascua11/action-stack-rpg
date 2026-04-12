@@ -11,6 +11,7 @@ export const SAMURAI = {
   icon: '⚔️',
   portrait: 'PORTRAIT_SUMURAI',
   base_health: 350,
+  base_speed: 100,
   total_action_slots: 3,
   resources: [
     { type: 'BATTLE_SPIRIT', max: 10, starting: 0 },

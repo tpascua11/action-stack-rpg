@@ -11,6 +11,7 @@ export const FIGHTER = {
   icon: '⚔️',
   portrait: 'PORTRAIT_FIGHTER',
   base_health: 350,
+  base_speed: 100,
   total_action_slots: 3,
   resources: [
     { type: 'RAGE', max: 100, starting: 0 },

@@ -244,6 +244,7 @@ export default function BattleScreen() {
             disabled={gs.phase !== 'QUEUE_SETUP'}
             resources={player.resources}
             ResourceBar={ResourceBar}
+            baseSpeed={player.base_speed}
           />
 
         </div>

@@ -8,7 +8,7 @@ export const FIGHTER_CARDS = [
   {
     id: 'heavy_slice',
     name: 'Heavy Slice',
-    speed: 90,
+    speed_mod: -10,
     tag_type: ['PHYSICAL', 'SLASH'],
     cost: {},
     icon: '⚔️',
@@ -27,7 +27,7 @@ export const FIGHTER_CARDS = [
   {
     id: 'quick_slice',
     name: 'Quick Slice',
-    speed: 110,
+    speed_mod: 10,
     tag_type: ['PHYSICAL', 'SLASH'],
     cost: {},
     icon: '🔪',
@@ -44,7 +44,7 @@ export const FIGHTER_CARDS = [
   {
     id: 'mend',
     name: 'Mend',
-    speed: 50,
+    speed_mod: -50,
     tag_type: ['MAGIC'],
     cost: {},
     icon: '💖',
@@ -62,7 +62,7 @@ export const FIGHTER_CARDS = [
   {
     id: 'magic_charge',
     name: 'Magic Charge',
-    speed: 100,
+    speed_mod: 0,
     tag_type: ['WIZARD_PREP', 'SPELL', 'MAGIC', 'CHARGING'],
     cost: {},
     icon: '✨',
@@ -80,7 +80,7 @@ export const FIGHTER_CARDS = [
   {
     id: 'fuel_to_the_flames',
     name: 'Fuel to the Flames',
-    speed: 100,
+    speed_mod: 0,
     tag_type: ['WIZARD_PREP', 'SPELL', 'MAGIC', 'CHARGING'],
     cost: {},
     icon: '🔥',
@@ -97,7 +97,7 @@ export const FIGHTER_CARDS = [
   {
     id: 'speed_up',
     name: 'Speed Up',
-    speed: 200,
+    speed_mod: 100,
     tag_type: ['PHYSICAL'],
     cost: {},
     icon: '💨',
@@ -114,7 +114,7 @@ export const FIGHTER_CARDS = [
   {
     id: 'flame_strike',
     name: 'Flame Strike',
-    speed: 100,
+    speed_mod: 0,
     tag_type: ['WIZARD_PREP', 'SPELL', 'MAGIC'],
     cost: { WIZARD_MANA: 100 },
     icon: '🔥',

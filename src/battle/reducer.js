@@ -43,7 +43,7 @@ export function battleReducer(state, action) {
         owner_name: player.name,
         target_id: target.id,
         payload_type: card.tag_type.includes('MAGIC') ? 'MAGIC' : 'PHYSICAL',
-        calc_speed: calcSpeed(card.speed, slotIndex),
+        calc_speed: calcSpeed(player.base_speed + (card.speed_mod ?? 0), slotIndex),
         priority_flag: null,
       };
       return { ...state, characters: chars, lastTargetId: target.id };

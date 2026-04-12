@@ -14,6 +14,7 @@ export const WIZARD = {
   icon: '🧙',
   portrait: 'PORTRAIT_WIZARD',
   base_health: 250,
+  base_speed: 100,
   total_action_slots: 3,
   resources: [
     { type: 'MANA', max: 300, starting: 100 },

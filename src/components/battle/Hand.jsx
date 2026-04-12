@@ -6,7 +6,7 @@ import { calcSpeed, effectiveResourceAtExecution } from '../../battle/engine/bat
 import { battle_registry } from '../../battle/registry/battle_registry';
 import { DEBUG_HAND_COST } from '../../debug';
 
-export default function Hand({ cards, queue, totalSlots, onCardClick, disabled, resources, ResourceBar }) {
+export default function Hand({ cards, queue, totalSlots, onCardClick, disabled, resources, ResourceBar, baseSpeed }) {
   const filledCount = queue.filter(Boolean).length;
   const nullIdx = queue.findIndex(s => !s);
   const nextSlotIndex = filledCount >= totalSlots ? -1 : (nullIdx !== -1 ? nullIdx : queue.length);
@@ -62,7 +62,7 @@ export default function Hand({ cards, queue, totalSlots, onCardClick, disabled, 
       <div className="flex-1 flex items-start justify-center px-4 pt-2" style={{ willChange: 'transform' }}>
         {cards.map((card, idx) => {
           const wouldSpeed = nextSlotIndex >= 0
-            ? calcSpeed(card.speed, nextSlotIndex)
+            ? calcSpeed(baseSpeed + (card.speed_mod ?? 0), nextSlotIndex)
             : null;
           const canAfford = DEBUG_HAND_COST || (nextSlotIndex >= 0 && Object.entries(card.cost ?? {}).every(
             ([type, amount]) => effectiveResourceAtExecution(type, nextSlotIndex, queue, resources) >= amount
@@ -120,7 +120,7 @@ export default function Hand({ cards, queue, totalSlots, onCardClick, disabled, 
                 <div className="flex items-center justify-center flex-shrink-0"
                   style={{ background: '#0d0d1a', borderTop: `1px solid ${card.color}55`, height: '1.1rem' }}>
                   <span className="text-[11px] font-bold font-mono" style={{ color: card.color }}>
-                    SPD {wouldSpeed !== null && !isDisabled ? wouldSpeed : card.speed}
+                    SPD {wouldSpeed !== null && !isDisabled ? wouldSpeed : baseSpeed + (card.speed_mod ?? 0)}
                   </span>
                 </div>
 
@@ -136,7 +136,7 @@ export default function Hand({ cards, queue, totalSlots, onCardClick, disabled, 
                   <div className="text-base font-bold text-white font-body">{card.name}</div>
                   <div className="text-xs text-gray-400 font-mono">{card.tag_type.join(' · ')}</div>
                   <div className="text-sm text-gray-300 leading-snug mt-1">{card.desc}</div>
-                  <div className="text-xs text-[#4da6ff] font-mono mt-1">BASE SPD {card.speed}</div>
+                  <div className="text-xs text-[#4da6ff] font-mono mt-1">BASE SPD {baseSpeed}{card.speed_mod !== 0 ? ` ${card.speed_mod > 0 ? '+' : ''}${card.speed_mod}` : ''}</div>
                   {Object.entries(card.cost ?? {}).map(([type, amount]) => {
                     const free = nextSlotIndex >= 0 ? effectiveResourceAtExecution(type, nextSlotIndex, queue, resources) : 0;
                     const hasEnough = free >= amount;

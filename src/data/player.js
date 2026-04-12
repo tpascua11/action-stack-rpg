@@ -13,6 +13,7 @@ export function buildPlayer(classDef, { id = 'player', name, portrait } = {}) {
     class_id: classDef.id,
     health: classDef.base_health,
     max_health: classDef.base_health,
+    base_speed: classDef.base_speed,
     resources: Object.fromEntries(
       classDef.resources.map(r => [r.type, { current: r.starting, max: r.max }])
     ),

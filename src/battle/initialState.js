@@ -20,7 +20,7 @@ export function buildEnemyQueue(enemy) {
     owner_name: enemy.name,
     target_id: 'vrax',
     payload_type: act.payload_type || 'PHYSICAL',
-    calc_speed: calcSpeed(act.speed, i),
+    calc_speed: calcSpeed(enemy.base_speed + (act.speed_mod ?? 0), i),
     priority_flag: null,
   }));
 }
