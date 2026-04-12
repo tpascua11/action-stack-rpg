@@ -9,7 +9,7 @@ export default function ActionQueue({ queue, totalSlots, enemies, retargetingSlo
     <div className="flex flex-col items-start gap-3">
 
       {/* Slots — horizontal row, same card size as Hand */}
-      <div className="relative flex flex-row gap-2" style={{ paddingTop: '5rem' }}>
+      <div className="relative flex flex-row gap-2" style={{ paddingTop: '5rem', willChange: 'transform' }}>
 
         {/* Fizzle popup — placeholder until animation is implemented */}
         {fizzlingCard && (
