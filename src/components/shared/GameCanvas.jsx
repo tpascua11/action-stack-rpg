@@ -20,7 +20,7 @@ export default function GameCanvas({ children }) {
   }, []);
 
   return (
-    <div style={{ width: '100vw', height: '100vh', overflow: 'hidden', background: '#0f0f1a', position: 'relative' }}>
+    <div style={{ width: '100vw', height: '100vh', overflow: 'hidden', background: '#000000', position: 'relative' }}>
       <div
         style={{
           width: 1920,
@@ -30,6 +30,8 @@ export default function GameCanvas({ children }) {
           position: 'absolute',
           top: '50%',
           left: '50%',
+          border: '1px solid rgba(255, 255, 255, 0.15)',
+          boxShadow: '0 0 24px rgba(255, 255, 255, 0.08)',
         }}
       >
         {children}
