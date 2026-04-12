@@ -168,7 +168,8 @@ export default function BattleScreen() {
             </g>
           ) : (
             <g key={key}>
-              <line x1={x1} y1={y1} x2={x2} y2={y2} stroke="#e94560" strokeWidth="1" opacity="0.35" strokeDasharray="4 6"/>
+              <line x1={x1} y1={y1} x2={x2} y2={y2} stroke="#4da6ff" strokeWidth="2" opacity="0.12" filter="url(#arc-glow)"/>
+              <line x1={x1} y1={y1} x2={x2} y2={y2} stroke="#4da6ff" strokeWidth="1" opacity="0.35" strokeDasharray="4 6"/>
             </g>
           ))}
         </svg>,
