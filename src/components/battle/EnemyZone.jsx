@@ -4,6 +4,7 @@
 // ============================================================
 
 import TagPool from './TagPool';
+import { SCENARIO_CITADEL_1_ENEMY } from '../../assets';
 
 const CARD_SIZES = {
   small:  { card: 'w-32 h-48',  icon: 'text-3xl py-2',   name: 'text-[10px]', hpText: 'text-[8px]'  },
@@ -30,12 +31,22 @@ function getMidCardOffset(enemies) {
 export default function EnemyZone({ enemies, shakingEnemyId, activeEnemyId, selectedTargetId, phase, onSelectTarget }) {
   const offset = getMidCardOffset(enemies);
   return (
-    <div className="flex-1 min-h-0 flex flex-row items-end justify-center gap-20 pb-10 border-b border-red-900/30"
+    <div className="relative flex-1 min-h-0 mx-4 mt-3 mb-0 rounded-xl overflow-hidden flex flex-row items-end justify-center gap-20 pb-10"
       style={{
-        background: 'radial-gradient(circle at center, #2a1520 0%, #0f0f1a 100%)',
+        backgroundImage: `url(${SCENARIO_CITADEL_1_ENEMY})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        border: '1px solid rgba(255, 255, 255, 0.6)',
+        boxShadow: '0 0 12px rgba(255,255,255,0.25), 0 0 32px rgba(255,255,255,0.1), 0 8px 32px rgba(0,0,0,0.6)',
       }}>
 
-      <div className="flex flex-row items-end gap-20" style={{ transform: `translateX(${offset}rem)` }}>
+      {/* Dark tint */}
+      <div className="absolute inset-0 pointer-events-none" style={{ background: 'rgba(10, 5, 20, 0.45)' }} />
+      {/* Scanlines */}
+      <div className="absolute inset-0 pointer-events-none"
+        style={{ background: 'repeating-linear-gradient(0deg, rgba(0,0,0,0.18) 0px, rgba(0,0,0,0.18) 1px, transparent 1px, transparent 3px)' }} />
+
+      <div className="relative flex flex-row items-end gap-20" style={{ transform: `translateX(${offset}rem)` }}>
       {enemies.map(enemy => {
         const hpPct = Math.max(0, (enemy.health / enemy.max_health) * 100);
         const isDead = enemy.health <= 0;

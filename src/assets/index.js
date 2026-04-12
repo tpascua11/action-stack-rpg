@@ -7,17 +7,20 @@
 // --- Portraits ---
 export { default as COOL_FOX } from './Cool_Fox.png';
 export { default as PORTRAIT_SUMURAI } from './PLAYER_PORTRAITS/SUMURAI_2.png';
-export { default as PORTRAIT_PALADIN } from './PLAYER_PORTRAITS/PALADIN.png';
+export { default as PORTRAIT_PALADIN } from './PLAYER_PORTRAITS/PALADIN_2.png';
 export { default as PORTRAIT_ROGUE } from './PLAYER_PORTRAITS/ROGUE.png';
-export { default as PORTRAIT_WARRIOR } from './PLAYER_PORTRAITS/WARRIOR.png';
+export { default as PORTRAIT_WARRIOR } from './PLAYER_PORTRAITS/WARRIOR_2.png';
 export { default as PORTRAIT_FIGHTER } from './PLAYER_PORTRAITS/FIGHTER.png';
-export { default as PORTRAIT_MONK } from './PLAYER_PORTRAITS/MONK.png';
+export { default as PORTRAIT_MONK } from './PLAYER_PORTRAITS/MONK_2.png';
 export { default as PORTRAIT_TEMPLAR } from './PLAYER_PORTRAITS/TEMPLAR.png';
 export { default as PORTRAIT_WIZARD } from './PLAYER_PORTRAITS/WIZARD.png';
 export { default as UPSCALED_00017 } from './PLAYER_PORTRAITS/Upscaled_00017_.png';
 export { default as UPSCALED_00028 } from './PLAYER_PORTRAITS/Upscaled_00028_.png';
 export { default as UPSCALED_00203 } from './PLAYER_PORTRAITS/Upscaled_00203_.png';
 export { default as UPSCALED_00235 } from './PLAYER_PORTRAITS/Upscaled_00235_.png';
+
+// --- Scenario Backgrounds ---
+export { default as SCENARIO_CITADEL_1_ENEMY } from './SCENARIO/CITADEL_1_ENEMY.png';
 
 // --- Enemy Portraits ---
 export { default as ENEMY_APPRENTICE_WITCH } from './ENEMY/APPRENTICE_WITCH.png';

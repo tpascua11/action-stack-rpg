@@ -167,20 +167,18 @@ export default function BattleScreen() {
         );
       })()}
 
-      {/* Game canvas — fixed 1920×1080 scaled down when viewport is smaller; fluid layout when larger */}
+      {/* Game canvas — fixed 1920×1080, scaled down on small screens, centered on large screens */}
       <div
-        style={scale < 1 ? {
+        style={{
           width: 1920,
           height: 1080,
-          transform: `scale(${scale})`,
-          transformOrigin: 'top left',
+          transform: `translate(-50%, -50%) scale(${scale})`,
+          transformOrigin: 'center',
           position: 'absolute',
-          top: `${(window.innerHeight - 1080 * scale) / 2}px`,
-          left: `${(window.innerWidth - 1920 * scale) / 2}px`,
-        } : {}}
-        className={scale < 1
-          ? "flex flex-col overflow-hidden bg-[#0f0f1a]"
-          : "w-screen h-screen flex flex-col overflow-hidden bg-[#0f0f1a]"}
+          top: '50%',
+          left: '50%',
+        }}
+        className="flex flex-col overflow-hidden bg-[#0f0f1a]"
         onClick={() => setRetargetingSlot(null)}
       >
 
@@ -247,7 +245,9 @@ export default function BattleScreen() {
             resources={player.resources}
             ResourceBar={ResourceBar}
           />
+
         </div>
+
 
       </div>
 
