@@ -123,6 +123,13 @@ export default function CharacterSelectScreen() {
   const [fadeOut, setFadeOut]             = useState(false);
   const [pendingMap, setPendingMap] = useState(false);
 
+  // Preload all portraits on mount so swaps are instant
+  useEffect(() => {
+    Object.values(CHARACTER_DATA).forEach(({ portrait }) => {
+      if (portrait) { const img = new Image(); img.src = portrait; }
+    });
+  }, []);
+
   // Step 2: once CONFIRM_CLASS has resolved and playerData is ready, go to map
   useEffect(() => {
     if (pendingMap && playerData) {
