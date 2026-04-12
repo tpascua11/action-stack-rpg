@@ -125,6 +125,8 @@ export const SAMURAI_CARDS = [
     image: 'FOX_SUMMURAI_1',
     color: '#ef4444',
     desc: 'Strike target with fire for 150 damage. Costs 3 Battle Spirit.',
+    animation: 'burn',
+    animation_intensity: 1.2,
     tags: {
       self: [],
       target: [

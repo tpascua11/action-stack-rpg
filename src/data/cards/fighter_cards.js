@@ -15,6 +15,8 @@ export const FIGHTER_CARDS = [
     image: 'FOX_SUMMURAI_4',
     color: '#e94560',
     desc: 'A powerful slash attack.',
+    animation: 'shake',
+    animation_intensity: 1.5,
     tags: {
       self: [
         { tag_name: 'MOMENTUM', multiplier: 0.2, tier: 'advanced' },
@@ -34,6 +36,8 @@ export const FIGHTER_CARDS = [
     image: 'FOX_SUMMURAI_21',
     color: '#ff6b35',
     desc: 'A fast light slash.',
+    animation: 'shake',
+    animation_intensity: 1.0,
     tags: {
       self: [],
       target: [
@@ -121,6 +125,8 @@ export const FIGHTER_CARDS = [
     image: 'FOX_SUMMURAI_1',
     color: '#ef4444',
     desc: 'Strike target with fire for 150 damage.',
+    animation: 'burn',
+    animation_intensity: 1.2,
     tags: {
       self: [],
       target: [

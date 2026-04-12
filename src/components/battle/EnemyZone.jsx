@@ -28,7 +28,7 @@ function getMidCardOffset(enemies) {
   return totalWidth / 2 - midCardCenter;
 }
 
-export default function EnemyZone({ enemies, shakingEnemyId, activeEnemyId, selectedTargetId, phase, onSelectTarget, battleBackground }) {
+export default function EnemyZone({ enemies, activeAnimations = {}, activeEnemyId, selectedTargetId, phase, onSelectTarget, battleBackground }) {
   const bgImage = SCENARIO_BACKGROUNDS[battleBackground] ?? SCENARIO_BACKGROUNDS['CITADEL_1_ENEMY'];
   const offset = getMidCardOffset(enemies);
   return (
@@ -51,7 +51,7 @@ export default function EnemyZone({ enemies, shakingEnemyId, activeEnemyId, sele
       {enemies.map(enemy => {
         const hpPct = Math.max(0, (enemy.health / enemy.max_health) * 100);
         const isDead = enemy.health <= 0;
-        const isShaking = shakingEnemyId === enemy.id;
+        const anim = activeAnimations[enemy.id];
         const isActive = activeEnemyId === enemy.id && !isDead;
         const isSelected = selectedTargetId === enemy.id && !isDead && phase === 'QUEUE_SETUP';
         const isSelectable = phase === 'QUEUE_SETUP' && !isDead;
@@ -77,8 +77,9 @@ export default function EnemyZone({ enemies, shakingEnemyId, activeEnemyId, sele
             {/* Enemy Card */}
             <div
               data-enemy-id={enemy.id}
-              className={`${sz.card} relative rounded-lg border-2 overflow-hidden shrink-0 ${isShaking ? 'animate-shake' : ''}`}
+              className={`${sz.card} relative rounded-lg border-2 overflow-hidden shrink-0 ${anim?.cssClass ?? ''}`}
               style={{
+                '--anim-intensity': anim?.intensity ?? 1,
                 borderColor: isSelected ? '#ff0030' : '#e94560',
                 boxShadow: isSelected
                   ? '0 0 28px rgba(255,0,48,0.8), 0 0 8px rgba(255,0,48,0.5)'

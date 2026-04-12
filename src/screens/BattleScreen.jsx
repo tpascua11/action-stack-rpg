@@ -8,6 +8,8 @@ import { CLASS_REGISTRY } from '../data/classes/class_registry';
 import { useGame } from '../context/GameContext';
 
 import { MUSIC_REGISTRY } from '../assets/MUSIC/index';
+import { ANIMATIONS } from '../battle/animationRegistry';
+import '../battle/animations.css';
 import EnemyZone from '../components/battle/EnemyZone';
 import BattleLog from '../components/battle/BattleLog';
 import BattleQueue from '../components/battle/BattleQueue';
@@ -20,6 +22,7 @@ export default function BattleScreen() {
   const { gs, dispatch, onBattleEnd } = useGame();
   const [retargetingSlot, setRetargetingSlot] = useState(null);
   const [lineCoords, setLineCoords] = useState(null);
+  const [activeAnimations, setActiveAnimations] = useState({});
   const battleTimerRef = useRef(null);
   const musicRef = useRef(null);
 
@@ -60,19 +63,31 @@ export default function BattleScreen() {
     return () => clearTimeout(battleTimerRef.current);
   }, [gs.phase, gs.stepCount]);
 
-  // Stop shake animation
+  // Unified animation handler — reads pendingAnimation from reducer,
+  // looks up config in registry, applies CSS class + SFX, auto-clears.
   useEffect(() => {
-    if (!gs.shakingEnemyId) return;
-    const t = setTimeout(() => dispatch({ type: 'STOP_SHAKE' }), 350);
-    return () => clearTimeout(t);
-  }, [gs.shakingEnemyId]);
+    const anim = gs.pendingAnimation;
+    if (!anim) return;
+    const config = ANIMATIONS[anim.type];
+    if (!config) return;
 
-  // Stop fizzle animation
-  useEffect(() => {
-    if (!gs.fizzlingCard) return;
-    const t = setTimeout(() => dispatch({ type: 'STOP_FIZZLE' }), 600);
+    setActiveAnimations(prev => ({
+      ...prev,
+      [anim.targetId]: { cssClass: config.cssClass, intensity: anim.intensity ?? 1.0 },
+    }));
+
+    if (config.sfx) {
+      const sfx = new Audio(config.sfx);
+      sfx.volume = config.volume ?? 0.6;
+      sfx.play().catch(() => {});
+    }
+
+    const t = setTimeout(() => {
+      setActiveAnimations(prev => ({ ...prev, [anim.targetId]: null }));
+    }, config.duration);
+
     return () => clearTimeout(t);
-  }, [gs.fizzlingCard]);
+  }, [gs.pendingAnimation, gs.stepCount]);
 
   useEffect(() => {
     if (gs.phase !== 'QUEUE_SETUP') { setLineCoords(null); return; }
@@ -184,7 +199,7 @@ export default function BattleScreen() {
         {/* TOP — Enemy Zone */}
         <EnemyZone
           enemies={enemies}
-          shakingEnemyId={gs.shakingEnemyId}
+          activeAnimations={activeAnimations}
           activeEnemyId={gs.activeEnemyId}
           selectedTargetId={gs.lastTargetId}
           phase={gs.phase}
@@ -214,7 +229,7 @@ export default function BattleScreen() {
             </div>
 
             {/* CENTER — Character column */}
-            <PlayerPortrait player={player} />
+            <PlayerPortrait player={player} activeAnimations={activeAnimations} />
 
             {/* RIGHT — Advanced tag column + Slot column */}
             <div style={{ width: '340px', paddingLeft: '12px', display: 'flex', flexDirection: 'row', alignItems: 'flex-end', gap: '12px' }}>
@@ -229,7 +244,7 @@ export default function BattleScreen() {
                 onExecute={handleExecute}
                 isBattling={gs.phase === 'BATTLE'}
                 isResult={gs.phase === 'RESULT'}
-                fizzlingCard={gs.fizzlingCard ?? null}
+                fizzlingCard={gs.pendingAnimation?.type === 'fizzle' ? { name: gs.pendingAnimation.cardName } : null}
               />
             </div>
 

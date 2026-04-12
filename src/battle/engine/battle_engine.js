@@ -331,7 +331,13 @@ export function ExecuteAction(action, interaction_result, state) {
   // ── POST_ATTACK ──
   owner.active_tag_pool = runPhasePostAttack(owner.active_tag_pool, payload, owner, hit_result);
 
-  return { newState, logs, actualTargetId: resolvedTarget?.id ?? null };
+  return {
+    newState,
+    logs,
+    actualTargetId: resolvedTarget?.id ?? null,
+    animationHint: action.animation ?? (action.payload_type === 'MAGIC' ? 'shake_magic' : 'shake'),
+    animationIntensity: action.animation_intensity ?? 1.0,
+  };
 }
 
 // ── ACTION CLEANUP ──

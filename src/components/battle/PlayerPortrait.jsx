@@ -3,15 +3,19 @@
 // ============================================================
 import { COOL_FOX as fallbackImg } from '../../assets';
 
-export default function PlayerPortrait({ player }) {
+export default function PlayerPortrait({ player, activeAnimations = {} }) {
   const hpPct = Math.max(0, (player.health / player.max_health) * 100);
   const portrait = player.portrait ?? fallbackImg;
+  const anim = activeAnimations[player.id];
 
   return (
     <div className="flex flex-col items-center">
       {/* w-64 h-96 = 256×384 = 2:3 card ratio */}
-      <div className="relative w-[14rem] h-[21rem] rounded-2xl border-4 border-[#4da6ff]
-        shadow-[0_0_60px_rgba(77,166,255,0.5)] overflow-hidden">
+      <div
+        className={`relative w-[14rem] h-[21rem] rounded-2xl border-4 border-[#4da6ff]
+          shadow-[0_0_60px_rgba(77,166,255,0.5)] overflow-hidden ${anim?.cssClass ?? ''}`}
+        style={{ '--anim-intensity': anim?.intensity ?? 1 }}
+      >
 
         {/* Portrait fills entire card */}
         <img src={portrait} alt={player.name} className="absolute inset-0 w-full h-full object-cover" />

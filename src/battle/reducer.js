@@ -129,7 +129,7 @@ export function battleReducer(state, action) {
 
       if (interactionLog) newLogs.push(interactionLog);
 
-      const { newState: afterExec, logs: execLogs, actualTargetId, fizzled } = ExecuteAction(actionA, resultA, newState);
+      const { newState: afterExec, logs: execLogs, actualTargetId, fizzled, animationHint, animationIntensity } = ExecuteAction(actionA, resultA, newState);
       newState = afterExec;
       newLogs.push(...execLogs);
 
@@ -150,7 +150,7 @@ export function battleReducer(state, action) {
       };
 
       const targetChar = actualTargetId ? newState.characters.find(c => c.id === actualTargetId) : null;
-      const enemyWasHit = targetChar && targetChar.faction === 'enemy' && resultA !== 'NULLIFY';
+      const anyoneWasHit = targetChar && resultA !== 'NULLIFY';
 
       // Active enemy: look ahead to the NEXT action so the nudge shows before it fires
       // Resolve dead targets to a living enemy of the same faction (mirrors ExecuteAction retarget)
@@ -165,14 +165,19 @@ export function battleReducer(state, action) {
         ? nextAction.owner_id
         : nextTarget?.faction === 'enemy' ? nextTarget.id : null;
 
+      const pendingAnimation = fizzled
+        ? { type: 'fizzle', targetId: actionA.owner_id, intensity: 1.0, cardName: actionA.name }
+        : anyoneWasHit
+          ? { type: animationHint, targetId: actualTargetId, intensity: animationIntensity }
+          : null;
+
       return {
         ...newState,
         phase: 'BATTLE',
         stepCount: state.stepCount + 1,
         logs: [...state.logs, ...newLogs],
-        shakingEnemyId: enemyWasHit ? actualTargetId : null,
+        pendingAnimation,
         activeEnemyId,
-        fizzlingCard: fizzled ? actionA : null,
       };
     }
 
@@ -187,13 +192,6 @@ export function battleReducer(state, action) {
       player.queue[action.index] = { ...slot, target_id: action.targetId };
       return { ...state, characters: chars, lastTargetId: action.targetId };
     }
-
-    // ── UI animation — temporary, moves to BattleScreen local state in task 5 ──
-    case 'STOP_SHAKE':
-      return { ...state, shakingEnemyId: null };
-
-    case 'STOP_FIZZLE':
-      return { ...state, fizzlingCard: null };
 
     case 'START_NEW_GAME':
       return { ...state, phase: 'CHARACTER_SELECT' };

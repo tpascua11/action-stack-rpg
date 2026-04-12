@@ -17,13 +17,6 @@ module.exports = {
         mono: ["'Share Tech Mono'", "monospace"],
       },
       keyframes: {
-        shake: {
-          "0%":   { transform: "translate(1px,1px) rotate(0deg)" },
-          "25%":  { transform: "translate(-2px,-2px) rotate(-1deg)" },
-          "50%":  { transform: "translate(-3px,0px) rotate(1deg)" },
-          "75%":  { transform: "translate(3px,2px) rotate(0deg)" },
-          "100%": { transform: "translate(1px,-1px) rotate(-1deg)" },
-        },
         fadeIn: {
           "0%":   { opacity: 0, transform: "translateY(8px)" },
           "100%": { opacity: 1, transform: "translateY(0)" },
@@ -34,7 +27,6 @@ module.exports = {
         },
       },
       animation: {
-        shake: "shake 0.3s ease-in-out",
         fadeIn: "fadeIn 0.25s ease-out",
         pulse_glow: "pulse_glow 2s ease-in-out infinite",
       },
