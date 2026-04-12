@@ -104,10 +104,10 @@ export function battleReducer(state, action) {
         const player = cleanedState.characters.find(c => c.faction === 'player');
         const allEnemiesDead = cleanedState.characters.filter(c => c.faction === 'enemy').every(e => e.health <= 0);
         if (player.health <= 0) {
-          return { ...cleanedState, phase: 'RESULT', result: 'LOSS', logs: [...state.logs, ...cleanLogs, { msg: '💀 VRAX HAS FALLEN.', type: 'dmg' }] };
+          return { ...cleanedState, phase: 'RESULT', result: 'LOSS', pendingAnimation: [], logs: [...state.logs, ...cleanLogs, { msg: '💀 VRAX HAS FALLEN.', type: 'dmg' }] };
         }
         if (allEnemiesDead) {
-          return { ...cleanedState, phase: 'RESULT', result: 'WIN', logs: [...state.logs, ...cleanLogs, { msg: '🏆 VICTORY! ALL ENEMIES DEFEATED!', type: 'heal' }] };
+          return { ...cleanedState, phase: 'RESULT', result: 'WIN', pendingAnimation: [], logs: [...state.logs, ...cleanLogs, { msg: '🏆 VICTORY! ALL ENEMIES DEFEATED!', type: 'heal' }] };
         }
         const nextChars = cleanedState.characters.map(c => ({ ...c, queue: [] }));
         return {
@@ -117,6 +117,7 @@ export function battleReducer(state, action) {
           turn: state.turn + 1,
           logs: [...state.logs, ...cleanLogs, { msg: `━━━ TURN ${state.turn} END ━━━`, type: 'info' }],
           activeEnemyId: null,
+          pendingAnimation: [],
         };
       }
 

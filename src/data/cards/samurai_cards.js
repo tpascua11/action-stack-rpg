@@ -110,6 +110,8 @@ export const SAMURAI_CARDS = [
     image: 'FOX_SUMMURAI_9',
     color: '#38bdf8',
     desc: 'Boost the speed of your next action by 50.',
+    animation: 'run_circle',
+    animation_intensity: 1.0,
     tags: {
       self: [
         { tag_name: 'SPEED_BOOST', amount: 150 },

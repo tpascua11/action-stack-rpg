@@ -55,6 +55,50 @@
   animation: buff calc(0.65s / var(--anim-intensity, 1)) ease-out;
 }
 
+/* ── WIGGLE (quick in-place wobble) ── */
+@keyframes wiggle {
+  0%   { transform: translate(0px,  0px)   rotate(0deg)   scale(1);    }
+  10%  { transform: translate(10px, -5px)  rotate(4deg)   scale(1.03); }
+  25%  { transform: translate(0px,  -14px) rotate(0deg)   scale(1);    }
+  37%  { transform: translate(-10px,-5px)  rotate(-4deg)  scale(0.97); }
+  50%  { transform: translate(0px,  0px)   rotate(0deg)   scale(1);    }
+  60%  { transform: translate(10px, -5px)  rotate(4deg)   scale(1.03); }
+  75%  { transform: translate(0px,  -14px) rotate(0deg)   scale(1);    }
+  87%  { transform: translate(-10px,-5px)  rotate(-4deg)  scale(0.97); }
+  100% { transform: translate(0px,  0px)   rotate(0deg)   scale(1);    }
+}
+.animate-wiggle {
+  animation: wiggle calc(0.55s / var(--anim-intensity, 1)) ease-in-out;
+}
+
+/* ── RUN CIRCLE (speed boost — true orbit around a point) ── */
+/* Positions computed from circle math: x = r·sin(θ), y = r·(cos(θ)−1)    */
+/* r=18px so the card orbits a point 18px above its rest position.          */
+/* Two full clockwise laps baked into keyframes. linear timing = true circle */
+@keyframes run_circle {
+  /*  θ       x      y   */
+  0%    { transform: translate(  0px,   0px); } /*   0° */
+  6.25% { transform: translate( 13px,  -5px); } /*  45° */
+  12.5% { transform: translate( 18px, -18px); } /*  90° */
+  18.75%{ transform: translate( 13px, -31px); } /* 135° */
+  25%   { transform: translate(  0px, -36px); } /* 180° — top of orbit */
+  31.25%{ transform: translate(-13px, -31px); } /* 225° */
+  37.5% { transform: translate(-18px, -18px); } /* 270° */
+  43.75%{ transform: translate(-13px,  -5px); } /* 315° */
+  50%   { transform: translate(  0px,   0px); } /* 360° — lap 1 done */
+  56.25%{ transform: translate( 13px,  -5px); } /*  45° */
+  62.5% { transform: translate( 18px, -18px); } /*  90° */
+  68.75%{ transform: translate( 13px, -31px); } /* 135° */
+  75%   { transform: translate(  0px, -36px); } /* 180° — top of orbit */
+  81.25%{ transform: translate(-13px, -31px); } /* 225° */
+  87.5% { transform: translate(-18px, -18px); } /* 270° */
+  93.75%{ transform: translate(-13px,  -5px); } /* 315° */
+  100%  { transform: translate(  0px,   0px); } /* 360° — lap 2 done */
+}
+.animate-run_circle {
+  animation: run_circle calc(0.7s / var(--anim-intensity, 1)) linear;
+}
+
 /* ── BURN (fire hit) ── */
 @keyframes burn {
   /* Impact flash — bright orange-white burst */

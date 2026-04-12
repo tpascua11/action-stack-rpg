@@ -31,6 +31,16 @@ export const ANIMATIONS = {
     duration: 600,
     sfx: null,
   },
+  wiggle: {
+    cssClass: 'animate-wiggle',
+    duration: 550,
+    sfx: null,
+  },
+  run_circle: {
+    cssClass: 'animate-run_circle',
+    duration: 700,
+    sfx: null,
+  },
   heal: {
     cssClass: 'animate-heal',
     duration: 700,
