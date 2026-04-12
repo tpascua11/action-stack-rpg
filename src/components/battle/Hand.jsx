@@ -36,7 +36,7 @@ export default function Hand({ cards, queue, totalSlots, onCardClick, disabled, 
       style={{ background: 'rgba(0,0,0,0.25)' }}>
 
       {/* Button row — 3 sections */}
-      <div className="flex-shrink-0 flex border-b border-white/10" style={{ height: '2.5rem' }}>
+      <div className="flex-shrink-0 flex border-b border-white/10" style={{ height: '2.5rem', position: 'relative', zIndex: 0 }}>
 
         {/* LEFT — bag / inventory */}
         <div className="w-[25%] flex items-center justify-center border-r border-white/10 cursor-pointer hover:bg-white/5 transition-colors">
