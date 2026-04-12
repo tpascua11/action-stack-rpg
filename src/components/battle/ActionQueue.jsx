@@ -61,7 +61,7 @@ export default function ActionQueue({ queue, totalSlots, enemies, retargetingSlo
                     >
                       {/* Row 1 — ENEMY N */}
                       <div className="text-[11px] font-display tracking-widest leading-none"
-                        style={{ color: isRetargeting ? '#4da6ffcc' : '#e94560cc' }}>
+                        style={{ color: '#ffffffcc' }}>
                         ENEMY {enemyNum}
                       </div>
                       {/* Row 2 — name */}

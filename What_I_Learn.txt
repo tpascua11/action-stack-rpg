@@ -1,0 +1,23 @@
+WHAT I LEARNED
+==============
+
+[1] GPU COMPOSITING & COLOR POP
+--------------------------------
+When a CSS transform (like scale or translate) fires on an element, the browser
+promotes that element to its own GPU compositor layer mid-animation. This
+re-rasterization can cause a visible color flash or "glow pop" on nearby elements,
+especially on saturated colors like red. This is a known Chromium issue called
+the "GPU compositing color shift" or "layer promotion artifact."
+
+Elements near the animated element (bystanders) can also flicker — when a neighbor
+gets promoted to a GPU layer, surrounding elements get re-rasterized as a side effect.
+
+FIX: "will-change: transform" pre-promotes an element to its own GPU layer before
+any animation fires, preventing mid-animation re-rasterization. Apply it to the
+animated element to prevent the pop on itself, or to sensitive bystanders to
+insulate them from neighbor-triggered reshuffles.
+
+COST: Every element with will-change: transform holds a permanent GPU texture,
+consuming memory and battery even when idle. Avoid applying it to large lists.
+For many elements, apply it dynamically on mouseenter and remove on mouseleave.
+

@@ -35,6 +35,7 @@ export default function BattleLog({ logs, turn }) {
         display:    'flex',
         flexDirection: 'column',
         zIndex:     5,
+        willChange: 'transform',
       }}
     >
       {/* Header */}
