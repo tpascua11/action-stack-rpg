@@ -107,7 +107,17 @@ export default function BattleScreen() {
 
   function handleRetargetBoxClick(index) {
     if (gs.phase !== 'QUEUE_SETUP') return;
-    setRetargetingSlot(prev => prev === index ? null : index);
+    if (retargetingSlot === index) {
+      // Already in retarget mode for this slot — cycle to next living enemy
+      const living = enemies.filter(e => e.health > 0);
+      if (living.length < 2) return;
+      const currentTargetId = player.queue[index]?.target_id;
+      const currentIdx = living.findIndex(e => e.id === currentTargetId);
+      const nextEnemy = living[(currentIdx + 1) % living.length];
+      dispatch({ type: 'RETARGET_SLOT', index, targetId: nextEnemy.id });
+    } else {
+      setRetargetingSlot(index);
+    }
   }
 
   function handleCardClick(card) {
