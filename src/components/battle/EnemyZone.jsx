@@ -4,7 +4,7 @@
 // ============================================================
 
 import TagPool from './TagPool';
-import { SCENARIO_CITADEL_1_ENEMY } from '../../assets';
+import { SCENARIO_BACKGROUNDS } from '../../assets';
 
 const CARD_SIZES = {
   small:  { card: 'w-32 h-48',  icon: 'text-3xl py-2',   name: 'text-[10px]', hpText: 'text-[8px]'  },
@@ -28,12 +28,13 @@ function getMidCardOffset(enemies) {
   return totalWidth / 2 - midCardCenter;
 }
 
-export default function EnemyZone({ enemies, shakingEnemyId, activeEnemyId, selectedTargetId, phase, onSelectTarget }) {
+export default function EnemyZone({ enemies, shakingEnemyId, activeEnemyId, selectedTargetId, phase, onSelectTarget, battleBackground }) {
+  const bgImage = SCENARIO_BACKGROUNDS[battleBackground] ?? SCENARIO_BACKGROUNDS['CITADEL_1_ENEMY'];
   const offset = getMidCardOffset(enemies);
   return (
     <div className="relative flex-1 min-h-0 mx-4 mt-3 mb-0 rounded-xl overflow-hidden flex flex-row items-end justify-center gap-20 pb-10"
       style={{
-        backgroundImage: `url(${SCENARIO_CITADEL_1_ENEMY})`,
+        backgroundImage: `url(${bgImage})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         border: '1px solid rgba(255, 255, 255, 0.6)',

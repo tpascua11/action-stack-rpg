@@ -167,6 +167,7 @@ export default function BattleScreen() {
           phase={gs.phase}
           retargetingSlot={retargetingSlot}
           onSelectTarget={handleEnemyClick}
+          battleBackground={gs.battleBackground}
         />
 
         {/* MIDDLE — Battle Queue Row */}
