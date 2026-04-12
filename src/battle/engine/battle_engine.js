@@ -331,11 +331,15 @@ export function ExecuteAction(action, interaction_result, state) {
   // ── POST_ATTACK ──
   owner.active_tag_pool = runPhasePostAttack(owner.active_tag_pool, payload, owner, hit_result);
 
+  const isSelfBuff = (action.tags?.target ?? []).length === 0 && (action.tags?.self ?? []).length > 0;
+
   return {
     newState,
     logs,
     actualTargetId: resolvedTarget?.id ?? null,
+    isSelfBuff,
     animationHint: action.animation ?? (action.payload_type === 'MAGIC' ? 'shake_magic' : 'shake'),
+    animationSelf: action.animation_self ?? null,
     animationIntensity: action.animation_intensity ?? 1.0,
   };
 }

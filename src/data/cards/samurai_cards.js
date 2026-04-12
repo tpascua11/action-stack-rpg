@@ -51,6 +51,8 @@ export const SAMURAI_CARDS = [
     image: 'FOX_SUMMURAI_40',
     color: '#4caf50',
     desc: 'Restore 100 HP. Costs 3 Battle Spirit.',
+    animation: 'heal',
+    animation_intensity: 1.0,
     tags: {
       self: [
         { tag_name: 'HEAL', power: 100 },
@@ -163,6 +165,8 @@ export const SAMURAI_CARDS = [
     image: 'FOX_SUMMURAI_BATTOJUTSU',
     color: '#c084fc',
     desc: 'Enter a focused draw stance. Your next attack deals 75% more damage.',
+    animation: 'buff',
+    animation_intensity: 1.2,
     tags: {
       self: [
         { tag_name: 'BATTOJUTSU', multiplier: 0.75, tier: 'advanced' },
@@ -180,6 +184,8 @@ export const SAMURAI_CARDS = [
     image: 'FOX_SUMMURAI_18',
     color: '#f59e0b',
     desc: 'Center yourself. Gain 1 Battle Spirit.',
+    animation: 'buff',
+    animation_intensity: 1.0,
     tags: {
       self: [
         { tag_name: 'GAIN_RESOURCE', resource_type: 'BATTLE_SPIRIT', power: 3 },

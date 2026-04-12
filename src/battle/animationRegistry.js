@@ -31,6 +31,16 @@ export const ANIMATIONS = {
     duration: 600,
     sfx: null,
   },
+  heal: {
+    cssClass: 'animate-heal',
+    duration: 700,
+    sfx: null,
+  },
+  buff: {
+    cssClass: 'animate-buff',
+    duration: 650,
+    sfx: null,
+  },
   burn: {
     cssClass: 'animate-burn',
     duration: 750,

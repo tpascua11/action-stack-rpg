@@ -63,30 +63,34 @@ export default function BattleScreen() {
     return () => clearTimeout(battleTimerRef.current);
   }, [gs.phase, gs.stepCount]);
 
-  // Unified animation handler — reads pendingAnimation from reducer,
-  // looks up config in registry, applies CSS class + SFX, auto-clears.
+  // Unified animation handler — reads pendingAnimation array from reducer,
+  // looks up each entry in registry, applies CSS class + SFX, auto-clears.
   useEffect(() => {
-    const anim = gs.pendingAnimation;
-    if (!anim) return;
-    const config = ANIMATIONS[anim.type];
-    if (!config) return;
+    const anims = gs.pendingAnimation;
+    if (!anims?.length) return;
 
-    setActiveAnimations(prev => ({
-      ...prev,
-      [anim.targetId]: { cssClass: config.cssClass, intensity: anim.intensity ?? 1.0 },
-    }));
+    const timers = [];
+    anims.forEach(anim => {
+      const config = ANIMATIONS[anim.type];
+      if (!config) return;
 
-    if (config.sfx) {
-      const sfx = new Audio(config.sfx);
-      sfx.volume = config.volume ?? 0.6;
-      sfx.play().catch(() => {});
-    }
+      setActiveAnimations(prev => ({
+        ...prev,
+        [anim.targetId]: { cssClass: config.cssClass, intensity: anim.intensity ?? 1.0 },
+      }));
 
-    const t = setTimeout(() => {
-      setActiveAnimations(prev => ({ ...prev, [anim.targetId]: null }));
-    }, config.duration);
+      if (config.sfx) {
+        const sfx = new Audio(config.sfx);
+        sfx.volume = config.volume ?? 0.6;
+        sfx.play().catch(() => {});
+      }
 
-    return () => clearTimeout(t);
+      timers.push(setTimeout(() => {
+        setActiveAnimations(prev => ({ ...prev, [anim.targetId]: null }));
+      }, config.duration));
+    });
+
+    return () => timers.forEach(clearTimeout);
   }, [gs.pendingAnimation, gs.stepCount]);
 
   useEffect(() => {
@@ -244,7 +248,7 @@ export default function BattleScreen() {
                 onExecute={handleExecute}
                 isBattling={gs.phase === 'BATTLE'}
                 isResult={gs.phase === 'RESULT'}
-                fizzlingCard={gs.pendingAnimation?.type === 'fizzle' ? { name: gs.pendingAnimation.cardName } : null}
+                fizzlingCard={gs.pendingAnimation?.find(a => a.type === 'fizzle') ? { name: gs.pendingAnimation.find(a => a.type === 'fizzle').cardName } : null}
               />
             </div>
 

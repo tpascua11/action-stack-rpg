@@ -129,7 +129,7 @@ export function battleReducer(state, action) {
 
       if (interactionLog) newLogs.push(interactionLog);
 
-      const { newState: afterExec, logs: execLogs, actualTargetId, fizzled, animationHint, animationIntensity } = ExecuteAction(actionA, resultA, newState);
+      const { newState: afterExec, logs: execLogs, actualTargetId, fizzled, isSelfBuff, animationHint, animationSelf, animationIntensity } = ExecuteAction(actionA, resultA, newState);
       newState = afterExec;
       newLogs.push(...execLogs);
 
@@ -165,11 +165,22 @@ export function battleReducer(state, action) {
         ? nextAction.owner_id
         : nextTarget?.faction === 'enemy' ? nextTarget.id : null;
 
-      const pendingAnimation = fizzled
-        ? { type: 'fizzle', targetId: actionA.owner_id, intensity: 1.0, cardName: actionA.name }
-        : anyoneWasHit
-          ? { type: animationHint, targetId: actualTargetId, intensity: animationIntensity }
-          : null;
+      let pendingAnimation = [];
+      if (fizzled) {
+        pendingAnimation.push({ type: 'fizzle', targetId: actionA.owner_id, intensity: 1.0, cardName: actionA.name });
+      } else {
+        if (isSelfBuff) {
+          // Self-buff: animate on owner, optionally also on target if animation_self is set on target side
+          pendingAnimation.push({ type: animationHint, targetId: actionA.owner_id, intensity: animationIntensity });
+        } else if (anyoneWasHit) {
+          // Attack: animate on target
+          pendingAnimation.push({ type: animationHint, targetId: actualTargetId, intensity: animationIntensity });
+          // Also animate on self if card defines animation_self
+          if (animationSelf) {
+            pendingAnimation.push({ type: animationSelf, targetId: actionA.owner_id, intensity: animationIntensity });
+          }
+        }
+      }
 
       return {
         ...newState,

@@ -55,7 +55,7 @@ export function buildInitialState(scenario = EMBER_WITCH_TEST, playerData = null
     characters,
     logs: [{ msg: '⚔️  System Ready. Queue your actions and execute.', type: 'info' }],
     stepCount: 0,
-    pendingAnimation: null,
+    pendingAnimation: [],
     activeEnemyId: null,
     lastTargetId: characters.find(c => c.faction === 'enemy' && c.health > 0)?.id ?? null,
   };
