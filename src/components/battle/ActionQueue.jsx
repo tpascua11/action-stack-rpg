@@ -24,7 +24,17 @@ export default function ActionQueue({ queue, totalSlots, enemies, retargetingSlo
           const slot = queue[i];
           const borderColor = slot ? slot.color : '#ffffff22';
           return (
-            <div key={i} className="relative flex flex-col overflow-visible" style={{ width: '5.5rem' }}>
+            <div key={i} className="relative flex flex-row overflow-visible">
+            {i > 0 && (
+              <div className="flex items-center justify-center pointer-events-none" style={{ height: '8.25rem', width: '1rem', marginLeft: '-4px' }}>
+                <span className="text-lg font-mono font-bold" style={{
+                  color: queue[i - 1] ? '#ffffffcc' : '#ffffff44',
+                  textShadow: queue[i - 1] ? '0 0 8px #fff, 0 0 16px #ffffff88' : 'none',
+                  transition: 'color 0.2s, text-shadow 0.2s',
+                }}>→</span>
+              </div>
+            )}
+            <div className="relative flex flex-col overflow-visible" style={{ width: '5.5rem' }}>
 
               {/* Target box */}
               {slot && !isBattling && slot.tags?.target?.length > 0 && (() => {
@@ -130,6 +140,7 @@ export default function ActionQueue({ queue, totalSlots, enemies, retargetingSlo
                   </span>
                 </div>
               </div>
+            </div>
             </div>
           );
         })}
