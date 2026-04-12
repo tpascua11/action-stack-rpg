@@ -68,8 +68,8 @@ const STATIC_STYLES = {
   root: {
     background: "#080c14",
     color: "#dde",
-    width: "100vw",
-    height: "100vh",
+    width: "100%",
+    height: "100%",
     display: "flex",
     flexDirection: "column",
     overflow: "hidden",

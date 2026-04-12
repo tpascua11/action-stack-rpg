@@ -26,12 +26,6 @@ export default function BattleScreen() {
   const enemies = gs.characters.filter(c => c.faction === 'enemy');
   const { ResourceBar } = CLASS_REGISTRY[player.class_id] ?? {};
 
-  const [scale, setScale] = useState(() => Math.min(1, window.innerWidth / 1920, window.innerHeight / 1080));
-  useEffect(() => {
-    const onResize = () => setScale(Math.min(1, window.innerWidth / 1920, window.innerHeight / 1080));
-    window.addEventListener('resize', onResize);
-    return () => window.removeEventListener('resize', onResize);
-  }, []);
 
   // Battle music — start on mount, stop on RESULT or unmount
   useEffect(() => {
@@ -131,9 +125,8 @@ export default function BattleScreen() {
   }
 
   return (
-    <div style={{ width: '100vw', height: '100vh', overflow: 'hidden', background: '#0f0f1a', position: 'relative' }}>
-
-      {/* Retarget line overlay — outside scaled container so fixed+getBoundingClientRect coords align */}
+    <>
+      {/* Retarget line overlay — fixed to viewport so getBoundingClientRect coords align */}
       {lineCoords && (() => {
         const { x1, y1, x2, y2 } = lineCoords;
         return (
@@ -144,41 +137,24 @@ export default function BattleScreen() {
                 <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
               </filter>
             </defs>
-
-            {/* Track */}
             <line x1={x1} y1={y1} x2={x2} y2={y2} stroke="#4da6ff" strokeWidth="0.5" opacity="0.12"/>
-
-            {/* Arc A — wide, slow, irregular */}
             <line x1={x1} y1={y1} x2={x2} y2={y2}
               stroke="#4da6ff" strokeWidth="3" opacity="0.5"
               strokeDasharray="10 5 2 8 14 3 6 4"
               filter="url(#arc-glow)"
               style={{ animation: 'electricA 0.6s linear infinite' }}
             />
-
-            {/* Arc B — thin, faster, different rhythm */}
             <line x1={x1} y1={y1} x2={x2} y2={y2}
               stroke="#a0d4ff" strokeWidth="1.2" opacity="0.9"
               strokeDasharray="3 11 8 4 2 9 5 6"
               style={{ animation: 'electricB 0.4s linear infinite' }}
             />
-
           </svg>
         );
       })()}
 
-      {/* Game canvas — fixed 1920×1080, scaled down on small screens, centered on large screens */}
       <div
-        style={{
-          width: 1920,
-          height: 1080,
-          transform: `translate(-50%, -50%) scale(${scale})`,
-          transformOrigin: 'center',
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-        }}
-        className="flex flex-col overflow-hidden bg-[#0f0f1a]"
+        className="w-full h-full flex flex-col overflow-hidden bg-[#0f0f1a]"
         onClick={() => setRetargetingSlot(null)}
       >
 
@@ -248,9 +224,7 @@ export default function BattleScreen() {
 
         </div>
 
-
       </div>
-
-    </div>
+    </>
   );
 }
