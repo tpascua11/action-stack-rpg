@@ -3,6 +3,7 @@
 // ============================================================
 
 import { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { CLASS_REGISTRY } from '../data/classes/class_registry';
 import { useGame } from '../context/GameContext';
 
@@ -73,22 +74,27 @@ export default function BattleScreen() {
     return () => clearTimeout(t);
   }, [gs.fizzlingCard]);
 
-  const slotTargetId = retargetingSlot !== null ? player.queue[retargetingSlot]?.target_id ?? null : null;
-
   useEffect(() => {
-    if (retargetingSlot === null || !slotTargetId) { setLineCoords(null); return; }
-    const boxEl = document.querySelector(`[data-retarget-slot="${retargetingSlot}"]`);
-    const enemyEl = document.querySelector(`[data-enemy-id="${slotTargetId}"]`);
-    if (!boxEl || !enemyEl) { setLineCoords(null); return; }
-    const b = boxEl.getBoundingClientRect();
-    const e = enemyEl.getBoundingClientRect();
-    setLineCoords({
-      x1: b.left + b.width / 2,
-      y1: b.top,
-      x2: e.left + e.width / 2,
-      y2: e.bottom,
+    if (gs.phase !== 'QUEUE_SETUP') { setLineCoords(null); return; }
+    const lines = [];
+    player.queue.forEach((slot, i) => {
+      if (!slot?.target_id) return;
+      const boxEl = document.querySelector(`[data-retarget-slot="${i}"]`);
+      const enemyEl = document.querySelector(`[data-enemy-id="${slot.target_id}"]`);
+      if (!boxEl || !enemyEl) return;
+      const b = boxEl.getBoundingClientRect();
+      const e = enemyEl.getBoundingClientRect();
+      lines.push({
+        key: i,
+        isActive: retargetingSlot === i,
+        x1: b.left + b.width / 2,
+        y1: b.top,
+        x2: e.left + e.width / 2,
+        y2: e.bottom,
+      });
     });
-  }, [retargetingSlot, slotTargetId]);
+    setLineCoords(lines.length > 0 ? lines : null);
+  }, [gs.phase, player.queue, retargetingSlot]);
 
   function handleEnemyClick(targetId) {
     if (gs.phase !== 'QUEUE_SETUP') return;
@@ -126,32 +132,38 @@ export default function BattleScreen() {
 
   return (
     <>
-      {/* Retarget line overlay — fixed to viewport so getBoundingClientRect coords align */}
-      {lineCoords && (() => {
-        const { x1, y1, x2, y2 } = lineCoords;
-        return (
-          <svg className="fixed inset-0 pointer-events-none" style={{ zIndex: 40 }} width="100%" height="100%">
-            <defs>
-              <filter id="arc-glow">
-                <feGaussianBlur stdDeviation="2.5" result="blur"/>
-                <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-              </filter>
-            </defs>
-            <line x1={x1} y1={y1} x2={x2} y2={y2} stroke="#4da6ff" strokeWidth="0.5" opacity="0.12"/>
-            <line x1={x1} y1={y1} x2={x2} y2={y2}
-              stroke="#4da6ff" strokeWidth="3" opacity="0.5"
-              strokeDasharray="10 5 2 8 14 3 6 4"
-              filter="url(#arc-glow)"
-              style={{ animation: 'electricA 0.6s linear infinite' }}
-            />
-            <line x1={x1} y1={y1} x2={x2} y2={y2}
-              stroke="#a0d4ff" strokeWidth="1.2" opacity="0.9"
-              strokeDasharray="3 11 8 4 2 9 5 6"
-              style={{ animation: 'electricB 0.4s linear infinite' }}
-            />
-          </svg>
-        );
-      })()}
+      {/* Retarget line overlay — portalled to document.body so it sits outside the CSS-transformed GameCanvas */}
+      {lineCoords && createPortal(
+        <svg className="fixed inset-0 pointer-events-none" style={{ zIndex: 9999 }} width="100%" height="100%">
+          <defs>
+            <filter id="arc-glow">
+              <feGaussianBlur stdDeviation="2.5" result="blur"/>
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+          </defs>
+          {lineCoords.map(({ key, isActive, x1, y1, x2, y2 }) => isActive ? (
+            <g key={key}>
+              <line x1={x1} y1={y1} x2={x2} y2={y2} stroke="#4da6ff" strokeWidth="0.5" opacity="0.12"/>
+              <line x1={x1} y1={y1} x2={x2} y2={y2}
+                stroke="#4da6ff" strokeWidth="3" opacity="0.5"
+                strokeDasharray="10 5 2 8 14 3 6 4"
+                filter="url(#arc-glow)"
+                style={{ animation: 'electricA 0.6s linear infinite' }}
+              />
+              <line x1={x1} y1={y1} x2={x2} y2={y2}
+                stroke="#a0d4ff" strokeWidth="1.2" opacity="0.9"
+                strokeDasharray="3 11 8 4 2 9 5 6"
+                style={{ animation: 'electricB 0.4s linear infinite' }}
+              />
+            </g>
+          ) : (
+            <g key={key}>
+              <line x1={x1} y1={y1} x2={x2} y2={y2} stroke="#e94560" strokeWidth="1" opacity="0.35" strokeDasharray="4 6"/>
+            </g>
+          ))}
+        </svg>,
+        document.body
+      )}
 
       <div
         className="w-full h-full flex flex-col overflow-hidden bg-[#0f0f1a]"

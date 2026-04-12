@@ -40,48 +40,33 @@ export default function ActionQueue({ queue, totalSlots, enemies, retargetingSlo
               {slot && !isBattling && slot.tags?.target?.length > 0 && (() => {
                 const target = enemies.find(e => e.id === slot.target_id);
                 const enemyNum = enemies.findIndex(e => e.id === slot.target_id) + 1;
+                const isRetargeting = retargetingSlot === i;
                 return (
                   <div
                     className="absolute left-0 right-0 flex flex-col items-center cursor-pointer group"
                     data-retarget-slot={i}
-                    style={{ top: '-5rem', zIndex: 10, height: '4rem' }}
+                    style={{ top: '-3.2rem', zIndex: 10, height: '3rem' }}
                     onClick={e => { e.stopPropagation(); onRetargetBoxClick(i); }}
                   >
-                    <div className="relative w-full flex flex-col items-center transition-all duration-150 group-hover:brightness-125 group-hover:-translate-y-[2px]"
+                    <div className="relative w-full h-full flex flex-col items-center justify-around py-1 transition-all duration-150 group-hover:brightness-125 group-hover:-translate-y-[2px]"
                       style={{
-                        background: '#0d0d1a',
-                        border: retargetingSlot === i ? 'none' : '1px solid #e9456066',
+                        background: '#09090f',
+                        border: `1px solid ${isRetargeting ? '#4da6ff' : '#e94560'}`,
                         borderBottom: 'none',
                         borderRadius: '3px 3px 0 0',
-                        height: '100%',
-                        boxShadow: retargetingSlot === i ? '0 0 12px rgba(77,166,255,0.5)' : 'none',
+                        boxShadow: isRetargeting
+                          ? '0 0 14px rgba(77,166,255,0.5), inset 0 0 6px rgba(77,166,255,0.1)'
+                          : '0 0 8px rgba(233,69,96,0.3), inset 0 0 4px rgba(233,69,96,0.06)',
                       }}
                     >
-                      {/* Marching ants border */}
-                      {retargetingSlot === i && (
-                        <svg className="absolute inset-0 pointer-events-none" width="100%" height="100%" style={{ borderRadius: '3px 3px 0 0', overflow: 'visible' }}>
-                          <rect x="1" y="1" width="calc(100% - 2px)" height="calc(100% - 2px)"
-                            fill="none" stroke="#4da6ff" strokeWidth="2"
-                            style={{ animation: 'pulseBorder 1.2s ease-in-out infinite' }}
-                          />
-                        </svg>
-                      )}
-                      {/* Enemy # label */}
-                      <div className="w-full text-center py-[2px]"
-                        style={{ background: '#e94560', borderRadius: '2px 2px 0 0' }}>
-                        <span className="text-[7px] font-bold font-mono tracking-widest text-white">
-                          ENEMY {enemyNum}
-                        </span>
+                      {/* Row 1 — ENEMY N */}
+                      <div className="text-[11px] font-display tracking-widest leading-none"
+                        style={{ color: isRetargeting ? '#4da6ffcc' : '#e94560cc' }}>
+                        ENEMY {enemyNum}
                       </div>
-                      {/* Icon */}
-                      <div className="flex-1 flex items-center justify-center">
-                        {target?.image
-                          ? <img src={target.image} alt={target.name} className="w-6 h-6 object-contain" />
-                          : <span style={{ fontSize: '1.1rem' }}>{target?.icon ?? '?'}</span>
-                        }
-                      </div>
-                      {/* Name */}
-                      <div className="text-[8px] font-mono text-gray-300 tracking-wide pb-[3px] truncate px-1 text-center w-full">
+                      {/* Row 2 — name */}
+                      <div className="text-[11px] font-display tracking-widest leading-none truncate px-1 text-center w-full mt-[2px]"
+                        style={{ color: '#9ca3af' }}>
                         {target?.name ?? '???'}
                       </div>
                     </div>
