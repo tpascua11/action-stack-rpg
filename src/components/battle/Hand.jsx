@@ -97,8 +97,8 @@ export default function Hand({ cards, queue, totalSlots, onCardClick, disabled, 
 
                 {/* Header strip — name */}
                 <div className="relative flex-shrink-0"
-                  style={{ background: card.color, height: '1.3rem', overflow: 'visible', zIndex: 2 }}>
-                  <span className="absolute inset-x-0 top-0 px-1 pt-[3px] text-[8px] font-bold font-mono text-white tracking-widest uppercase text-center leading-tight">
+                  style={{ background: '#0d0d1a', borderBottom: `1px solid ${card.color}44`, height: '1.3rem', overflow: 'visible', zIndex: 2 }}>
+                  <span className="absolute inset-0 flex items-center justify-center px-1 text-[11px] font-bold font-mono text-center leading-tight" style={{ color: card.color }}>
                     {card.name}
                   </span>
                 </div>
