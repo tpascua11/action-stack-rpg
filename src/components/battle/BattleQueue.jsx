@@ -96,14 +96,16 @@ function ActionCard({ action, isCenter }) {
     >
       {/* Header */}
       <div style={{
-        background:  color,
-        height:      '1.3rem',
-        position:    'relative',
-        flexShrink:  0,
-        zIndex:      2,
-        overflow:    'hidden',
+        background:   '#0d0d1a',
+        borderBottom: `1px solid ${color}44`,
+        height:       '1.3rem',
+        position:     'relative',
+        flexShrink:   0,
+        zIndex:       2,
+        overflow:     'hidden',
       }}>
-        <span className="absolute inset-x-0 top-0 px-1 pt-[3px] text-[8px] font-bold font-mono text-white tracking-widest uppercase text-center leading-tight truncate">
+        <span className="absolute inset-0 flex items-center justify-center px-1 text-[11px] font-bold font-mono text-center leading-tight truncate"
+          style={{ color }}>
           {action.name}
         </span>
       </div>

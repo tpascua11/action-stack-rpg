@@ -89,9 +89,9 @@ export default function ActionQueue({ queue, totalSlots, enemies, retargetingSlo
               >
                 {/* Header strip */}
                 <div className="relative flex-shrink-0"
-                  style={{ background: slot ? slot.color : 'rgba(255,255,255,0.04)', height: '1.3rem', overflow: 'visible', zIndex: 2 }}>
-                  <span className="absolute inset-x-0 top-0 px-1 pt-[3px] text-[8px] font-bold font-mono tracking-widest uppercase text-center leading-tight"
-                    style={{ color: slot ? '#fff' : '#4b5563' }}>
+                  style={{ background: '#0d0d1a', borderBottom: `1px solid ${slot ? slot.color + '44' : '#ffffff11'}`, height: '1.3rem', overflow: 'visible', zIndex: 2 }}>
+                  <span className="absolute inset-0 flex items-center justify-center px-1 text-[11px] font-bold font-mono text-center leading-tight"
+                    style={{ color: slot ? slot.color : '#4b5563' }}>
                     {slot ? slot.name : `SLOT ${i + 1}`}
                   </span>
                 </div>
