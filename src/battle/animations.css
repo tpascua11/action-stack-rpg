@@ -145,10 +145,21 @@
   user-select: none;
 }
 
-/* ── Placeholders (not yet implemented) ──────────────────────
+/* ── ICE SHAKE (ice/frost hit — blue flash) ── */
+@keyframes ice_shake {
+  0%   { transform: translate(0, 0);        filter: brightness(2) hue-rotate(180deg) saturate(3); }
+  15%  { transform: translate(-3px, -2px) rotate(-1deg); filter: brightness(1.6) hue-rotate(180deg) saturate(2.5); }
+  30%  { transform: translate(3px, 1px)  rotate(1deg);  filter: brightness(1.4) hue-rotate(160deg) saturate(2); }
+  50%  { transform: translate(-2px, 2px) rotate(0deg);  filter: brightness(1.6) hue-rotate(180deg) saturate(2.5); }
+  65%  { transform: translate(3px, -1px) rotate(-1deg); filter: brightness(1.2) hue-rotate(160deg) saturate(1.5); }
+  80%  { transform: translate(-1px, 1px) rotate(0.5deg); filter: brightness(1.1) hue-rotate(90deg) saturate(1.2); }
+  100% { transform: translate(0, 0)      rotate(0deg);  filter: brightness(1)   hue-rotate(0deg)  saturate(1); }
+}
+.animate-ice_shake {
+  animation: ice_shake calc(0.5s / var(--anim-intensity, 1)) ease-out;
+}
 
-@keyframes freeze { }
-.animate-freeze { }
+/* ── Placeholders (not yet implemented) ──────────────────────
 
 @keyframes slam { }
 .animate-slam { }

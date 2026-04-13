@@ -9,7 +9,7 @@
 //    3. Set `animation: 'your_key'` on the card
 // ============================================================
 
-import { SFX_ATTACK_1, SFX_LASER_1 } from '../assets';
+import { SFX_ATTACK_1, SFX_LASER_1, SFX_ICE, SFX_FLAMES } from '../assets';
 
 export const ANIMATIONS = {
   shake: {
@@ -28,7 +28,10 @@ export const ANIMATIONS = {
       { src: SFX_ATTACK_1, delay: 0,   volume: 0.7 },
       { src: SFX_ATTACK_1, delay: 180, volume: 0.5 },
     ],
-    floatingNumber: { color: '#ff4444' },
+    floatingNumber: [
+      { color: '#ff4444', delay: 0,   split: 0.5 },
+      { color: '#ff4444', delay: 280, split: 0.5 },
+    ],
   },
   shake_magic: {
     cssClass: 'animate-shake',
@@ -75,7 +78,23 @@ export const ANIMATIONS = {
     volume: 0.8,
     floatingNumber: { color: '#f97316' },
   },
+  ice_slash: {
+    cssClass: 'animate-ice_shake',
+    duration: 500,
+    sfx: [
+      { src: SFX_ICE, delay: 0,   volume: 0.7 },
+      { src: SFX_ICE, delay: 200, volume: 0.5 },
+    ],
+    floatingNumber: { color: '#7dd3fc' },
+  },
+  flame_strike: {
+    cssClass: 'animate-burn',
+    duration: 750,
+    sfx: [
+      { src: SFX_FLAMES, delay: 0, volume: 0.8 },
+    ],
+    floatingNumber: { color: '#f97316' },
+  },
   // ── Coming soon ──────────────────────────────────────────
-  // freeze: { cssClass: 'animate-freeze', duration: 800, sfx: null },
   // slam:   { cssClass: 'animate-slam',   duration: 500, sfx: null },
 };

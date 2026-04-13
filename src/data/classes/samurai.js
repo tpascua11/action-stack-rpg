@@ -20,7 +20,7 @@ export const SAMURAI = {
     { tag_name: 'UNDER_THE_SUN', tier: 'permanent' },
   ],
   combat_start_tags: [],
-  starting_cards: ['heavy_slice', 'quick_slice', 'mend', 'speed_up', 'flame_strike', 'focus_spirit', 'battojutsu'],
+  starting_cards: ['heavy_slice', 'quick_slice', 'mend', 'speed_up', 'flame_strike', 'focus_spirit', 'battojutsu', 'freeze_slash'],
   cards: SAMURAI_CARDS,
   ResourceBar: SamuraiResourceBar,
 };

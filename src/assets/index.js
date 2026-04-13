@@ -6,7 +6,9 @@
 
 // --- Sound Effects ---
 export { default as SFX_ATTACK_1 } from './SOUND EFFECTS/ATTACK_1.wav';
-export { default as SFX_LASER_1 } from './SOUND EFFECTS/LASER_1.wav';
+export { default as SFX_LASER_1 }  from './SOUND EFFECTS/LASER_1.wav';
+export { default as SFX_ICE }      from './SOUND EFFECTS/ICE';
+export { default as SFX_FLAMES }   from './SOUND EFFECTS/FLAMES';
 
 // --- Portraits ---
 export { default as COOL_FOX } from './Cool_Fox.png';

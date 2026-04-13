@@ -131,7 +131,7 @@ export const SAMURAI_CARDS = [
     image: 'FOX_SUMMURAI_1',
     color: '#ef4444',
     desc: 'Strike target with fire for 150 damage. Costs 3 Battle Spirit.',
-    animation: 'burn',
+    animation: 'flame_strike',
     animation_intensity: 1.2,
     tags: {
       self: [],
@@ -151,6 +151,8 @@ export const SAMURAI_CARDS = [
     image: 'FOX_SUMMURAI_20',
     color: '#38bdf8',
     desc: 'A chilling slash. Deal 50 Frost damage and apply 2 stacks of Freeze.',
+    animation: 'ice_slash',
+    animation_intensity: 1.0,
     tags: {
       self: [],
       target: [

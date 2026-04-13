@@ -114,20 +114,29 @@ export default function BattleScreen() {
       }
 
       if (config.floatingNumber && anim.value > 0) {
-        const id = ++floatIdRef.current;
-        const { color, prefix = '' } = config.floatingNumber;
+        const floatList = Array.isArray(config.floatingNumber)
+          ? config.floatingNumber
+          : [config.floatingNumber];
+
         // Float timers are stored in a ref so effect cleanup doesn't cancel them
         // if the next battle step fires before the animation completes.
-        floatTimersRef.current.push(setTimeout(() => {
-          setFloatingNumbers(prev => [...prev, { id, targetId: anim.targetId, value: anim.value, color, prefix, fading: false }]);
-        }, 80));
-        floatTimersRef.current.push(setTimeout(() => {
-          setFloatingNumbers(prev => prev.map(fn => fn.id === id ? { ...fn, fading: true } : fn));
-        }, 80 + config.duration));
-        floatTimersRef.current.push(setTimeout(() => {
-          setFloatingNumbers(prev => prev.filter(fn => fn.id !== id));
-          floatTimersRef.current = floatTimersRef.current.filter(t => t !== id);
-        }, 80 + config.duration + 300));
+        floatList.forEach(({ color, prefix = '', delay: floatDelay = 0, split = 1 }) => {
+          const displayValue = Math.floor(anim.value * split);
+          if (displayValue <= 0) return;
+          const id = ++floatIdRef.current;
+          const showAt  = floatDelay;
+          const fadeAt  = showAt + config.duration;
+          const clearAt = fadeAt + 300;
+          floatTimersRef.current.push(setTimeout(() => {
+            setFloatingNumbers(prev => [...prev, { id, targetId: anim.targetId, value: displayValue, color, prefix, fading: false }]);
+          }, showAt));
+          floatTimersRef.current.push(setTimeout(() => {
+            setFloatingNumbers(prev => prev.map(fn => fn.id === id ? { ...fn, fading: true } : fn));
+          }, fadeAt));
+          floatTimersRef.current.push(setTimeout(() => {
+            setFloatingNumbers(prev => prev.filter(fn => fn.id !== id));
+          }, clearAt));
+        });
       }
 
       // Stored in a ref so effect cleanup on the next step doesn't cancel it —
