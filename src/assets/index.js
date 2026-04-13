@@ -4,11 +4,7 @@
 //  Import from here instead of importing assets directly.
 // ============================================================
 
-// --- Sound Effects ---
-export { default as SFX_ATTACK_1 } from './SOUND EFFECTS/ATTACK_1.wav';
-export { default as SFX_LASER_1 }  from './SOUND EFFECTS/LASER_1.wav';
-export { default as SFX_ICE }      from './SOUND EFFECTS/ICE';
-export { default as SFX_FLAMES }   from './SOUND EFFECTS/FLAMES';
+// Sound effects are loaded dynamically in animationRegistry.js via require().
 
 // --- Portraits ---
 export { default as COOL_FOX } from './Cool_Fox.png';
@@ -34,22 +30,28 @@ import SCENARIO_MOUNTAIN_2_WIDE    from './SCENARIO/MOUNTAIN_2_WIDE.png';
 import SCENARIO_MOUNTAIN_3_WIDE    from './SCENARIO/MOUNTAIN_3_WIDE.png';
 import SCENARIO_SECRET_DOOR_1_WIDE from './SCENARIO/SECRET_DOOR_1_WIDE.png';
 import SCENARIO_SECRET_DOOR_2_WIDE from './SCENARIO/SECRET_DOOR_2_WIDE.png';
+import SCENARIO_SNOW_BATTLE_FIELD_WIDE from './SCENARIO/SNOW_BATTLE_FIELD_WIDE.png';
 
 export const SCENARIO_BACKGROUNDS = {
-  CITADEL_1_ENEMY:    SCENARIO_CITADEL_1_ENEMY,
-  CABIN_WOOD_1_WIDE:  SCENARIO_CABIN_WOOD_1_WIDE,
-  CABIN_WOOD_2_WIDE:  SCENARIO_CABIN_WOOD_2_WIDE,
-  MOUNTAIN_1_WIDE:    SCENARIO_MOUNTAIN_1_WIDE,
-  MOUNTAIN_2_WIDE:    SCENARIO_MOUNTAIN_2_WIDE,
-  MOUNTAIN_3_WIDE:    SCENARIO_MOUNTAIN_3_WIDE,
-  SECRET_DOOR_1_WIDE: SCENARIO_SECRET_DOOR_1_WIDE,
-  SECRET_DOOR_2_WIDE: SCENARIO_SECRET_DOOR_2_WIDE,
+  CITADEL_1_ENEMY:        SCENARIO_CITADEL_1_ENEMY,
+  CABIN_WOOD_1_WIDE:      SCENARIO_CABIN_WOOD_1_WIDE,
+  CABIN_WOOD_2_WIDE:      SCENARIO_CABIN_WOOD_2_WIDE,
+  MOUNTAIN_1_WIDE:        SCENARIO_MOUNTAIN_1_WIDE,
+  MOUNTAIN_2_WIDE:        SCENARIO_MOUNTAIN_2_WIDE,
+  MOUNTAIN_3_WIDE:        SCENARIO_MOUNTAIN_3_WIDE,
+  SECRET_DOOR_1_WIDE:     SCENARIO_SECRET_DOOR_1_WIDE,
+  SECRET_DOOR_2_WIDE:     SCENARIO_SECRET_DOOR_2_WIDE,
+  SNOW_BATTLE_FIELD_WIDE: SCENARIO_SNOW_BATTLE_FIELD_WIDE,
 };
 
 // --- Enemy Portraits ---
 export { default as ENEMY_APPRENTICE_WITCH } from './ENEMY/APPRENTICE_WITCH.png';
 export { default as ENEMY_FLAME_WITCH } from './ENEMY/FLAME_WITCH.png';
 export { default as ENEMY_FLAME_QUEEN } from './ENEMY/FLAME_QUEEN.png';
+export { default as ENEMY_BEAR_SUMURAI } from './ENEMY/BEAR_SUMURAI.png';
+export { default as ENEMY_FERRET_SUMURAI } from './ENEMY/FERRET_SUMURAI.png';
+export { default as ENEMY_TIGER_SUMURAI } from './ENEMY/TIGER_SUMURAI.png';
+export { default as ENEMY_WOLF_SUMURAI } from './ENEMY/WOLF_SUMURAI.png';
 
 // --- Status Icons ---
 export { default as STATUS_DEFAULT } from './STATUS/DEFAULT.png';

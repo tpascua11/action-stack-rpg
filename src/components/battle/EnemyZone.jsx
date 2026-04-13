@@ -81,10 +81,10 @@ export default function EnemyZone({ enemies, activeAnimations = {}, floatingNumb
                 className={`${sz.card} relative rounded-lg border-2 overflow-hidden ${anim?.cssClass ?? ''}`}
                 style={{
                   '--anim-intensity': anim?.intensity ?? 1,
-                  borderColor: isSelected ? '#ff0030' : '#e94560',
+                  borderColor: '#000000',
                   boxShadow: isSelected
-                    ? '0 0 28px rgba(255,0,48,0.8), 0 0 8px rgba(255,0,48,0.5)'
-                    : '0 0 20px rgba(233,69,96,0.3)',
+                    ? '0 0 28px rgba(255,255,255,0.8), 0 0 8px rgba(255,255,255,0.5)'
+                    : '0 0 20px rgba(255,255,255,0.15)',
                 }}
               >
                 {/* Portrait fills entire card */}

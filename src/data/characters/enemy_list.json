@@ -112,5 +112,117 @@
         }
       }
     ]
+  },
+  {
+    "id": "bear_sumurai",
+    "name": "BEAR SUMURAI",
+    "portrait": "ENEMY_BEAR_SUMURAI",
+    "card_size": "large",
+    "health": 250,
+    "max_health": 250,
+    "base_speed": 70,
+    "total_action_slots": 2,
+    "active_tag_pool": [],
+    "faction": "enemy",
+    "queue": [],
+    "base_actions": [
+      {
+        "name": "Heavy Slice",
+        "speed_mod": -10,
+        "payload_type": "PHYSICAL",
+        "tag_type": ["PHYSICAL", "SLASH"],
+        "animation": "heavy_slice",
+        "animation_intensity": 1.0,
+        "properties": [],
+        "tags": {
+          "self": [],
+          "target": [{ "tag_name": "DAMAGE", "type": "PHYSICAL", "power": 12 }]
+        }
+      }
+    ]
+  },
+  {
+    "id": "wolf_sumurai",
+    "name": "WOLF SUMURAI",
+    "portrait": "ENEMY_WOLF_SUMURAI",
+    "card_size": "medium",
+    "health": 160,
+    "max_health": 160,
+    "base_speed": 80,
+    "total_action_slots": 1,
+    "active_tag_pool": [],
+    "faction": "enemy",
+    "queue": [],
+    "base_actions": [
+      {
+        "name": "Heavy Slice",
+        "speed_mod": -10,
+        "payload_type": "PHYSICAL",
+        "tag_type": ["PHYSICAL", "SLASH"],
+        "animation": "heavy_slice",
+        "animation_intensity": 1.0,
+        "properties": [],
+        "tags": {
+          "self": [],
+          "target": [{ "tag_name": "DAMAGE", "type": "PHYSICAL", "power": 10 }]
+        }
+      }
+    ]
+  },
+  {
+    "id": "tiger_sumurai",
+    "name": "TIGER SUMURAI",
+    "portrait": "ENEMY_TIGER_SUMURAI",
+    "card_size": "medium",
+    "health": 110,
+    "max_health": 110,
+    "base_speed": 90,
+    "total_action_slots": 1,
+    "active_tag_pool": [],
+    "faction": "enemy",
+    "queue": [],
+    "base_actions": [
+      {
+        "name": "Heavy Slice",
+        "speed_mod": -10,
+        "payload_type": "PHYSICAL",
+        "tag_type": ["PHYSICAL", "SLASH"],
+        "animation": "heavy_slice",
+        "animation_intensity": 1.0,
+        "properties": [],
+        "tags": {
+          "self": [],
+          "target": [{ "tag_name": "DAMAGE", "type": "PHYSICAL", "power": 9 }]
+        }
+      }
+    ]
+  },
+  {
+    "id": "ferret_sumurai",
+    "name": "FERRET SUMURAI",
+    "portrait": "ENEMY_FERRET_SUMURAI",
+    "card_size": "small",
+    "health": 65,
+    "max_health": 65,
+    "base_speed": 95,
+    "total_action_slots": 1,
+    "active_tag_pool": [],
+    "faction": "enemy",
+    "queue": [],
+    "base_actions": [
+      {
+        "name": "Heavy Slice",
+        "speed_mod": -10,
+        "payload_type": "PHYSICAL",
+        "tag_type": ["PHYSICAL", "SLASH"],
+        "animation": "heavy_slice",
+        "animation_intensity": 1.0,
+        "properties": [],
+        "tags": {
+          "self": [],
+          "target": [{ "tag_name": "DAMAGE", "type": "PHYSICAL", "power": 7 }]
+        }
+      }
+    ]
   }
 ]

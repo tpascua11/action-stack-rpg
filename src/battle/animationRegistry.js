@@ -9,13 +9,16 @@
 //    3. Set `animation: 'your_key'` on the card
 // ============================================================
 
-import { SFX_ATTACK_1, SFX_LASER_1, SFX_ICE, SFX_FLAMES } from '../assets';
+// Resolves a sound file from the SOUND EFFECTS folder by name.
+// Webpack bundles the entire folder so any file dropped in is instantly available —
+// no entry in assets/index.js needed.
+const sfx = (name) => { const m = require(`../assets/SOUND EFFECTS/${name}`); return m.default ?? m; };
 
 export const ANIMATIONS = {
   shake: {
     cssClass: 'animate-shake',
     duration: 350,
-    sfx: SFX_ATTACK_1,
+    sfx: sfx('ATTACK_1.wav'),
     volume: 0.6,
     floatingNumber: { color: '#ff4444' },
     // sprite: null,    // future: { sheet, frames, fps }
@@ -25,8 +28,8 @@ export const ANIMATIONS = {
     cssClass: 'animate-heavy_shake',
     duration: 500,
     sfx: [
-      { src: SFX_ATTACK_1, delay: 0,   volume: 0.7 },
-      { src: SFX_ATTACK_1, delay: 180, volume: 0.5 },
+      { src: sfx('ATTACK_1.wav'), delay: 0,   volume: 0.7 },
+      { src: sfx('ATTACK_1.wav'), delay: 180, volume: 0.5 },
     ],
     floatingNumber: [
       { color: '#ff4444', delay: 0,   split: 0.5 },
@@ -36,7 +39,7 @@ export const ANIMATIONS = {
   shake_magic: {
     cssClass: 'animate-shake',
     duration: 350,
-    sfx: SFX_LASER_1,
+    sfx: sfx('LASER_1.wav'),
     volume: 0.6,
     floatingNumber: { color: '#a78bfa' },
   },
@@ -74,7 +77,7 @@ export const ANIMATIONS = {
   burn: {
     cssClass: 'animate-burn',
     duration: 750,
-    sfx: SFX_LASER_1,
+    sfx: sfx('LASER_1.wav'),
     volume: 0.8,
     floatingNumber: { color: '#f97316' },
   },
@@ -82,8 +85,8 @@ export const ANIMATIONS = {
     cssClass: 'animate-ice_shake',
     duration: 500,
     sfx: [
-      { src: SFX_ICE, delay: 0,   volume: 0.7 },
-      { src: SFX_ICE, delay: 200, volume: 0.5 },
+      { src: sfx('ICE'), delay: 0,   volume: 0.7 },
+      { src: sfx('ICE'), delay: 200, volume: 0.5 },
     ],
     floatingNumber: { color: '#7dd3fc' },
   },
@@ -91,7 +94,7 @@ export const ANIMATIONS = {
     cssClass: 'animate-burn',
     duration: 750,
     sfx: [
-      { src: SFX_FLAMES, delay: 0, volume: 0.8 },
+      { src: sfx('FLAMES'), delay: 0, volume: 0.8 },
     ],
     floatingNumber: { color: '#f97316' },
   },
