@@ -33,3 +33,21 @@ registerTag('UNDER_THE_SUN', {
   phases: ['END_OF_TURN'],
   handlers: { END_OF_TURN: UnderTheSunHandler },
 });
+
+// ── ONE_UNDER_THE_SUN — enemy sumurai passive ──
+// Increments the flat `resource` field on the character by 1 each end of turn.
+
+function OneUnderTheSunHandler(context, tag) {
+  const owner = context.owner;
+  const res = owner.resources?.BATTLE_SPIRIT;
+  if (res) res.current = Math.min(res.current + 1, res.max);
+  return {
+    consumed: false,
+    logs: [{ msg: `☀️ ${owner.name} gains 1 Battle Spirit (${res?.current ?? 0} / ${res?.max ?? 0})`, type: 'resource' }],
+  };
+}
+
+registerTag('ONE_UNDER_THE_SUN', {
+  phases: ['END_OF_TURN'],
+  handlers: { END_OF_TURN: OneUnderTheSunHandler },
+});

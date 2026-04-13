@@ -4,12 +4,13 @@
 // ============================================================
 
 import TagPool from './TagPool';
+import EnemyResourceBar from './EnemyResourceBar';
 import { SCENARIO_BACKGROUNDS } from '../../assets';
 
 const CARD_SIZES = {
-  small:  { card: 'w-32 h-48',  icon: 'text-3xl py-2',   name: 'text-[10px]', hpText: 'text-[8px]'  },
-  medium: { card: 'w-40 h-60',  icon: 'text-4xl py-2.5', name: 'text-xs',     hpText: 'text-[9px]'  },
-  large:  { card: 'w-48 h-72',  icon: 'text-5xl py-3',   name: 'text-sm',     hpText: 'text-[10px]' },
+  small:  { card: 'w-32 h-48',  icon: 'text-3xl py-2',   name: 'text-[10px]', hpText: 'text-[10px]' },
+  medium: { card: 'w-40 h-60',  icon: 'text-4xl py-2.5', name: 'text-xs',     hpText: 'text-[11px]' },
+  large:  { card: 'w-48 h-72',  icon: 'text-5xl py-3',   name: 'text-sm',     hpText: 'text-xs'     },
 };
 
 const CARD_WIDTH_REM = { small: 8, medium: 10, large: 12 };
@@ -94,20 +95,29 @@ export default function EnemyZone({ enemies, activeAnimations = {}, floatingNumb
                 <div className="absolute bottom-0 left-0 right-0 px-2 pb-2 pt-4"
                   style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 100%)' }}>
                   <div className={`font-display ${sz.name} text-white tracking-widest text-center mb-1`}>{enemy.name}</div>
-                  <div className="w-full h-1.5 bg-gray-600/50 rounded-full overflow-hidden">
-                    <div
-                      className="h-full rounded-full transition-all duration-500"
-                      style={{
-                        width: `${hpPct}%`,
-                        background: hpPct > 50
-                          ? 'linear-gradient(90deg,#e94560,#ff6b6b)'
-                          : hpPct > 25
-                            ? 'linear-gradient(90deg,#ff6b35,#ffa500)'
-                            : 'linear-gradient(90deg,#888,#aaa)',
-                      }}
-                    />
+                  <div className="w-full relative">
+                    <div className="w-full h-3 bg-gray-600/50 rounded-full overflow-hidden">
+                      <div
+                        className="h-full rounded-full transition-all duration-500"
+                        style={{
+                          width: `${hpPct}%`,
+                          background: hpPct > 50
+                            ? 'linear-gradient(90deg,#e94560,#ff6b6b)'
+                            : hpPct > 25
+                              ? 'linear-gradient(90deg,#ff6b35,#ffa500)'
+                              : 'linear-gradient(90deg,#888,#aaa)',
+                        }}
+                      />
+                    </div>
+                    <span
+                      className={`absolute inset-0 flex items-center justify-center ${sz.hpText} text-white font-mono leading-none pointer-events-none`}
+                      style={{ textShadow: '0 0 4px rgba(0,0,0,0.9)' }}
+                    >
+                      {enemy.health} / {enemy.max_health}
+                    </span>
                   </div>
-                  <div className={`${sz.hpText} text-gray-300 font-mono text-center mt-0.5`}>{enemy.health} / {enemy.max_health}</div>
+
+                  <EnemyResourceBar enemy={enemy} hpText={sz.hpText} />
                 </div>
               </div>
 
