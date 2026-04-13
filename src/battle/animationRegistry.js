@@ -21,6 +21,15 @@ export const ANIMATIONS = {
     // sprite: null,    // future: { sheet, frames, fps }
     // particles: null, // future: { preset: 'ice_burst' }
   },
+  heavy_slice: {
+    cssClass: 'animate-heavy_shake',
+    duration: 500,
+    sfx: [
+      { src: SFX_ATTACK_1, delay: 0,   volume: 0.7 },
+      { src: SFX_ATTACK_1, delay: 180, volume: 0.5 },
+    ],
+    floatingNumber: { color: '#ff4444' },
+  },
   shake_magic: {
     cssClass: 'animate-shake',
     duration: 350,

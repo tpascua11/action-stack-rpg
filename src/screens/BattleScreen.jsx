@@ -101,9 +101,16 @@ export default function BattleScreen() {
       }));
 
       if (config.sfx) {
-        const sfx = new Audio(config.sfx);
-        sfx.volume = config.volume ?? 0.6;
-        sfx.play().catch(() => {});
+        const sfxList = Array.isArray(config.sfx)
+          ? config.sfx
+          : [{ src: config.sfx, delay: 0, volume: config.volume ?? 0.6 }];
+        sfxList.forEach(({ src, delay = 0, volume }) => {
+          setTimeout(() => {
+            const sfx = new Audio(src);
+            sfx.volume = volume ?? config.volume ?? 0.6;
+            sfx.play().catch(() => {});
+          }, delay);
+        });
       }
 
       if (config.floatingNumber && anim.value > 0) {

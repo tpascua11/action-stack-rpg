@@ -15,6 +15,8 @@ export const SAMURAI_CARDS = [
     image: 'FOX_SUMMURAI_4',
     color: '#e94560',
     desc: 'A powerful slash attack.',
+    animation: 'heavy_slice',
+    animation_intensity: 1.0,
     tags: {
       self: [
         { tag_name: 'MOMENTUM', multiplier: 0.2, tier: 'advanced' },
