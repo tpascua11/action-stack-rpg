@@ -8,7 +8,7 @@ import { CLASS_REGISTRY } from '../data/classes/class_registry';
 import { useGame } from '../context/GameContext';
 
 import { MUSIC_REGISTRY } from '../assets/MUSIC/index';
-import { ANIMATIONS } from '../battle/animationRegistry';
+import { ANIMATIONS, preloadedAudio } from '../battle/animationRegistry';
 import '../battle/animations.css';
 import EnemyZone from '../components/battle/EnemyZone';
 import BattleLog from '../components/battle/BattleLog';
@@ -106,7 +106,7 @@ export default function BattleScreen() {
           : [{ src: config.sfx, delay: 0, volume: config.volume ?? 0.6 }];
         sfxList.forEach(({ src, delay = 0, volume }) => {
           setTimeout(() => {
-            const sfx = new Audio(src);
+            const sfx = preloadedAudio(src).cloneNode();
             sfx.volume = volume ?? config.volume ?? 0.6;
             sfx.play().catch(() => {});
           }, delay);

@@ -14,6 +14,18 @@
 // no entry in assets/index.js needed.
 const sfx = (name) => { const m = require(`../assets/SOUND EFFECTS/${name}`); return m.default ?? m; };
 
+// Pre-decode audio at load time so playback is instant (no decode latency on first play).
+// Call cloneNode() on the returned element instead of new Audio(src).
+const _audioCache = new Map();
+export function preloadedAudio(src) {
+  if (!_audioCache.has(src)) {
+    const a = new Audio(src);
+    a.load();
+    _audioCache.set(src, a);
+  }
+  return _audioCache.get(src);
+}
+
 export const ANIMATIONS = {
   shake: {
     cssClass: 'animate-shake',
