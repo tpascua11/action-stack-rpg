@@ -21,3 +21,43 @@ COST: Every element with will-change: transform holds a permanent GPU texture,
 consuming memory and battery even when idle. Avoid applying it to large lists.
 For many elements, apply it dynamically on mouseenter and remove on mouseleave.
 
+[2] STACKING TIMERS & CONCURRENT ASYNC EVENTS
+----------------------------------------------
+JavaScript is single-threaded — there are no real threads. But multiple
+independent setTimeout timers can be running at the same time, and they
+do not know about each other. This creates the same problems as multithreading:
+race conditions, missed signals, and events firing in the wrong order.
+
+In the battle system, two independent timers were racing each other:
+
+  Timer A — Battle loop: fires BATTLE_STEP after 600ms
+  Timer B — Animation clear: sets activeAnimations[id] = null after config.duration ms
+
+Both start at the same moment when a step resolves. If an animation is longer
+than 600ms (e.g. burn: 750ms, run_circle: 700ms), the battle loop fires first
+and triggers a new React useEffect. That effect's cleanup function runs
+`timers.forEach(clearTimeout)` — which cancels Timer B before it fires.
+Result: the animation CSS class never gets cleared, and dead enemies never fade.
+
+KEY INSIGHT: Timers stored in a local variable inside useEffect are owned by
+that effect and get cancelled when the effect re-runs or unmounts. Timers stored
+in a useRef are NOT cancelled by effect cleanup — they survive across re-renders
+and step transitions. This is the difference between "effect-scoped" and
+"persistent" timers.
+
+FIX: Move timers that must always fire (like animation clear timers) from a
+local array into a useRef. Store them the same way float timers already were:
+
+  animClearTimersRef.current.push(setTimeout(() => {
+    setActiveAnimations(prev => ({ ...prev, [id]: null }));
+  }, config.duration));
+
+Prune stale IDs from the ref at the start of each new step so they don't
+accumulate across a long battle.
+
+BROADER LESSON: When two async timers need to coordinate — one should drive
+the other, not run independently. In this case, the battle loop delay was made
+aware of animation durations (via battleDelay in the animation registry) so it
+waits the right amount of time before advancing. This turns two racing timers
+into one orchestrated sequence.
+

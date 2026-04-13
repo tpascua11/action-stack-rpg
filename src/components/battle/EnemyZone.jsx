@@ -64,7 +64,7 @@ export default function EnemyZone({ enemies, activeAnimations = {}, floatingNumb
         return (
           <div
             key={enemy.id}
-            className={`flex flex-row items-end gap-1.5 transition-all duration-300 ${isDead ? 'opacity-30' : 'opacity-100'} ${isSelectable ? 'cursor-pointer' : ''}`}
+            className={`flex flex-row items-end gap-1.5 transition-all duration-300 ${isDead && !anim ? 'opacity-30' : 'opacity-100'} ${isSelectable ? 'cursor-pointer' : ''}`}
             style={{ transform: isActive ? 'translateY(35px)' : 'translateY(0)' }}
             onClick={e => { if (!isSelectable) return; e.stopPropagation(); onSelectTarget(enemy.id); }}
           >

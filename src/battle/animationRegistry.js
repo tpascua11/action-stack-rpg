@@ -43,6 +43,7 @@ export const ANIMATIONS = {
   run_circle: {
     cssClass: 'animate-run_circle',
     duration: 700,
+    battleDelay: 2000,
     sfx: null,
     floatingNumber: null,
   },

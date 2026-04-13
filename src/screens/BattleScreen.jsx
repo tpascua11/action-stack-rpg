@@ -26,6 +26,7 @@ export default function BattleScreen() {
   const [floatingNumbers, setFloatingNumbers] = useState([]);
   const floatIdRef = useRef(0);
   const floatTimersRef = useRef([]);
+  const animClearTimersRef = useRef([]);
   const battleTimerRef = useRef(null);
   const musicRef = useRef(null);
 
@@ -34,9 +35,12 @@ export default function BattleScreen() {
   const { ResourceBar } = CLASS_REGISTRY[player.class_id] ?? {};
 
 
-  // Clean up any in-flight float timers on unmount
+  // Clean up any in-flight float/anim timers on unmount
   useEffect(() => {
-    return () => floatTimersRef.current.forEach(clearTimeout);
+    return () => {
+      floatTimersRef.current.forEach(clearTimeout);
+      animClearTimersRef.current.forEach(clearTimeout);
+    };
   }, []);
 
   // Battle music — start on mount, stop on RESULT or unmount
@@ -62,12 +66,21 @@ export default function BattleScreen() {
     }
   }, [gs.phase]);
 
-  // Drive battle loop with timed steps
+  // Drive battle loop with timed steps.
+  // If pending animations define a battleDelay, use the longest one — otherwise fall back to duration.
   useEffect(() => {
     if (gs.phase !== 'BATTLE') return;
+    const maxDelay = (gs.pendingAnimation ?? []).reduce((max, anim) => {
+      const config = ANIMATIONS[anim.type];
+      if (!config) return max;
+      return Math.max(max, config.battleDelay ?? config.duration ?? 0);
+    }, 0);
+    const delay = Math.max(600, maxDelay + 150);
     battleTimerRef.current = setTimeout(() => {
+      floatTimersRef.current = [];
+      animClearTimersRef.current = [];
       dispatch({ type: 'BATTLE_STEP' });
-    }, 600);
+    }, delay);
     return () => clearTimeout(battleTimerRef.current);
   }, [gs.phase, gs.stepCount]);
 
@@ -110,7 +123,9 @@ export default function BattleScreen() {
         }, 80 + config.duration + 300));
       }
 
-      timers.push(setTimeout(() => {
+      // Stored in a ref so effect cleanup on the next step doesn't cancel it —
+      // the clear must always fire so dead enemies fade after their animation ends.
+      animClearTimersRef.current.push(setTimeout(() => {
         setActiveAnimations(prev => ({ ...prev, [anim.targetId]: null }));
       }, config.duration));
     });
