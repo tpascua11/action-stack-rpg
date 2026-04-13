@@ -25,6 +25,7 @@ export default function BattleScreen() {
   const [activeAnimations, setActiveAnimations] = useState({});
   const [floatingNumbers, setFloatingNumbers] = useState([]);
   const floatIdRef = useRef(0);
+  const floatTimersRef = useRef([]);
   const battleTimerRef = useRef(null);
   const musicRef = useRef(null);
 
@@ -32,6 +33,11 @@ export default function BattleScreen() {
   const enemies = gs.characters.filter(c => c.faction === 'enemy');
   const { ResourceBar } = CLASS_REGISTRY[player.class_id] ?? {};
 
+
+  // Clean up any in-flight float timers on unmount
+  useEffect(() => {
+    return () => floatTimersRef.current.forEach(clearTimeout);
+  }, []);
 
   // Battle music — start on mount, stop on RESULT or unmount
   useEffect(() => {
@@ -61,7 +67,7 @@ export default function BattleScreen() {
     if (gs.phase !== 'BATTLE') return;
     battleTimerRef.current = setTimeout(() => {
       dispatch({ type: 'BATTLE_STEP' });
-    }, 1000);
+    }, 600);
     return () => clearTimeout(battleTimerRef.current);
   }, [gs.phase, gs.stepCount]);
 
@@ -90,17 +96,17 @@ export default function BattleScreen() {
       if (config.floatingNumber && anim.value > 0) {
         const id = ++floatIdRef.current;
         const { color, prefix = '' } = config.floatingNumber;
-        // Spawn
-        timers.push(setTimeout(() => {
+        // Float timers are stored in a ref so effect cleanup doesn't cancel them
+        // if the next battle step fires before the animation completes.
+        floatTimersRef.current.push(setTimeout(() => {
           setFloatingNumbers(prev => [...prev, { id, targetId: anim.targetId, value: anim.value, color, prefix, fading: false }]);
         }, 80));
-        // Start fade once the hit animation finishes
-        timers.push(setTimeout(() => {
+        floatTimersRef.current.push(setTimeout(() => {
           setFloatingNumbers(prev => prev.map(fn => fn.id === id ? { ...fn, fading: true } : fn));
         }, 80 + config.duration));
-        // Remove after fade completes (300ms fade)
-        timers.push(setTimeout(() => {
+        floatTimersRef.current.push(setTimeout(() => {
           setFloatingNumbers(prev => prev.filter(fn => fn.id !== id));
+          floatTimersRef.current = floatTimersRef.current.filter(t => t !== id);
         }, 80 + config.duration + 300));
       }
 
