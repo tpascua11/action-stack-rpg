@@ -28,7 +28,7 @@ function getMidCardOffset(enemies) {
   return totalWidth / 2 - midCardCenter;
 }
 
-export default function EnemyZone({ enemies, activeAnimations = {}, activeEnemyId, selectedTargetId, phase, onSelectTarget, battleBackground }) {
+export default function EnemyZone({ enemies, activeAnimations = {}, floatingNumbers = [], activeEnemyId, selectedTargetId, phase, onSelectTarget, battleBackground }) {
   const bgImage = SCENARIO_BACKGROUNDS[battleBackground] ?? SCENARIO_BACKGROUNDS['CITADEL_1_ENEMY'];
   const offset = getMidCardOffset(enemies);
   return (
@@ -74,40 +74,60 @@ export default function EnemyZone({ enemies, activeAnimations = {}, activeEnemyI
               <TagPool tags={tags.filter(t => t.status_type === 'debuff')} compact />
             </div>
 
-            {/* Enemy Card */}
-            <div
-              data-enemy-id={enemy.id}
-              className={`${sz.card} relative rounded-lg border-2 overflow-hidden shrink-0 ${anim?.cssClass ?? ''}`}
-              style={{
-                '--anim-intensity': anim?.intensity ?? 1,
-                borderColor: isSelected ? '#ff0030' : '#e94560',
-                boxShadow: isSelected
-                  ? '0 0 28px rgba(255,0,48,0.8), 0 0 8px rgba(255,0,48,0.5)'
-                  : '0 0 20px rgba(233,69,96,0.3)',
-              }}
-            >
-              {/* Portrait fills entire card */}
-              <img src={enemy.portrait} alt={enemy.name} className="absolute inset-0 w-full h-full object-cover" />
+            {/* Enemy Card — wrapped in relative so floating numbers escape overflow-hidden */}
+            <div className="relative shrink-0">
+              <div
+                data-enemy-id={enemy.id}
+                className={`${sz.card} relative rounded-lg border-2 overflow-hidden ${anim?.cssClass ?? ''}`}
+                style={{
+                  '--anim-intensity': anim?.intensity ?? 1,
+                  borderColor: isSelected ? '#ff0030' : '#e94560',
+                  boxShadow: isSelected
+                    ? '0 0 28px rgba(255,0,48,0.8), 0 0 8px rgba(255,0,48,0.5)'
+                    : '0 0 20px rgba(233,69,96,0.3)',
+                }}
+              >
+                {/* Portrait fills entire card */}
+                <img src={enemy.portrait} alt={enemy.name} className="absolute inset-0 w-full h-full object-cover" />
 
-              {/* Bottom overlay: name + HP bar */}
-              <div className="absolute bottom-0 left-0 right-0 px-2 pb-2 pt-4"
-                style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 100%)' }}>
-                <div className={`font-display ${sz.name} text-white tracking-widest text-center mb-1`}>{enemy.name}</div>
-                <div className="w-full h-1.5 bg-gray-600/50 rounded-full overflow-hidden">
-                  <div
-                    className="h-full rounded-full transition-all duration-500"
-                    style={{
-                      width: `${hpPct}%`,
-                      background: hpPct > 50
-                        ? 'linear-gradient(90deg,#e94560,#ff6b6b)'
-                        : hpPct > 25
-                          ? 'linear-gradient(90deg,#ff6b35,#ffa500)'
-                          : 'linear-gradient(90deg,#888,#aaa)',
-                    }}
-                  />
+                {/* Bottom overlay: name + HP bar */}
+                <div className="absolute bottom-0 left-0 right-0 px-2 pb-2 pt-4"
+                  style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 100%)' }}>
+                  <div className={`font-display ${sz.name} text-white tracking-widest text-center mb-1`}>{enemy.name}</div>
+                  <div className="w-full h-1.5 bg-gray-600/50 rounded-full overflow-hidden">
+                    <div
+                      className="h-full rounded-full transition-all duration-500"
+                      style={{
+                        width: `${hpPct}%`,
+                        background: hpPct > 50
+                          ? 'linear-gradient(90deg,#e94560,#ff6b6b)'
+                          : hpPct > 25
+                            ? 'linear-gradient(90deg,#ff6b35,#ffa500)'
+                            : 'linear-gradient(90deg,#888,#aaa)',
+                      }}
+                    />
+                  </div>
+                  <div className={`${sz.hpText} text-gray-300 font-mono text-center mt-0.5`}>{enemy.health} / {enemy.max_health}</div>
                 </div>
-                <div className={`${sz.hpText} text-gray-300 font-mono text-center mt-0.5`}>{enemy.health} / {enemy.max_health}</div>
               </div>
+
+              {/* Floating damage numbers */}
+              {floatingNumbers.filter(fn => fn.targetId === enemy.id).map(fn => (
+                <div
+                  key={fn.id}
+                  className="float-number absolute font-display text-3xl drop-shadow-lg tracking-widest"
+                  style={{
+                    color: fn.color,
+                    left: '50%',
+                    top: '30%',
+                    zIndex: 10,
+                    opacity: fn.fading ? 0 : 1,
+                    transition: fn.fading ? 'opacity 0.3s ease-in' : 'none',
+                  }}
+                >
+                  {fn.prefix}{fn.value}
+                </div>
+              ))}
             </div>
 
             {/* Right: Buff Pool */}

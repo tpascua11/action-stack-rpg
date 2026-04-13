@@ -17,6 +17,7 @@ export const ANIMATIONS = {
     duration: 350,
     sfx: SFX_ATTACK_1,
     volume: 0.6,
+    floatingNumber: { color: '#ff4444' },
     // sprite: null,    // future: { sheet, frames, fps }
     // particles: null, // future: { preset: 'ice_burst' }
   },
@@ -25,37 +26,44 @@ export const ANIMATIONS = {
     duration: 350,
     sfx: SFX_LASER_1,
     volume: 0.6,
+    floatingNumber: { color: '#a78bfa' },
   },
   fizzle: {
     cssClass: 'animate-fizzle',
     duration: 600,
     sfx: null,
+    floatingNumber: null,
   },
   wiggle: {
     cssClass: 'animate-wiggle',
     duration: 550,
     sfx: null,
+    floatingNumber: null,
   },
   run_circle: {
     cssClass: 'animate-run_circle',
     duration: 700,
     sfx: null,
+    floatingNumber: null,
   },
   heal: {
     cssClass: 'animate-heal',
     duration: 700,
     sfx: null,
+    floatingNumber: null,
   },
   buff: {
     cssClass: 'animate-buff',
     duration: 650,
     sfx: null,
+    floatingNumber: null,
   },
   burn: {
     cssClass: 'animate-burn',
     duration: 750,
     sfx: SFX_LASER_1,
     volume: 0.8,
+    floatingNumber: { color: '#f97316' },
   },
   // ── Coming soon ──────────────────────────────────────────
   // freeze: { cssClass: 'animate-freeze', duration: 800, sfx: null },

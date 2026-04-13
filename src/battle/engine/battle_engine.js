@@ -341,6 +341,7 @@ export function ExecuteAction(action, interaction_result, state) {
     animationHint: action.animation ?? (action.payload_type === 'MAGIC' ? 'shake_magic' : 'shake'),
     animationSelf: action.animation_self ?? null,
     animationIntensity: action.animation_intensity ?? 1.0,
+    damageDealt: total_damage,
   };
 }
 

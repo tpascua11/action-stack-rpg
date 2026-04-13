@@ -23,6 +23,8 @@ export default function BattleScreen() {
   const [retargetingSlot, setRetargetingSlot] = useState(null);
   const [lineCoords, setLineCoords] = useState(null);
   const [activeAnimations, setActiveAnimations] = useState({});
+  const [floatingNumbers, setFloatingNumbers] = useState([]);
+  const floatIdRef = useRef(0);
   const battleTimerRef = useRef(null);
   const musicRef = useRef(null);
 
@@ -83,6 +85,23 @@ export default function BattleScreen() {
         const sfx = new Audio(config.sfx);
         sfx.volume = config.volume ?? 0.6;
         sfx.play().catch(() => {});
+      }
+
+      if (config.floatingNumber && anim.value > 0) {
+        const id = ++floatIdRef.current;
+        const { color, prefix = '' } = config.floatingNumber;
+        // Spawn
+        timers.push(setTimeout(() => {
+          setFloatingNumbers(prev => [...prev, { id, targetId: anim.targetId, value: anim.value, color, prefix, fading: false }]);
+        }, 80));
+        // Start fade once the hit animation finishes
+        timers.push(setTimeout(() => {
+          setFloatingNumbers(prev => prev.map(fn => fn.id === id ? { ...fn, fading: true } : fn));
+        }, 80 + config.duration));
+        // Remove after fade completes (300ms fade)
+        timers.push(setTimeout(() => {
+          setFloatingNumbers(prev => prev.filter(fn => fn.id !== id));
+        }, 80 + config.duration + 300));
       }
 
       timers.push(setTimeout(() => {
@@ -204,6 +223,7 @@ export default function BattleScreen() {
         <EnemyZone
           enemies={enemies}
           activeAnimations={activeAnimations}
+          floatingNumbers={floatingNumbers}
           activeEnemyId={gs.activeEnemyId}
           selectedTargetId={gs.lastTargetId}
           phase={gs.phase}
@@ -233,7 +253,7 @@ export default function BattleScreen() {
             </div>
 
             {/* CENTER — Character column */}
-            <PlayerPortrait player={player} activeAnimations={activeAnimations} />
+            <PlayerPortrait player={player} activeAnimations={activeAnimations} floatingNumbers={floatingNumbers} />
 
             {/* RIGHT — Advanced tag column + Slot column */}
             <div style={{ width: '340px', paddingLeft: '12px', display: 'flex', flexDirection: 'row', alignItems: 'flex-end', gap: '12px' }}>

@@ -3,14 +3,16 @@
 // ============================================================
 import { COOL_FOX as fallbackImg } from '../../assets';
 
-export default function PlayerPortrait({ player, activeAnimations = {} }) {
+export default function PlayerPortrait({ player, activeAnimations = {}, floatingNumbers = [] }) {
   const hpPct = Math.max(0, (player.health / player.max_health) * 100);
   const portrait = player.portrait ?? fallbackImg;
   const anim = activeAnimations[player.id];
+  const myNumbers = floatingNumbers.filter(fn => fn.targetId === player.id);
 
   return (
     <div className="flex flex-col items-center">
-      {/* w-64 h-96 = 256×384 = 2:3 card ratio */}
+      {/* w-64 h-96 = 256×384 = 2:3 card ratio — relative wrapper lets numbers escape overflow-hidden */}
+      <div className="relative">
       <div
         className={`relative w-[14rem] h-[21rem] rounded-2xl border-4 border-[#4da6ff]
           shadow-[0_0_60px_rgba(77,166,255,0.5)] overflow-hidden ${anim?.cssClass ?? ''}`}
@@ -50,6 +52,25 @@ export default function PlayerPortrait({ player, activeAnimations = {} }) {
           </div>
 
         </div>
+      </div>
+
+      {/* Floating damage numbers */}
+      {myNumbers.map(fn => (
+        <div
+          key={fn.id}
+          className="float-number absolute font-display text-3xl drop-shadow-lg tracking-widest"
+          style={{
+            color: fn.color,
+            left: '50%',
+            top: '30%',
+            zIndex: 10,
+            opacity: fn.fading ? 0 : 1,
+            transition: fn.fading ? 'opacity 0.3s ease-in' : 'none',
+          }}
+        >
+          {fn.prefix}{fn.value}
+        </div>
+      ))}
       </div>
     </div>
   );
