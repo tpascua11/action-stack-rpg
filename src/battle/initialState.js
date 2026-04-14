@@ -9,12 +9,14 @@ import { ENEMY_REGISTRY } from '../data/characters/enemy_registry';
 import { buildPlayer } from '../data/player';
 import { derivePlayerSnapshot } from '../context/PlayerContext';
 import { calcSpeed } from './engine/battle_engine';
+import { selectActionSet } from './engine/enemy_ai';
 
 const MAX_ENEMIES = 5;
 
 // ── BUILD ENEMY QUEUE ──
 export function buildEnemyQueue(enemy) {
-  return enemy.base_actions.map((act, i) => ({
+  const actions = selectActionSet(enemy);
+  return actions.map((act, i) => ({
     ...act,
     owner_id: enemy.id,
     owner_name: enemy.name,

@@ -127,8 +127,9 @@
     "active_tag_pool": [{ "tag_name": "ONE_UNDER_THE_SUN" }],
     "faction": "enemy",
     "queue": [],
-    "base_actions": [
-      {
+    "ai_type": "conditional",
+    "action_library": {
+      "Heavy Slice": {
         "name": "Heavy Slice",
         "speed_mod": -10,
         "payload_type": "PHYSICAL",
@@ -140,6 +141,31 @@
           "self": [],
           "target": [{ "tag_name": "DAMAGE", "type": "PHYSICAL", "power": 12 }]
         }
+      },
+      "Flame Strike": {
+        "name": "Flame Strike",
+        "cost": { "BATTLE_SPIRIT": 3 },
+        "speed_mod": 0,
+        "payload_type": "MAGIC",
+        "tag_type": ["MAGIC", "FIRE"],
+        "animation": "flame_strike",
+        "animation_intensity": 0.8,
+        "properties": [],
+        "tags": {
+          "self": [],
+          "target": [{ "tag_name": "DAMAGE", "type": "FIRE", "power": 35 }, { "tag_name": "BURN", "power": 15, "duration": 2, "reset": "TICK_TURN" }]
+        }
+      }
+    },
+    "action_sets": [
+      {
+        "id": "flame_burst",
+        "condition": { "type": "RESOURCE_GTE", "resource": "BATTLE_SPIRIT", "value": 9 },
+        "actions": ["Flame Strike", "Flame Strike"]
+      },
+      {
+        "id": "default",
+        "actions": ["Heavy Slice", "Heavy Slice"]
       }
     ]
   },
@@ -153,12 +179,13 @@
     "resources": { "BATTLE_SPIRIT": { "current": 0, "max": 10 } },
     "resource_bar_type": "sumurai",
     "base_speed": 80,
-    "total_action_slots": 1,
+    "total_action_slots": 2,
     "active_tag_pool": [{ "tag_name": "ONE_UNDER_THE_SUN" }],
     "faction": "enemy",
     "queue": [],
-    "base_actions": [
-      {
+    "ai_type": "conditional",
+    "action_library": {
+      "Heavy Slice": {
         "name": "Heavy Slice",
         "speed_mod": -10,
         "payload_type": "PHYSICAL",
@@ -170,6 +197,44 @@
           "self": [],
           "target": [{ "tag_name": "DAMAGE", "type": "PHYSICAL", "power": 10 }]
         }
+      },
+      "Focus Spirit": {
+        "name": "Focus Spirit",
+        "speed_mod": -30,
+        "payload_type": "PHYSICAL",
+        "tag_type": ["SPIRITUAL"],
+        "animation": "buff",
+        "animation_intensity": 1.0,
+        "properties": [],
+        "tags": {
+          "self": [{ "tag_name": "GAIN_RESOURCE", "resource_type": "BATTLE_SPIRIT", "power": 3 }],
+          "target": []
+        }
+      },
+      "Flame Strike": {
+        "name": "Flame Strike",
+        "cost": { "BATTLE_SPIRIT": 3 },
+        "speed_mod": 0,
+        "payload_type": "MAGIC",
+        "tag_type": ["MAGIC", "FIRE"],
+        "animation": "flame_strike",
+        "animation_intensity": 0.8,
+        "properties": [],
+        "tags": {
+          "self": [],
+          "target": [{ "tag_name": "DAMAGE", "type": "FIRE", "power": 35 }, { "tag_name": "BURN", "power": 15, "duration": 2, "reset": "TICK_TURN" }]
+        }
+      }
+    },
+    "action_sets": [
+      {
+        "id": "flame_burst",
+        "condition": { "type": "RESOURCE_GTE", "resource": "BATTLE_SPIRIT", "value": 9 },
+        "actions": ["Flame Strike", "Flame Strike"]
+      },
+      {
+        "id": "default",
+        "actions": ["Heavy Slice", "Focus Spirit"]
       }
     ]
   },
@@ -187,8 +252,9 @@
     "active_tag_pool": [{ "tag_name": "ONE_UNDER_THE_SUN" }],
     "faction": "enemy",
     "queue": [],
-    "base_actions": [
-      {
+    "ai_type": "conditional",
+    "action_library": {
+      "Heavy Slice": {
         "name": "Heavy Slice",
         "speed_mod": -10,
         "payload_type": "PHYSICAL",
@@ -200,6 +266,31 @@
           "self": [],
           "target": [{ "tag_name": "DAMAGE", "type": "PHYSICAL", "power": 9 }]
         }
+      },
+      "Flame Strike": {
+        "name": "Flame Strike",
+        "cost": { "BATTLE_SPIRIT": 3 },
+        "speed_mod": 0,
+        "payload_type": "MAGIC",
+        "tag_type": ["MAGIC", "FIRE"],
+        "animation": "flame_strike",
+        "animation_intensity": 0.8,
+        "properties": [],
+        "tags": {
+          "self": [],
+          "target": [{ "tag_name": "DAMAGE", "type": "FIRE", "power": 35 }, { "tag_name": "BURN", "power": 15, "duration": 2, "reset": "TICK_TURN" }]
+        }
+      }
+    },
+    "action_sets": [
+      {
+        "id": "flame_burst",
+        "condition": { "type": "RESOURCE_GTE", "resource": "BATTLE_SPIRIT", "value": 9 },
+        "actions": ["Flame Strike"]
+      },
+      {
+        "id": "default",
+        "actions": ["Heavy Slice"]
       }
     ]
   },
@@ -217,8 +308,9 @@
     "active_tag_pool": [{ "tag_name": "ONE_UNDER_THE_SUN" }],
     "faction": "enemy",
     "queue": [],
-    "base_actions": [
-      {
+    "ai_type": "conditional",
+    "action_library": {
+      "Heavy Slice": {
         "name": "Heavy Slice",
         "speed_mod": -10,
         "payload_type": "PHYSICAL",
@@ -230,6 +322,31 @@
           "self": [],
           "target": [{ "tag_name": "DAMAGE", "type": "PHYSICAL", "power": 7 }]
         }
+      },
+      "Flame Strike": {
+        "name": "Flame Strike",
+        "cost": { "BATTLE_SPIRIT": 3 },
+        "speed_mod": 0,
+        "payload_type": "MAGIC",
+        "tag_type": ["MAGIC", "FIRE"],
+        "animation": "flame_strike",
+        "animation_intensity": 0.8,
+        "properties": [],
+        "tags": {
+          "self": [],
+          "target": [{ "tag_name": "DAMAGE", "type": "FIRE", "power": 35 }, { "tag_name": "BURN", "power": 15, "duration": 2, "reset": "TICK_TURN" }]
+        }
+      }
+    },
+    "action_sets": [
+      {
+        "id": "flame_burst",
+        "condition": { "type": "RESOURCE_GTE", "resource": "BATTLE_SPIRIT", "value": 9 },
+        "actions": ["Flame Strike"]
+      },
+      {
+        "id": "default",
+        "actions": ["Heavy Slice"]
       }
     ]
   }
