@@ -33,10 +33,14 @@ export function effectiveResourceAtExecution(resourceType, mySlotIndex, queue, r
   return effect;
 }
 
-export function addTagToPool(pool, tag) {
+export function addTagToPool(pool, tag, actionContext = null) {
   const entry = battle_registry[tag.tag_name];
+  // Allow registry entries to stamp action-time data onto the tag (e.g. calc_speed for QUICK_STEPS)
+  const resolvedTag = (actionContext && entry?.enrichFromAction)
+    ? entry.enrichFromAction(tag, actionContext)
+    : tag;
   const tagWithMeta = {
-    ...tag,
+    ...resolvedTag,
     tier: 'condition',
     ...(entry?.status_type ? { status_type: entry.status_type } : {}),
   };
@@ -190,13 +194,21 @@ function runPhasePreAction(tag_pool, action, owner) {
   const logs = [];
   const remaining = [];
 
-  for (let i = 0; i < tag_pool.length; i++) {
-    const tag = tag_pool[i];
+  // Strip stance/buff tags that expire when the owner acts (e.g. QUICK_STEPS from a prior slot).
+  // Done here — at the START of the next action — so the tag survives after being applied
+  // and is only cleared right before the owner's following action fires.
+  const activePool = tag_pool.filter(tag => {
+    const reset = tag.reset;
+    return !(Array.isArray(reset) ? reset.includes('ON_OWNER_ACTION') : reset === 'ON_OWNER_ACTION');
+  });
+
+  for (let i = 0; i < activePool.length; i++) {
+    const tag = activePool[i];
     const entry = battle_registry[tag.tag_name];
     if (entry?.phases?.includes('PRE_ACTION')) {
       const result = entry.handlers['PRE_ACTION'](action, owner, tag);
       logs.push(...(result.logs ?? []));
-      if (result.cancelled) return { cancelled: true, logs, tag_pool: [...remaining, ...tag_pool.slice(i + 1)] };
+      if (result.cancelled) return { cancelled: true, logs, tag_pool: [...remaining, ...activePool.slice(i + 1)] };
       if (!result.consumed) remaining.push(tag);
     } else {
       remaining.push(tag);
@@ -209,6 +221,34 @@ function runPhasePreAction(tag_pool, action, owner) {
     if (!res || res.current < amount) {
       logs.push({ msg: `💨 "${action.name}" fizzled — not enough ${resourceType}`, type: 'fizzle' });
       return { cancelled: true, logs, tag_pool: remaining };
+    }
+  }
+
+  return { cancelled: false, logs, tag_pool: remaining };
+}
+
+// ── ON_INCOMING PHASE RUNNER ──
+// Runs on the *defender's* tag pool when an action is about to hit them.
+// Any tag declaring phase 'ON_INCOMING' can cancel the action, reflect damage,
+// trigger counters, etc. — this is the general defender-side gate.
+
+function runPhaseOnIncoming(tag_pool, incoming_action, defender, state) {
+  const logs = [];
+  const remaining = [];
+
+  for (let i = 0; i < tag_pool.length; i++) {
+    const tag = tag_pool[i];
+    const entry = battle_registry[tag.tag_name];
+    if (entry?.phases?.includes('ON_INCOMING')) {
+      const result = entry.handlers['ON_INCOMING'](incoming_action, defender, tag, state);
+      logs.push(...(result.logs ?? []));
+      if (result.cancelled) {
+        const keep = result.consumed ? [] : [tag];
+        return { cancelled: true, logs, tag_pool: [...remaining, ...keep, ...tag_pool.slice(i + 1)] };
+      }
+      if (!result.consumed) remaining.push(tag);
+    } else {
+      remaining.push(tag);
     }
   }
 
@@ -241,6 +281,20 @@ export function ExecuteAction(action, interaction_result, state) {
   // Deduct resource costs at execution time
   for (const [resourceType, amount] of Object.entries(action.cost ?? {})) {
     owner.resources[resourceType].current -= amount;
+  }
+
+  // ON_INCOMING phase — defender-side gate (dodge, parry, reflect, etc.)
+  // Runs on the original target before any payload is built or damage dealt.
+  // If cancelled: attacker resources are still spent (action was committed).
+  if (target.health > 0) {
+    const onIncoming = runPhaseOnIncoming(target.active_tag_pool, action, target, newState);
+    logs.push(...onIncoming.logs);
+    target.active_tag_pool = onIncoming.tag_pool;
+    if (onIncoming.cancelled) {
+      // TODO: trigger dodge animation on defender
+      // TODO: trigger miss/whiff animation on attacker
+      return { newState, logs, dodged: true };
+    }
   }
 
   // Retarget if original target is already dead — prefer same faction as original target
@@ -305,7 +359,8 @@ export function ExecuteAction(action, interaction_result, state) {
         logs.push({ msg: `💖 ${owner.name} heals for ${tag.power} HP`, type: 'heal' });
       }
     } else {
-      owner.active_tag_pool = addTagToPool(owner.active_tag_pool, tag);
+      // Pass action as context so registry entries can stamp action-time data (e.g. calc_speed)
+      owner.active_tag_pool = addTagToPool(owner.active_tag_pool, tag, action);
       logs.push({ msg: `✨ ${owner.name} gains ${tag.tag_name}`, type: 'buff' });
     }
   }
@@ -420,11 +475,12 @@ export function TurnResultCleanup(state, field = null) {
 
   for (const character of newState.characters) {
     character.active_tag_pool = character.active_tag_pool.filter(tag => {
-      if (tag.reset === 'END_OF_TURN') {
+      const hasReset = (key) => Array.isArray(tag.reset) ? tag.reset.includes(key) : tag.reset === key;
+      if (hasReset('END_OF_TURN')) {
         logs.push({ msg: `🔄 ${character.name}: ${tag.tag_name} expired`, type: 'info' });
         return false;
       }
-      if (tag.reset === 'TICK_TURN') {
+      if (hasReset('TICK_TURN')) {
         tag.duration -= 1;
         if (tag.duration <= 0) {
           logs.push({ msg: `🔄 ${character.name}: ${tag.tag_name} expired`, type: 'info' });

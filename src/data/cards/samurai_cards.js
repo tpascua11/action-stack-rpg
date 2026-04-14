@@ -176,6 +176,25 @@ export const SAMURAI_CARDS = [
     },
   },
   {
+    id: 'quick_steps',
+    name: 'Quick Steps',
+    speed_mod: 0,
+    tag_type: ['PHYSICAL', 'STANCE'],
+    cost: {},
+    icon: '👣',
+    image: 'FOX_QUICK_STEPS',
+    color: '#38bdf8',
+    desc: 'Enter a dodge stance. Sidestep the next enemy action within your speed window.',
+    animation: 'run_circle',
+    animation_intensity: 1.0,
+    tags: {
+      self: [
+        { tag_name: 'QUICK_STEPS', dodge_range: 10, reset: ['ON_OWNER_ACTION', 'END_OF_TURN'] },
+      ],
+      target: [],
+    },
+  },
+  {
     id: 'focus_spirit',
     name: 'Focus Spirit',
     speed_mod: -30,

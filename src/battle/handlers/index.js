@@ -6,6 +6,7 @@
 
 import './delivery_handlers';
 import './imbue_handlers';
+import './incoming_handlers';
 import './injector_handlers';
 import './passive_handlers';
 import './post_attack_handlers';

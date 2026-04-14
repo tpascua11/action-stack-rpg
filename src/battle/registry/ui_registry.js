@@ -5,7 +5,7 @@
 //  This registry is UI-only — battle logic never touches it.
 // ============================================================
 
-import { STATUS_NATURE_1 as NATURE_1, STATUS_FROST_1 as FROST_1, STATUS_FIRE_1 as FIRE_1 } from '../../assets';
+import { STATUS_NATURE_1 as NATURE_1, STATUS_FROST_1 as FROST_1, STATUS_FIRE_1 as FIRE_1, FOX_QUICK_STEPS } from '../../assets';
 
 export const ui_registry = {
 
@@ -105,6 +105,16 @@ export const ui_registry = {
     statusIcon: FIRE_1,
     color: '#f97316',
     describe: (tag) => `-${tag.power} HP/turn`,
+  },
+
+  QUICK_STEPS: {
+    icon: '👣',
+    statusIcon: FOX_QUICK_STEPS,
+    color: '#38bdf8',
+    describe: (tag) => {
+      if (tag.dodge_anchor == null) return 'Dodge stance active';
+      return `Dodge window: ${tag.dodge_anchor - (tag.dodge_range ?? 5)}–${tag.dodge_anchor} speed`;
+    },
   },
 
 };
