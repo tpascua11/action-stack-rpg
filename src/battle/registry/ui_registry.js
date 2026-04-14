@@ -107,6 +107,17 @@ export const ui_registry = {
     describe: (tag) => `-${tag.power} HP/turn`,
   },
 
+  BATTOJUTSU: {
+    icon: '🔦',
+    color: '#c084fc',
+    describe: (tag) => {
+      const base = Math.round((tag.base_boost ?? 0.65) * 100);
+      const stacks = tag.stack_count ?? 0;
+      const total = base + stacks * 10;
+      return `+${total}% next attack (${stacks}/10 stacks, ${base}% base)`;
+    },
+  },
+
   QUICK_STEPS: {
     icon: '👣',
     statusIcon: FOX_QUICK_STEPS,

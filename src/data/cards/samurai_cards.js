@@ -170,7 +170,7 @@ export const SAMURAI_CARDS = [
     animation_intensity: 1.2,
     tags: {
       self: [
-        { tag_name: 'BATTOJUTSU', multiplier: 0.75, tier: 'advanced' },
+        { tag_name: 'BATTOJUTSU', multiplier: 0.65, tier: 'advanced' },
       ],
       target: [],
     },

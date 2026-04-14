@@ -98,9 +98,15 @@ registerTag('FUEL_TO_THE_FLAMES', {
 });
 
 export function BattojutsuHandler(payload, character, tag) {
-  const boost = tag.multiplier * tag.stack_count;
+  // Non-attacking action — add 1 stack (10%), cap at 10 stacks
+  if (payload.damages.length === 0) {
+    tag.stack_count = Math.min(tag.stack_count + 1, 10);
+    return { payload, consumed: false };
+  }
+  // Attacking action — apply base boost + stack bonus, then consume
+  const total = tag.base_boost + tag.stack_count * 0.10;
   payload.damages.forEach(d => {
-    d.power = Math.floor(d.power * (1 + boost));
+    d.power = Math.floor(d.power * (1 + total));
   });
   return { payload, consumed: true };
 }
@@ -108,9 +114,11 @@ export function BattojutsuHandler(payload, character, tag) {
 export function BattojutsuOnApply(pool, tag) {
   const existing = pool.find(t => t.tag_name === 'BATTOJUTSU');
   if (existing) {
-    existing.stack_count += 1;
+    // Re-using Battojutsu while active adds 2 stacks, cap at 10
+    existing.stack_count = Math.min(existing.stack_count + 2, 10);
   } else {
-    pool.push({ ...tag, stack_count: 1 });
+    // First use — base boost from card data (0.65), stacks start at 0
+    pool.push({ ...tag, base_boost: tag.multiplier, stack_count: 0 });
   }
 }
 
