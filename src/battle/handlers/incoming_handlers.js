@@ -26,7 +26,6 @@ function QuickStepsHandler(incoming_action, defender, tag) {
       consumed: false, // stance persists until ActionCleanup or TurnResultCleanup removes it
       logs: [
         { msg: `💨 ${defender.name} sidesteps "${incoming_action.name}" with Quick Steps!`, type: 'buff' },
-        // TODO: trigger dodge/sidestep animation on defender
         // TODO: trigger miss/whiff animation on attacker
       ],
     };

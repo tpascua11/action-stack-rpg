@@ -291,9 +291,7 @@ export function ExecuteAction(action, interaction_result, state) {
     logs.push(...onIncoming.logs);
     target.active_tag_pool = onIncoming.tag_pool;
     if (onIncoming.cancelled) {
-      // TODO: trigger dodge animation on defender
-      // TODO: trigger miss/whiff animation on attacker
-      return { newState, logs, dodged: true };
+      return { newState, logs, dodged: true, dodgerId: target.id, attackerId: owner.id };
     }
   }
 

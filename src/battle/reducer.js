@@ -130,7 +130,7 @@ export function battleReducer(state, action) {
 
       if (interactionLog) newLogs.push(interactionLog);
 
-      const { newState: afterExec, logs: execLogs, actualTargetId, fizzled, isSelfBuff, animationHint, animationSelf, animationIntensity, damageDealt } = ExecuteAction(actionA, resultA, newState);
+      const { newState: afterExec, logs: execLogs, actualTargetId, fizzled, dodged, dodgerId, isSelfBuff, animationHint, animationSelf, animationIntensity, damageDealt } = ExecuteAction(actionA, resultA, newState);
       newState = afterExec;
       newLogs.push(...execLogs);
 
@@ -167,7 +167,9 @@ export function battleReducer(state, action) {
         : nextTarget?.faction === 'enemy' ? nextTarget.id : null;
 
       let pendingAnimation = [];
-      if (fizzled) {
+      if (dodged) {
+        pendingAnimation.push({ type: 'run_circle', targetId: dodgerId, intensity: 1.0 });
+      } else if (fizzled) {
         pendingAnimation.push({ type: 'fizzle', targetId: actionA.owner_id, intensity: 1.0, cardName: actionA.name });
       } else {
         if (isSelfBuff) {
