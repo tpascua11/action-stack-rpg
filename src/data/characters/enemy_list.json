@@ -14,6 +14,7 @@
     "base_actions": [
       {
         "name": "Ember Strike",
+        "icon": "ENM_DEFAULT",
         "speed_mod": 0,
         "payload_type": "MAGIC",
         "tag_type": ["MAGIC", "FIRE"],
@@ -40,6 +41,7 @@
     "base_actions": [
       {
         "name": "Ember Strike",
+        "icon": "ENM_DEFAULT",
         "speed_mod": 0,
         "payload_type": "MAGIC",
         "tag_type": ["MAGIC", "FIRE"],
@@ -51,6 +53,7 @@
       },
       {
         "name": "Magic Charge",
+        "icon": "ENM_DEFAULT",
         "speed_mod": 0,
         "payload_type": "MAGIC",
         "tag_type": ["MAGIC", "CHARGING"],
@@ -77,6 +80,7 @@
     "base_actions": [
       {
         "name": "Ember Strike",
+        "icon": "ENM_DEFAULT",
         "speed_mod": 0,
         "payload_type": "MAGIC",
         "tag_type": ["MAGIC", "FIRE"],
@@ -91,6 +95,7 @@
       },
       {
         "name": "Magic Charge",
+        "icon": "ENM_DEFAULT",
         "speed_mod": 0,
         "payload_type": "MAGIC",
         "tag_type": ["MAGIC", "CHARGING"],
@@ -102,6 +107,7 @@
       },
       {
         "name": "Flame Regen",
+        "icon": "ENM_DEFAULT",
         "speed_mod": 0,
         "payload_type": "MAGIC",
         "tag_type": ["MAGIC"],
@@ -131,6 +137,7 @@
     "action_library": {
       "Heavy Slice": {
         "name": "Heavy Slice",
+        "icon": "ENM_SAM_HEAVY_STRIKE_1",
         "speed_mod": -10,
         "payload_type": "PHYSICAL",
         "tag_type": ["PHYSICAL", "SLASH"],
@@ -144,6 +151,7 @@
       },
       "Flame Strike": {
         "name": "Flame Strike",
+        "icon": "ENM_SAM_FLAME_STRIKE",
         "cost": { "BATTLE_SPIRIT": 3 },
         "speed_mod": 0,
         "payload_type": "MAGIC",
@@ -187,6 +195,7 @@
     "action_library": {
       "Heavy Slice": {
         "name": "Heavy Slice",
+        "icon": "ENM_SAM_HEAVY_STRIKE_1",
         "speed_mod": -10,
         "payload_type": "PHYSICAL",
         "tag_type": ["PHYSICAL", "SLASH"],
@@ -200,6 +209,7 @@
       },
       "Focus Spirit": {
         "name": "Focus Spirit",
+        "icon": "ENM_SAM_BUFF_3",
         "speed_mod": -30,
         "payload_type": "PHYSICAL",
         "tag_type": ["SPIRITUAL"],
@@ -213,6 +223,7 @@
       },
       "Flame Strike": {
         "name": "Flame Strike",
+        "icon": "ENM_SAM_FLAME_STRIKE",
         "cost": { "BATTLE_SPIRIT": 3 },
         "speed_mod": 0,
         "payload_type": "MAGIC",
@@ -256,6 +267,7 @@
     "action_library": {
       "Heavy Slice": {
         "name": "Heavy Slice",
+        "icon": "ENM_SAM_HEAVY_STRIKE_1",
         "speed_mod": -10,
         "payload_type": "PHYSICAL",
         "tag_type": ["PHYSICAL", "SLASH"],
@@ -269,6 +281,7 @@
       },
       "Flame Strike": {
         "name": "Flame Strike",
+        "icon": "ENM_SAM_FLAME_STRIKE",
         "cost": { "BATTLE_SPIRIT": 3 },
         "speed_mod": 0,
         "payload_type": "MAGIC",
@@ -312,6 +325,7 @@
     "action_library": {
       "Heavy Slice": {
         "name": "Heavy Slice",
+        "icon": "ENM_SAM_HEAVY_STRIKE_1",
         "speed_mod": -10,
         "payload_type": "PHYSICAL",
         "tag_type": ["PHYSICAL", "SLASH"],
@@ -325,6 +339,7 @@
       },
       "Flame Strike": {
         "name": "Flame Strike",
+        "icon": "ENM_SAM_FLAME_STRIKE",
         "cost": { "BATTLE_SPIRIT": 3 },
         "speed_mod": 0,
         "payload_type": "MAGIC",

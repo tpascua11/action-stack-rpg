@@ -11,9 +11,32 @@
 import ENEMY_LIST from './enemy_list.json';
 import * as ASSETS from '../../assets';
 
+function resolveActionIcons(actions) {
+  if (!actions) return actions;
+  return actions.map(a => ({
+    ...a,
+    image: a.icon ? (ASSETS[a.icon] ?? null) : null,
+  }));
+}
+
+function resolveLibraryIcons(library) {
+  if (!library) return library;
+  return Object.fromEntries(
+    Object.entries(library).map(([key, a]) => [
+      key,
+      { ...a, image: a.icon ? (ASSETS[a.icon] ?? null) : null },
+    ])
+  );
+}
+
 export const ENEMY_REGISTRY = Object.fromEntries(
   ENEMY_LIST.map(def => [
     def.id,
-    { ...def, portrait: ASSETS[def.portrait] ?? null },
+    {
+      ...def,
+      portrait:       ASSETS[def.portrait] ?? null,
+      base_actions:   resolveActionIcons(def.base_actions),
+      action_library: resolveLibraryIcons(def.action_library),
+    },
   ])
 );
