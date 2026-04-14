@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { useGame } from '../context/GameContext';
 import { usePlayer } from '../context/PlayerContext';
-import MAP_DATA from '../data/maps/iron_wastes_map.json';
+import MAP_DATA from '../data/maps/PATH_OF_THE_SUMURAI.json';
 import { SCENARIO_REGISTRY } from '../data/maps/scenario_registry';
 import { CLASS_REGISTRY } from '../data/classes/class_registry';
 import {
@@ -103,12 +103,9 @@ const STATIC_STYLES = {
     position: "relative",
   },
   grid: {
-    width: "100%",
-    maxWidth: 1200,
-    aspectRatio: `${MAP_DATA.cols}/${MAP_DATA.rows}`,
     display: "grid",
-    gridTemplateColumns: `repeat(${MAP_DATA.cols},1fr)`,
-    gridTemplateRows: `repeat(${MAP_DATA.rows},1fr)`,
+    gridTemplateColumns: `repeat(${MAP_DATA.cols},200px)`,
+    gridTemplateRows: `repeat(${MAP_DATA.rows},200px)`,
     gap: 14,
     position: "relative",
   },
@@ -268,7 +265,8 @@ const ZoneCell = ({ zone, zoneState, zoneType, isPlayerHere, isSelected, progres
           style={{
             position: "absolute", inset: 0,
             width: "100%", height: "100%",
-            objectFit: "cover",
+            objectFit: "contain",
+            objectPosition: "center",
             opacity: isLocked ? 0.55 : isCleared ? 0.65 : 0.75,
             pointerEvents: "none",
           }}
