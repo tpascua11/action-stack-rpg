@@ -59,7 +59,7 @@ export default function Hand({ cards, queue, totalSlots, onCardClick, disabled, 
       </div>
 
       {/* Card area — cards sit at the bottom with breathing room */}
-      <div className="flex-1 flex items-start justify-center px-4 pt-2" style={{ willChange: 'transform' }}>
+      <div className="flex-1 flex items-start justify-center px-4 pt-2">
         {cards.map((card, idx) => {
           const wouldSpeed = nextSlotIndex >= 0
             ? calcSpeed(baseSpeed + (card.speed_mod ?? 0), nextSlotIndex)
@@ -87,8 +87,7 @@ export default function Hand({ cards, queue, totalSlots, onCardClick, disabled, 
                 borderColor: isDisabled ? '#374151' : card.color,
                 boxShadow: isDisabled ? 'none' : `0 0 10px ${card.color}55, inset 0 0 6px ${card.color}11`,
                 borderRadius: '3px',
-                isolation: 'isolate',
-                zIndex: isDisabled ? 0 : 1,
+                zIndex: isDisabled ? 0 : 10,
                 position: 'relative',
               }}
             >

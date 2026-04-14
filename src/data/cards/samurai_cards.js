@@ -15,7 +15,7 @@ export const SAMURAI_CARDS = [
     image: 'FOX_SUMMURAI_4',
     color: '#e94560',
     desc: 'A powerful slash attack.',
-    animation: 'heavy_slice',
+    animation: 'dual_heavy_slice',
     animation_intensity: 1.0,
     tags: {
       self: [
@@ -53,16 +53,11 @@ export const SAMURAI_CARDS = [
     image: 'FOX_SUMMURAI_40',
     color: '#4caf50',
     desc: 'Restore 100 HP. Costs 3 Battle Spirit.',
-    animation: 'heal',
+    animation: 'green_marching_ants',
     animation_intensity: 1.0,
     tags: {
       self: [
         { tag_name: 'HEAL', power: 100 },
-        { tag_name: 'REGEN', power: 25, duration: 3, reset: 'TICK_TURN' },
-        { tag_name: 'REGEN', power: 25, duration: 3, reset: 'TICK_TURN' },
-        { tag_name: 'REGEN', power: 25, duration: 3, reset: 'TICK_TURN' },
-        { tag_name: 'REGEN', power: 25, duration: 3, reset: 'TICK_TURN' },
-        { tag_name: 'REGEN', power: 25, duration: 3, reset: 'TICK_TURN' },
         { tag_name: 'REGEN', power: 25, duration: 3, reset: 'TICK_TURN' },
       ],
       target: [],
@@ -171,7 +166,7 @@ export const SAMURAI_CARDS = [
     image: 'FOX_SUMMURAI_BATTOJUTSU',
     color: '#c084fc',
     desc: 'Enter a focused draw stance. Your next attack deals 75% more damage.',
-    animation: 'buff',
+    animation: 'sumurai_sheath',
     animation_intensity: 1.2,
     tags: {
       self: [

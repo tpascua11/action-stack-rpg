@@ -84,6 +84,12 @@ export default function BattleScreen() {
     return () => clearTimeout(battleTimerRef.current);
   }, [gs.phase, gs.stepCount]);
 
+  function playSfx(src, volume = 0.6) {
+    const audio = preloadedAudio(src).cloneNode();
+    audio.volume = volume;
+    audio.play().catch(() => {});
+  }
+
   // Unified animation handler — reads pendingAnimation array from reducer,
   // looks up each entry in registry, applies CSS class + SFX, auto-clears.
   useEffect(() => {
@@ -105,11 +111,7 @@ export default function BattleScreen() {
           ? config.sfx
           : [{ src: config.sfx, delay: 0, volume: config.volume ?? 0.6 }];
         sfxList.forEach(({ src, delay = 0, volume }) => {
-          setTimeout(() => {
-            const sfx = preloadedAudio(src).cloneNode();
-            sfx.volume = volume ?? config.volume ?? 0.6;
-            sfx.play().catch(() => {});
-          }, delay);
+          setTimeout(() => playSfx(src, volume ?? config.volume ?? 0.6), delay);
         });
       }
 
@@ -198,10 +200,12 @@ export default function BattleScreen() {
   function handleCardClick(card) {
     if (gs.phase !== 'QUEUE_SETUP') return;
     if (player.queue.filter(Boolean).length >= player.total_action_slots) return;
+    playSfx(require('../assets/SOUND EFFECTS/SELECT.wav').default ?? require('../assets/SOUND EFFECTS/SELECT.wav'), 0.6);
     dispatch({ type: 'ADD_TO_QUEUE', card });
   }
 
   function handleClearSlot(index) {
+    playSfx(require('../assets/SOUND EFFECTS/DESELECT.wav').default ?? require('../assets/SOUND EFFECTS/DESELECT.wav'), 0.6);
     dispatch({ type: 'CLEAR_SLOT', index });
   }
 
@@ -212,6 +216,7 @@ export default function BattleScreen() {
     }
     if (gs.phase !== 'QUEUE_SETUP') return;
     if (!player.queue.some(Boolean)) return;
+    playSfx(require('../assets/SOUND EFFECTS/START_1.wav').default ?? require('../assets/SOUND EFFECTS/START_1.wav'), 0.7);
     dispatch({ type: 'START_BATTLE' });
   }
 
@@ -276,7 +281,7 @@ export default function BattleScreen() {
         />
 
         {/* BOTTOM — Player Zone */}
-        <div className="flex-shrink-0 flex flex-col overflow-hidden">
+        <div className="flex-shrink-0 flex flex-col">
 
           {/* Center row: Buff Column | Character Column | Slot Column */}
           <div className="flex-1 flex items-end justify-center overflow-hidden pt-2 pb-4 max-h-[26rem]" style={{ position: 'relative' }}>

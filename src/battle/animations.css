@@ -159,6 +159,57 @@
   animation: ice_shake calc(0.5s / var(--anim-intensity, 1)) ease-out;
 }
 
+/* ── MARCHING ANTS (selection / focus border) ── */
+/* Four repeating-gradient layers, one per edge.              */
+/* background-position shifts one dash-period (16px) per loop */
+/* creating clockwise-marching dashes around the element.     */
+@keyframes march {
+  from {
+    background-position:
+      0 0,          /* top:    start left  */
+      100% 0,       /* right:  start top   */
+      100% 100%,    /* bottom: start right */
+      0 100%;       /* left:   start bottom */
+  }
+  to {
+    background-position:
+      12px 0,                      /* top:    dashes march right  */
+      100% 12px,                   /* right:  dashes march down   */
+      calc(100% - 12px) 100%,      /* bottom: dashes march left   */
+      0 calc(100% - 12px);         /* left:   dashes march up     */
+  }
+}
+@keyframes green-flash {
+  0%   { opacity: 0; }
+  40%  { opacity: 0.35; }
+  100% { opacity: 0; }
+}
+.animate-green-marching-ants::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  background: #4ade80;
+  animation: green-flash 0.35s ease-in-out infinite;
+}
+
+.animate-green-marching-ants::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  pointer-events: none;
+  background-image:
+    repeating-linear-gradient(90deg,  #4ade80 0, #4ade80 7px, transparent 7px, transparent 12px),
+    repeating-linear-gradient(180deg, #4ade80 0, #4ade80 7px, transparent 7px, transparent 12px),
+    repeating-linear-gradient(90deg,  #4ade80 0, #4ade80 7px, transparent 7px, transparent 12px),
+    repeating-linear-gradient(180deg, #4ade80 0, #4ade80 7px, transparent 7px, transparent 12px);
+  background-size:   12px 5px, 5px 12px, 12px 5px, 5px 12px;
+  background-repeat: repeat-x, repeat-y, repeat-x, repeat-y;
+  animation: march 0.1s linear infinite;
+}
+
 /* ── Placeholders (not yet implemented) ──────────────────────
 
 @keyframes slam { }

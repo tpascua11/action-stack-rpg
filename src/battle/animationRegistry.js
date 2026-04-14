@@ -39,9 +39,16 @@ export const ANIMATIONS = {
   heavy_slice: {
     cssClass: 'animate-heavy_shake',
     duration: 500,
+    sfx: sfx('SLICE_1.wav'),
+    volume: 0.7,
+    floatingNumber: { color: '#ff4444' },
+  },
+  dual_heavy_slice: {
+    cssClass: 'animate-heavy_shake',
+    duration: 500,
     sfx: [
-      { src: sfx('ATTACK_1.wav'), delay: 0,   volume: 0.7 },
-      { src: sfx('ATTACK_1.wav'), delay: 180, volume: 0.5 },
+      { src: sfx('HARD_SWING_1.wav'), delay: 0,   volume: 0.7 },
+      { src: sfx('HARD_SWING_1.wav'), delay: 180, volume: 0.5 },
     ],
     floatingNumber: [
       { color: '#ff4444', delay: 0,   split: 0.5 },
@@ -70,20 +77,32 @@ export const ANIMATIONS = {
   run_circle: {
     cssClass: 'animate-run_circle',
     duration: 700,
-    battleDelay: 2000,
-    sfx: null,
+    //battleDelay: 2000,
+    sfx: sfx('BUFF_1.wav'), 
     floatingNumber: null,
   },
   heal: {
     cssClass: 'animate-heal',
-    duration: 700,
-    sfx: null,
+    duration: 700,  
+    sfx: [
+      { src: sfx('REGEN_2.wav'), delay: 0,   volume: 0.7 },
+    ], 
     floatingNumber: null,
   },
   buff: {
     cssClass: 'animate-buff',
     duration: 650,
-    sfx: null,
+    sfx: [
+      { src: sfx('BUFF_2.wav'), delay: 0,   volume: 0.7 },
+    ], 
+    floatingNumber: null,
+  },
+  sumurai_sheath: {
+    cssClass: 'animate-buff',
+    duration: 650,
+    sfx: [
+      { src: sfx('SHEATH.wav'), delay: 0,   volume: 0.7 },
+    ], 
     floatingNumber: null,
   },
   burn: {
@@ -106,9 +125,18 @@ export const ANIMATIONS = {
     cssClass: 'animate-burn',
     duration: 750,
     sfx: [
-      { src: sfx('FLAMES'), delay: 0, volume: 0.8 },
+      { src: sfx('SWORD_SWING.wav'), delay: 0,   volume: 0.7 },
+      { src: sfx('FLAMES'), delay: 300, volume: 0.8 },
     ],
     floatingNumber: { color: '#f97316' },
+  },
+  green_marching_ants: {
+    cssClass: 'animate-green-marching-ants',
+    duration: 1000,
+    sfx: [
+      { src: sfx('REGEN_3.wav'), delay: 0,   volume: 0.7 },
+    ], 
+    floatingNumber: null,
   },
   // ── Coming soon ──────────────────────────────────────────
   // slam:   { cssClass: 'animate-slam',   duration: 500, sfx: null },
