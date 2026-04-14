@@ -170,3 +170,8 @@ export { default as FOX_SUMMURAI_47 } from './FOX_SUMMURAI/fox_summurai_47.png';
 export { default as FOX_SUMMURAI_48 } from './FOX_SUMMURAI/fox_summurai_48.png';
 export { default as FOX_SUMMURAI_49 } from './FOX_SUMMURAI/fox_summurai_49.png';
 export { default as FOX_SUMMURAI_BATTOJUTSU } from './FOX_SUMMURAI/fox_battōjutsu.png';
+export { default as FOX_SUMMURAI_HEAVY_STRIKE } from './FOX_SUMMURAI/fox_heavy_strike.png';
+export { default as FOX_SUMMURAI_MEND } from './FOX_SUMMURAI/fox_mend.png';
+export { default as FOX_SUMMURAI_STILL_WIND } from './FOX_SUMMURAI/fox_still_wind.png';
+export { default as FOX_SUMMURAI_FREEZE_SLASH } from './FOX_SUMMURAI/fox_freeze_slash.png';
+export { default as FOX_SUMMURAI_FLAME_STRIKE } from './FOX_SUMMURAI/fox_flame_strike.png';
