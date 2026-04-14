@@ -13,3 +13,4 @@ import './post_attack_handlers';
 import './speed_handlers';
 import './turn_phase_handlers';
 import './elemental_handlers';
+import './class_specific_handler';

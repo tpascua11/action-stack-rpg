@@ -195,6 +195,26 @@ export const SAMURAI_CARDS = [
     },
   },
   {
+    id: 'still_wind',
+    name: 'Still Wind',
+    speed_mod: 0,
+    tag_type: ['SPIRITUAL', 'STANCE'],
+    cost: {},
+    icon: '🌬️',
+    image: 'FOX_SUMMURAI_STILL_WIND',
+    color: '#a78bfa',
+    desc: 'Gain 1 Battle Spirit. Each action you take grants 1 more Battle Spirit. Removed if you take damage.',
+    animation: 'buff',
+    animation_intensity: 1.0,
+    tags: {
+      self: [
+        { tag_name: 'GAIN_RESOURCE', resource_type: 'BATTLE_SPIRIT', power: 1 },
+        { tag_name: 'STILL_WIND' },
+      ],
+      target: [],
+    },
+  },
+  {
     id: 'focus_spirit',
     name: 'Focus Spirit',
     speed_mod: -30,
