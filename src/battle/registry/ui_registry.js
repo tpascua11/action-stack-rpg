@@ -5,7 +5,9 @@
 //  This registry is UI-only — battle logic never touches it.
 // ============================================================
 
-import { STATUS_NATURE_1, STATUS_FROST_1, STATUS_FIRE_1, FOX_QUICK_STEPS, FOX_SUMMURAI_STILL_WIND, FOX_SUMMURAI_BATTOJUTSU, FOX_SUMMURAI_HEAVY_STRIKE } from '../../assets';
+import { STATUS_NATURE_1, STATUS_FROST_1, STATUS_FIRE_1, FOX_QUICK_STEPS, FOX_SUMMURAI_STILL_WIND, FOX_SUMMURAI_BATTOJUTSU, FOX_SUMMURAI_HEAVY_STRIKE
+         , ENEMY_SPEED_UP
+ } from '../../assets';
 
 export const ui_registry = {
 
@@ -122,7 +124,7 @@ export const ui_registry = {
 
   QUICK_STEPS: {
     icon: '👣',
-    statusIcon: FOX_QUICK_STEPS,
+    statusIcon: ENEMY_SPEED_UP,
     color: '#38bdf8',
     describe: (tag) => {
       if (tag.dodge_anchor == null) return 'Dodge stance active';

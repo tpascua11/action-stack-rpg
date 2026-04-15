@@ -37,9 +37,13 @@ export function selectActionSet(enemy) {
 
   for (const set of enemy.action_sets) {
     if (evalCondition(set.condition ?? null, enemy)) {
-      return set.actions
+      const resolved = set.actions
         .map(name => enemy.action_library[name])
         .filter(Boolean);
+      if (set.mode === 'random') {
+        return [resolved[Math.floor(Math.random() * resolved.length)]];
+      }
+      return resolved;
     }
   }
 

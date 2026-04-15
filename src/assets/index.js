@@ -115,6 +115,7 @@ export { default as ENM_SAM_HEAVY_STRIKE_1 } from './ENEMY_ABILITY_ICONS/ENEMY_H
 export { default as ENM_SAM_PREPARE }        from './ENEMY_ABILITY_ICONS/ENEMY_PREPARE.png';
 export { default as ENM_SAM_SHEATH }         from './ENEMY_ABILITY_ICONS/ENEMY_SHEATH.png';
 export { default as ENM_SAM_SPEED_UP }       from './ENEMY_ABILITY_ICONS/ENEMY_SPEED_UP.png';
+export { default as ENEMY_SPEED_UP }         from './ENEMY_ABILITY_ICONS/ENEMY_SPEED_UP.png';
 export { default as ENM_SAM_STANCE_1 }       from './ENEMY_ABILITY_ICONS/ENEMY_STANCE_1.png';
 export { default as ENM_SAM_STANCE_2 }       from './ENEMY_ABILITY_ICONS/ENEMY_STANCE_2.png';
 export { default as ENM_SAM_STORM_STRIKE }   from './ENEMY_ABILITY_ICONS/ENEMY_STORM_STRIKE.png';
