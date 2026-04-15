@@ -190,6 +190,21 @@ function runPhasePostAttack(tag_pool, payload, character, hit_result) {
   return tag_pool;
 }
 
+function runPhaseDamageReduce(tag_pool, payload) {
+  const remaining = [];
+  for (const tag of tag_pool) {
+    const entry = battle_registry[tag.tag_name];
+    if (entry?.phases?.includes('DAMAGE_REDUCE')) {
+      const result = entry.handlers['DAMAGE_REDUCE'](payload, tag);
+      payload = result.payload;
+      if (!result.consumed) remaining.push(tag);
+    } else {
+      remaining.push(tag);
+    }
+  }
+  return { tag_pool: remaining, payload };
+}
+
 function runPhasePreAction(tag_pool, action, owner) {
   const logs = [];
   const remaining = [];
@@ -333,6 +348,13 @@ export function ExecuteAction(action, interaction_result, state) {
   const injectFlatResult = runPhaseInjectFlat(owner.active_tag_pool, payload, owner);
   owner.active_tag_pool = injectFlatResult.tag_pool;
   payload = injectFlatResult.payload;
+
+  // ── DAMAGE_REDUCE — defender-side mitigation ──
+  if (resolvedTarget) {
+    const damageReduceResult = runPhaseDamageReduce(resolvedTarget.active_tag_pool, payload);
+    resolvedTarget.active_tag_pool = damageReduceResult.tag_pool;
+    payload = damageReduceResult.payload;
+  }
 
   // ── DELIVERY ──
   if (retargeted) logs.push({ msg: `🔀 ${action.name} retargeted to ${resolvedTarget.name}`, type: 'info' });

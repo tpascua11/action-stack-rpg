@@ -177,3 +177,4 @@ export { default as FOX_SUMMURAI_STILL_WIND } from './FOX_SUMMURAI/fox_still_win
 export { default as FOX_SUMMURAI_FREEZE_SLASH } from './FOX_SUMMURAI/fox_freeze_slash.png';
 export { default as FOX_SUMMURAI_FLAME_STRIKE } from './FOX_SUMMURAI/fox_flame_strike.png';
 export { default as FOX_QUICK_STEPS } from './FOX_SUMMURAI/fox_quick_steps.png';
+export { default as FOX_GUARD_STANCE } from './FOX_SUMMURAI/fox_guard_stance.png';
