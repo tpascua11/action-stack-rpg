@@ -1,15 +1,18 @@
 // ============================================================
-//  Enemy Registry — resolves enemy_list.json into runtime objects
+//  Enemy Registry — resolves faction JSONs into runtime objects
 //  Portraits stored as asset key strings in JSON are resolved
 //  to actual image imports here via the assets index.
 //
 //  To add a new enemy:
-//    1. Add its definition to enemy_list.json
+//    1. Add its definition to the appropriate factions/*.json file
 //    2. Make sure its portrait key exists in src/assets/index.js
 // ============================================================
 
-import ENEMY_LIST from './enemy_list.json';
+import WITCHES   from './factions/witches.json';
+import SUMURAI   from './factions/sumurai.json';
 import * as ASSETS from '../../assets';
+
+const ENEMY_LIST = [...WITCHES, ...SUMURAI];
 
 function resolveActionIcons(actions) {
   if (!actions) return actions;

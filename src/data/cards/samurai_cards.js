@@ -159,7 +159,7 @@ export const SAMURAI_CARDS = [
   {
     id: 'battojutsu',
     name: 'Battojutsu',
-    speed_mod: 20,
+    speed_mod: 0,
     tag_type: ['PHYSICAL', 'SLASH'],
     cost: {},
     icon: '🔦',
@@ -197,7 +197,7 @@ export const SAMURAI_CARDS = [
   {
     id: 'still_wind',
     name: 'Still Wind',
-    speed_mod: 20,
+    speed_mod: 0,
     tag_type: ['SPIRITUAL', 'STANCE'],
     cost: {},
     icon: '🌬️',
