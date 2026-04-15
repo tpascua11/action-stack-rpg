@@ -12,7 +12,7 @@
 // Resolves a sound file from the SOUND EFFECTS folder by name.
 // Webpack bundles the entire folder so any file dropped in is instantly available —
 // no entry in assets/index.js needed.
-const sfx = (name) => { const m = require(`../assets/SOUND EFFECTS/${name}`); return m.default ?? m; };
+export const sfx = (name) => { const m = require(`../assets/SOUND EFFECTS/${name}`); return m.default ?? m; };
 
 // Pre-decode audio at load time so playback is instant (no decode latency on first play).
 // Call cloneNode() on the returned element instead of new Audio(src).
@@ -72,6 +72,13 @@ export const ANIMATIONS = {
     cssClass: 'animate-wiggle',
     duration: 550,
     sfx: null,
+    floatingNumber: null,
+  },
+  sidestep: {
+    cssClass: 'animate-sidestep',
+    duration: 550,
+    sfx: sfx('DODGE_1.wav'),
+    volume: 0.6,
     floatingNumber: null,
   },
   run_circle: {

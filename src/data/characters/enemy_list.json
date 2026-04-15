@@ -4,7 +4,7 @@
     "name": "EMBER WITCH",
     "portrait": "ENEMY_APPRENTICE_WITCH",
     "card_size": "small",
-    "health": 80,
+    "health": 500,
     "max_health": 80,
     "base_speed": 85,
     "total_action_slots": 1,
@@ -21,7 +21,7 @@
         "properties": [],
         "tags": {
           "self": [],
-          "target": [{ "tag_name": "DAMAGE", "type": "FIRE", "power": 8 }]
+          "target": [{ "tag_name": "DAMAGE", "type": "FIRE", "power": 50 }]
         }
       }
     ]
@@ -48,7 +48,7 @@
         "properties": [],
         "tags": {
           "self": [],
-          "target": [{ "tag_name": "DAMAGE", "type": "FIRE", "power": 18 }]
+          "target": [{ "tag_name": "DAMAGE", "type": "FIRE", "power": 75 }]
         }
       },
       {
@@ -88,7 +88,7 @@
         "tags": {
           "self": [],
           "target": [
-            { "tag_name": "DAMAGE", "type": "FIRE", "power": 5 },
+            { "tag_name": "DAMAGE", "type": "FIRE", "power": 80 },
             { "tag_name": "BURN", "power": 8 }
           ]
         }
@@ -113,7 +113,7 @@
         "tag_type": ["MAGIC"],
         "properties": [],
         "tags": {
-          "self": [{ "tag_name": "HEAL", "power": 50 }],
+          "self": [{ "tag_name": "HEAL", "power": 100 }],
           "target": []
         }
       }
@@ -124,11 +124,11 @@
     "name": "BEAR SUMURAI",
     "portrait": "ENEMY_BEAR_SUMURAI",
     "card_size": "large",
-    "health": 500,
-    "max_health": 500,
+    "health": 1000,
+    "max_health": 1000,
     "resources": { "BATTLE_SPIRIT": { "current": 0, "max": 10 } },
     "resource_bar_type": "sumurai",
-    "base_speed": 70,
+    "base_speed": 100,
     "total_action_slots": 2,
     "active_tag_pool": [{ "tag_name": "ONE_UNDER_THE_SUN" }],
     "faction": "enemy",
@@ -146,7 +146,7 @@
         "properties": [],
         "tags": {
           "self": [],
-          "target": [{ "tag_name": "DAMAGE", "type": "PHYSICAL", "power": 12 }]
+          "target": [{ "tag_name": "DAMAGE", "type": "PHYSICAL", "power": 50 }]
         }
       },
       "Flame Strike": {
@@ -161,7 +161,7 @@
         "properties": [],
         "tags": {
           "self": [],
-          "target": [{ "tag_name": "DAMAGE", "type": "FIRE", "power": 35 }, { "tag_name": "BURN", "power": 15, "duration": 2, "reset": "TICK_TURN" }]
+          "target": [{ "tag_name": "DAMAGE", "type": "FIRE", "power": 150 }, { "tag_name": "BURN", "power": 15, "duration": 2, "reset": "TICK_TURN" }]
         }
       }
     },
@@ -182,11 +182,11 @@
     "name": "BEAR SUMURAI",
     "portrait": "ENEMY_BEAR_SUMURAI",
     "card_size": "large",
-    "health": 250,
-    "max_health": 250,
+    "health": 750,
+    "max_health": 750,
     "resources": { "BATTLE_SPIRIT": { "current": 0, "max": 10 } },
     "resource_bar_type": "sumurai",
-    "base_speed": 70,
+    "base_speed": 100,
     "total_action_slots": 2,
     "active_tag_pool": [{ "tag_name": "ONE_UNDER_THE_SUN" }],
     "faction": "enemy",
@@ -204,7 +204,7 @@
         "properties": [],
         "tags": {
           "self": [],
-          "target": [{ "tag_name": "DAMAGE", "type": "PHYSICAL", "power": 12 }]
+          "target": [{ "tag_name": "DAMAGE", "type": "PHYSICAL", "power": 50 }]
         }
       },
       "Flame Strike": {
@@ -219,7 +219,7 @@
         "properties": [],
         "tags": {
           "self": [],
-          "target": [{ "tag_name": "DAMAGE", "type": "FIRE", "power": 35 }, { "tag_name": "BURN", "power": 15, "duration": 2, "reset": "TICK_TURN" }]
+          "target": [{ "tag_name": "DAMAGE", "type": "FIRE", "power": 150 }, { "tag_name": "BURN", "power": 15, "duration": 2, "reset": "TICK_TURN" }]
         }
       }
     },
@@ -240,11 +240,11 @@
     "name": "WOLF SUMURAI",
     "portrait": "ENEMY_WOLF_SUMURAI",
     "card_size": "medium",
-    "health": 160,
-    "max_health": 160,
+    "health": 600,
+    "max_health": 600,
     "resources": { "BATTLE_SPIRIT": { "current": 0, "max": 10 } },
     "resource_bar_type": "sumurai",
-    "base_speed": 80,
+    "base_speed": 100,
     "total_action_slots": 2,
     "active_tag_pool": [{ "tag_name": "ONE_UNDER_THE_SUN" }],
     "faction": "enemy",
@@ -262,7 +262,7 @@
         "properties": [],
         "tags": {
           "self": [],
-          "target": [{ "tag_name": "DAMAGE", "type": "PHYSICAL", "power": 10 }]
+          "target": [{ "tag_name": "DAMAGE", "type": "PHYSICAL", "power": 50 }]
         }
       },
       "Focus Spirit": {
@@ -291,7 +291,7 @@
         "properties": [],
         "tags": {
           "self": [],
-          "target": [{ "tag_name": "DAMAGE", "type": "FIRE", "power": 35 }, { "tag_name": "BURN", "power": 15, "duration": 2, "reset": "TICK_TURN" }]
+          "target": [{ "tag_name": "DAMAGE", "type": "FIRE", "power": 150 }, { "tag_name": "BURN", "power": 15, "duration": 2, "reset": "TICK_TURN" }]
         }
       }
     },
@@ -312,11 +312,11 @@
     "name": "TIGER SUMURAI",
     "portrait": "ENEMY_TIGER_SUMURAI",
     "card_size": "medium",
-    "health": 110,
-    "max_health": 110,
+    "health": 600,
+    "max_health": 600,
     "resources": { "BATTLE_SPIRIT": { "current": 0, "max": 10 } },
     "resource_bar_type": "sumurai",
-    "base_speed": 90,
+    "base_speed": 100,
     "total_action_slots": 1,
     "active_tag_pool": [{ "tag_name": "ONE_UNDER_THE_SUN" }],
     "faction": "enemy",
@@ -334,7 +334,7 @@
         "properties": [],
         "tags": {
           "self": [],
-          "target": [{ "tag_name": "DAMAGE", "type": "PHYSICAL", "power": 9 }]
+          "target": [{ "tag_name": "DAMAGE", "type": "PHYSICAL", "power": 50 }]
         }
       },
       "Flame Strike": {
@@ -349,7 +349,7 @@
         "properties": [],
         "tags": {
           "self": [],
-          "target": [{ "tag_name": "DAMAGE", "type": "FIRE", "power": 35 }, { "tag_name": "BURN", "power": 15, "duration": 2, "reset": "TICK_TURN" }]
+          "target": [{ "tag_name": "DAMAGE", "type": "FIRE", "power": 35 }, { "tag_name": "BURN", "power": 150, "duration": 2, "reset": "TICK_TURN" }]
         }
       }
     },
@@ -370,11 +370,11 @@
     "name": "FERRET SUMURAI",
     "portrait": "ENEMY_FERRET_SUMURAI",
     "card_size": "small",
-    "health": 65,
-    "max_health": 65,
+    "health": 250,
+    "max_health": 250,
     "resources": { "BATTLE_SPIRIT": { "current": 0, "max": 10 } },
     "resource_bar_type": "sumurai",
-    "base_speed": 95,
+    "base_speed": 100,
     "total_action_slots": 1,
     "active_tag_pool": [{ "tag_name": "ONE_UNDER_THE_SUN" }],
     "faction": "enemy",
@@ -392,7 +392,7 @@
         "properties": [],
         "tags": {
           "self": [],
-          "target": [{ "tag_name": "DAMAGE", "type": "PHYSICAL", "power": 7 }]
+          "target": [{ "tag_name": "DAMAGE", "type": "PHYSICAL", "power": 33 }]
         }
       },
       "Flame Strike": {
@@ -407,7 +407,7 @@
         "properties": [],
         "tags": {
           "self": [],
-          "target": [{ "tag_name": "DAMAGE", "type": "FIRE", "power": 35 }, { "tag_name": "BURN", "power": 15, "duration": 2, "reset": "TICK_TURN" }]
+          "target": [{ "tag_name": "DAMAGE", "type": "FIRE", "power": 99 }, { "tag_name": "BURN", "power": 15, "duration": 2, "reset": "TICK_TURN" }]
         }
       }
     },

@@ -22,7 +22,7 @@ export const SAMURAI_CARDS = [
         { tag_name: 'MOMENTUM', multiplier: 0.2, tier: 'advanced' },
       ],
       target: [
-        { tag_name: 'DAMAGE', type: 'PHYSICAL', power: 50 },
+        { tag_name: 'DAMAGE', type: 'PHYSICAL', power: 140 },
       ],
     },
   },
@@ -52,13 +52,13 @@ export const SAMURAI_CARDS = [
     icon: '💖',
     image: 'FOX_SUMMURAI_MEND',
     color: '#4caf50',
-    desc: 'Restore 100 HP. Costs 3 Battle Spirit.',
+    desc: 'Restore 250  HP. Costs 3 Battle Spirit.',
     animation: 'green_marching_ants',
     animation_intensity: 1.0,
     tags: {
       self: [
-        { tag_name: 'HEAL', power: 100 },
-        { tag_name: 'REGEN', power: 25, duration: 3, reset: 'TICK_TURN' },
+        { tag_name: 'HEAL', power: 250 },
+        { tag_name: 'REGEN', power: 33, duration: 3, reset: 'TICK_TURN' },
       ],
       target: [],
     },
@@ -100,7 +100,7 @@ export const SAMURAI_CARDS = [
   {
     id: 'speed_up',
     name: 'Speed Up',
-    speed_mod: 100,
+    speed_mod: 20,
     tag_type: ['PHYSICAL'],
     cost: {},
     icon: '💨',
@@ -111,7 +111,7 @@ export const SAMURAI_CARDS = [
     animation_intensity: 1.0,
     tags: {
       self: [
-        { tag_name: 'SPEED_BOOST', amount: 150 },
+        { tag_name: 'SPEED_BOOST', amount: 40 },
       ],
       target: [],
     },
@@ -131,7 +131,7 @@ export const SAMURAI_CARDS = [
     tags: {
       self: [],
       target: [
-        { tag_name: 'DAMAGE', type: 'FIRE', power: 150 },
+        { tag_name: 'DAMAGE', type: 'FIRE', power: 400 },
         { tag_name: 'BURN', power: 75, duration: 3, reset: 'TICK_TURN' },
       ],
     },
@@ -151,7 +151,7 @@ export const SAMURAI_CARDS = [
     tags: {
       self: [],
       target: [
-        { tag_name: 'DAMAGE', type: 'FROST', power: 50 },
+        { tag_name: 'DAMAGE', type: 'FROST', power: 150 },
         { tag_name: 'FREEZE', stacks: 5 },
       ],
     },
@@ -159,7 +159,7 @@ export const SAMURAI_CARDS = [
   {
     id: 'battojutsu',
     name: 'Battojutsu',
-    speed_mod: 0,
+    speed_mod: 20,
     tag_type: ['PHYSICAL', 'SLASH'],
     cost: {},
     icon: '🔦',
@@ -197,7 +197,7 @@ export const SAMURAI_CARDS = [
   {
     id: 'still_wind',
     name: 'Still Wind',
-    speed_mod: 0,
+    speed_mod: 20,
     tag_type: ['SPIRITUAL', 'STANCE'],
     cost: {},
     icon: '🌬️',

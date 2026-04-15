@@ -5,7 +5,7 @@
 //  This registry is UI-only — battle logic never touches it.
 // ============================================================
 
-import { STATUS_NATURE_1 as NATURE_1, STATUS_FROST_1 as FROST_1, STATUS_FIRE_1 as FIRE_1, FOX_QUICK_STEPS, FOX_SUMMURAI_STILL_WIND } from '../../assets';
+import { STATUS_NATURE_1, STATUS_FROST_1, STATUS_FIRE_1, FOX_QUICK_STEPS, FOX_SUMMURAI_STILL_WIND, FOX_SUMMURAI_BATTOJUTSU, FOX_SUMMURAI_HEAVY_STRIKE } from '../../assets';
 
 export const ui_registry = {
 
@@ -20,6 +20,7 @@ export const ui_registry = {
 
   MOMENTUM: {
     icon: '💨',
+    statusIcon: FOX_SUMMURAI_HEAVY_STRIKE,
     color: '#ff6b35',
     describe: (tag) => {
       const pct = Math.round(tag.multiplier * tag.stack_count * 100);
@@ -85,14 +86,14 @@ export const ui_registry = {
 
   REGEN: {
     icon: '💚',
-    statusIcon: NATURE_1,
+    statusIcon: STATUS_NATURE_1,
     color: '#22c55e',
     describe: (tag) => `+${tag.power} HP/turn`,
   },
 
   FREEZE: {
     icon: '🧊',
-    statusIcon: FROST_1,
+    statusIcon: STATUS_FROST_1,
     color: '#38bdf8',
     describe: (tag) => {
       const s = tag.stacks ?? 1;
@@ -102,7 +103,7 @@ export const ui_registry = {
 
   BURN: {
     icon: '🔥',
-    statusIcon: FIRE_1,
+    statusIcon: STATUS_FIRE_1,
     color: '#f97316',
     describe: (tag) => `-${tag.power} HP/turn`,
   },
@@ -110,6 +111,7 @@ export const ui_registry = {
   BATTOJUTSU: {
     icon: '🔦',
     color: '#c084fc',
+    statusIcon: FOX_SUMMURAI_BATTOJUTSU,
     describe: (tag) => {
       const base = Math.round((tag.base_boost ?? 0.65) * 100);
       const stacks = tag.stack_count ?? 0;

@@ -115,6 +115,21 @@
   animation: run_circle calc(0.7s / var(--anim-intensity, 1)) linear;
 }
 
+/* ── SIDESTEP (quick dodge — left-right dash) ── */
+@keyframes sidestep {
+  0%   { transform: translate(  0px, 0px); opacity: 1;    }
+  12%  { transform: translate(-22px, 0px); opacity: 0.25; }
+  28%  { transform: translate( 28px, 0px); opacity: 0.2;  }
+  44%  { transform: translate(-18px, 0px); opacity: 0.3;  }
+  60%  { transform: translate( 14px, 0px); opacity: 0.5;  }
+  76%  { transform: translate( -8px, 0px); opacity: 0.75; }
+  88%  { transform: translate(  4px, 0px); opacity: 0.9;  }
+  100% { transform: translate(  0px, 0px); opacity: 1;    }
+}
+.animate-sidestep {
+  animation: sidestep calc(0.55s / var(--anim-intensity, 1)) ease-in-out;
+}
+
 /* ── BURN (fire hit) ── */
 @keyframes burn {
   /* Impact flash — bright orange-white burst */

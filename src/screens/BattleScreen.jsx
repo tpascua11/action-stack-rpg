@@ -8,7 +8,7 @@ import { CLASS_REGISTRY } from '../data/classes/class_registry';
 import { useGame } from '../context/GameContext';
 
 import { MUSIC_REGISTRY } from '../assets/MUSIC/index';
-import { ANIMATIONS, preloadedAudio } from '../battle/animationRegistry';
+import { ANIMATIONS, preloadedAudio, sfx } from '../battle/animationRegistry';
 import '../battle/animations.css';
 import EnemyZone from '../components/battle/EnemyZone';
 import BattleLog from '../components/battle/BattleLog';
@@ -184,6 +184,7 @@ export default function BattleScreen() {
 
   function handleRetargetBoxClick(index) {
     if (gs.phase !== 'QUEUE_SETUP') return;
+    playSfx(sfx('FUN_SELECT_2.wav'), 0.4);
     if (retargetingSlot === index) {
       // Already in retarget mode for this slot — cycle to next living enemy
       const living = enemies.filter(e => e.health > 0);
@@ -200,12 +201,12 @@ export default function BattleScreen() {
   function handleCardClick(card) {
     if (gs.phase !== 'QUEUE_SETUP') return;
     if (player.queue.filter(Boolean).length >= player.total_action_slots) return;
-    playSfx(require('../assets/SOUND EFFECTS/SELECT.wav').default ?? require('../assets/SOUND EFFECTS/SELECT.wav'), 0.6);
+    playSfx(sfx('SELECT.wav'), 0.6);
     dispatch({ type: 'ADD_TO_QUEUE', card });
   }
 
   function handleClearSlot(index) {
-    playSfx(require('../assets/SOUND EFFECTS/DESELECT.wav').default ?? require('../assets/SOUND EFFECTS/DESELECT.wav'), 0.6);
+    playSfx(sfx('DESELECT.wav'), 0.6);
     dispatch({ type: 'CLEAR_SLOT', index });
   }
 
@@ -216,7 +217,7 @@ export default function BattleScreen() {
     }
     if (gs.phase !== 'QUEUE_SETUP') return;
     if (!player.queue.some(Boolean)) return;
-    playSfx(require('../assets/SOUND EFFECTS/START_1.wav').default ?? require('../assets/SOUND EFFECTS/START_1.wav'), 0.7);
+    playSfx(sfx('START_1.wav'), 0.7);
     dispatch({ type: 'START_BATTLE' });
   }
 

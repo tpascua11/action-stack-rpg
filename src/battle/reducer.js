@@ -168,7 +168,7 @@ export function battleReducer(state, action) {
 
       let pendingAnimation = [];
       if (dodged) {
-        pendingAnimation.push({ type: 'run_circle', targetId: dodgerId, intensity: 1.0 });
+        pendingAnimation.push({ type: 'sidestep', targetId: dodgerId, intensity: 1.0 });
       } else if (fizzled) {
         pendingAnimation.push({ type: 'fizzle', targetId: actionA.owner_id, intensity: 1.0, cardName: actionA.name });
       } else {
