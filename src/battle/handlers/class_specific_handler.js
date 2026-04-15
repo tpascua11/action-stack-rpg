@@ -40,7 +40,7 @@ function StillWindOnReceiveHandler(payload, character, tag, hit_result) {
 function SteelWillDamageReduceHandler(payload, tag) {
   const reduced = {
     ...payload,
-    damages: payload.damages.map(d => ({ ...d, power: Math.round(d.power * 0.25) })),
+    damages: payload.damages.map(d => ({ ...d, power: Math.round(d.power * 0.50) })),
   };
   return { payload: reduced, consumed: false };
 }
