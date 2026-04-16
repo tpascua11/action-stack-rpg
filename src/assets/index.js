@@ -52,6 +52,8 @@ export { default as ENEMY_BEAR_SUMURAI } from './ENEMY/BEAR_SUMURAI.png';
 export { default as ENEMY_FERRET_SUMURAI } from './ENEMY/FERRET_SUMURAI.png';
 export { default as ENEMY_TIGER_SUMURAI } from './ENEMY/TIGER_SUMURAI.png';
 export { default as ENEMY_WOLF_SUMURAI } from './ENEMY/WOLF_SUMURAI.png';
+export { default as ENEMY_RABBIT_SUMURAI_3 } from './ENEMY/RABBIT_SUMURAI_3.png';
+export { default as ENEMY_OTTER_SUMURAI } from './ENEMY/WHITE_OTTER_SUMURAI.png';
 
 // --- Status Icons ---
 export { default as STATUS_DEFAULT } from './STATUS/DEFAULT.png';
@@ -119,6 +121,7 @@ export { default as ENEMY_SPEED_UP }         from './ENEMY_ABILITY_ICONS/ENEMY_S
 export { default as ENM_SAM_STANCE_1 }       from './ENEMY_ABILITY_ICONS/ENEMY_STANCE_1.png';
 export { default as ENM_SAM_STANCE_2 }       from './ENEMY_ABILITY_ICONS/ENEMY_STANCE_2.png';
 export { default as ENM_SAM_STORM_STRIKE }   from './ENEMY_ABILITY_ICONS/ENEMY_STORM_STRIKE.png';
+export { default as ENEMY_STREAM_SLASH }     from './ENEMY_ABILITY_ICONS/ENEMY_STREAM_SLASH.png';
 
 // --- Fox Summurai Animation Frames ---
 export { default as FOX_SUMMURAI_1 } from './FOX_SUMMURAI/fox_summurai_1.png';

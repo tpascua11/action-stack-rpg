@@ -43,6 +43,16 @@ export const ANIMATIONS = {
     volume: 0.7,
     floatingNumber: { color: '#ff4444' },
   },
+  stream_slash: {
+    cssClass: 'animate-heavy_shake',
+    duration: 500,
+    sfx: [
+      { src: sfx('STREAM_SLASH.wav'), delay: 125,   volume: 0.5 },
+      { src: sfx('HARD_SWING_1.wav'), delay: 0, volume: 0.5 },
+    ],
+    volume: 0.7,
+    floatingNumber: { color: '#449bff' },
+  },
   dual_heavy_slice: {
     cssClass: 'animate-heavy_shake',
     duration: 500,

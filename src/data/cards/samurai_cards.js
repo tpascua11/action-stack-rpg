@@ -39,7 +39,7 @@ export const SAMURAI_CARDS = [
     tag_interactions: [
       { traits: ['EVASION'], bypass: true, bonus_multiplier: 0.5 },
     ],
-    animation: 'dual_heavy_slice',
+    animation: 'stream_slash',
     animation_intensity: 0.7,
     tags: {
       self: [
