@@ -258,6 +258,26 @@ export const SAMURAI_CARDS = [
     },
   },
   {
+    id: 'storm_strike',
+    name: 'Storm Strike',
+    speed_mod: 0,
+    tag_type: ['PHYSICAL', 'SLASH', 'STORM'],
+    cost: { BATTLE_SPIRIT: 1 },
+    properties: ['AOE'],
+    icon: '⚡',
+    image: 'FOX_STORM_STRIKE',
+    color: '#818cf8',
+    desc: 'Unleash a storm that strikes all enemies for 100 damage. Costs 2 Battle Spirit.',
+    animation: 'flame_strike',
+    animation_intensity: 1.2,
+    tags: {
+      self: [],
+      target: [
+        { tag_name: 'DAMAGE', type: 'PHYSICAL', power: 100 },
+      ],
+    },
+  },
+  {
     id: 'focus_spirit',
     name: 'Focus Spirit',
     speed_mod: -30,
