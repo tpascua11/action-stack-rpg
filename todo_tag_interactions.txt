@@ -1,0 +1,73 @@
+TAG INTERACTIONS — TODO
+======================
+
+WHAT WAS BUILT
+--------------
+- resolveTagInteractions(action, target) in battle_engine.js
+  - Scans target's active_tag_pool for tags whose registry traits overlap
+    with the action's tag_interactions declarations
+  - Returns { activeInteractions } — list of matched interactions for this hit
+
+- Registry entries now support a `traits` array:
+    QUICK_STEPS: { traits: ['EVASION', 'STANCE'], ... }
+
+- Cards declare tag_interactions:
+    tag_interactions: [
+      { traits: ['EVASION'], bypass: true, bonus_multiplier: 0.5 }
+    ]
+
+- Engine handles bypass inside runPhaseOnIncoming — if a tag is bypassed,
+  it gets consumed and skipped before its handler runs. Handlers stay clean.
+
+- bonus_multiplier applies after ON_INCOMING (only if action wasn't cancelled),
+  before payload construction so DELIVERY uses boosted damage values.
+
+- stream_slash uses this system as the first example.
+
+
+WHAT STILL NEEDS TO BE DONE
+----------------------------
+
+1. CONDITIONAL EFFECTS — on_bypass / on_interact
+   Currently bonus_multiplier always applies when the trait is present on target.
+   Need to support effects that only fire when a bypass actually happened,
+   or when a specific interaction occurred (e.g. fire melting ice).
+
+   Proposed structure on a card:
+     tag_interactions: [
+       {
+         traits: ['EVASION'],
+         bypass: true,
+         bonus_multiplier: 0.5,        // always when EVASION trait is present
+         on_bypass: {                   // only when bypass actually fired
+           tags: { target: [{ tag_name: 'EXPOSED', duration: 2, reset: 'TICK_TURN' }] }
+         }
+       },
+       {
+         traits: ['FROST'],
+         on_interact: {                 // only when trait matched and interaction fired
+           bonus_multiplier: 0.5,
+           tags: { target: [{ tag_name: 'WET', duration: 1, reset: 'TICK_TURN' }] }
+         }
+       },
+     ]
+
+   To support this, runPhaseOnIncoming needs to report back which bypasses
+   actually fired (e.g. bypassFired: true on the activeInteraction entry).
+   resolveTagInteractions runs before ON_INCOMING so it can't know this yet —
+   the fired state has to be written back after ON_INCOMING resolves.
+
+2. ELEMENTAL INTERACTIONS
+   Same system — FROST, FIRE, WATER etc. as traits on tags like FREEZE, BURN.
+   Examples:
+     - Fire attack vs FROST trait → bonus damage + consume freeze
+     - Water vs FIRE trait → extinguish BURN
+     - Lightning vs WET → chain bonus
+   These would all use on_interact so the effect only fires when the
+   elemental tag is actually present.
+
+3. MORE DEFENSIVE TRAITS
+   Currently only EVASION and STANCE exist.
+   Planned: DEFENSIVE (blocking/guard tags), COUNTER, PARRY, etc.
+   Any new defensive tag just needs traits declared in registerTag —
+   no engine changes required.

@@ -242,12 +242,45 @@ function runPhasePreAction(tag_pool, action, owner) {
   return { cancelled: false, logs, tag_pool: remaining };
 }
 
+// ── TAG INTERACTION RESOLVER ──
+// Scans the target's active_tag_pool for tags whose registry traits overlap
+// with the action's tag_interactions declarations.
+// Returns a list of active interactions for this hit — used by ON_INCOMING
+// handlers (bypass/consume decisions) and ExecuteAction (bonus multipliers).
+//
+// Card declares:
+//   tag_interactions: [{ traits: ['EVASION'], bypass: true, bonus_multiplier: 0.5 }]
+// Registry declares:
+//   QUICK_STEPS: { traits: ['EVASION', 'STANCE'], ... }
+// If any trait overlaps → interaction is active for that tag.
+
+function resolveTagInteractions(action, target) {
+  const activeInteractions = [];
+  if (!action.tag_interactions?.length || !target) return { activeInteractions };
+
+  for (const interaction of action.tag_interactions) {
+    for (const tag of target.active_tag_pool) {
+      const entry = battle_registry[tag.tag_name];
+      if (!entry?.traits?.length) continue;
+      const matched = interaction.traits.some(t => entry.traits.includes(t));
+      if (matched) {
+        activeInteractions.push({ ...interaction, matchedTagName: tag.tag_name });
+        break; // one match per interaction entry is enough
+      }
+    }
+  }
+
+  return { activeInteractions };
+}
+
 // ── ON_INCOMING PHASE RUNNER ──
 // Runs on the *defender's* tag pool when an action is about to hit them.
 // Any tag declaring phase 'ON_INCOMING' can cancel the action, reflect damage,
 // trigger counters, etc. — this is the general defender-side gate.
+// interactionResult from resolveTagInteractions is passed through so each
+// handler can check if it is being bypassed by the incoming action.
 
-function runPhaseOnIncoming(tag_pool, incoming_action, defender, state) {
+function runPhaseOnIncoming(tag_pool, incoming_action, defender, state, interactionResult = { activeInteractions: [] }) {
   const logs = [];
   const remaining = [];
 
@@ -255,6 +288,18 @@ function runPhaseOnIncoming(tag_pool, incoming_action, defender, state) {
     const tag = tag_pool[i];
     const entry = battle_registry[tag.tag_name];
     if (entry?.phases?.includes('ON_INCOMING')) {
+      // Engine-level bypass: if the incoming action has a tag_interaction that
+      // matches this tag, consume it and skip the handler entirely — the action
+      // goes through without giving the tag a chance to cancel.
+      const bypassInteraction = interactionResult.activeInteractions.find(
+        i => i.bypass && i.matchedTagName === tag.tag_name
+      );
+      if (bypassInteraction) {
+        logs.push({ msg: `💨 ${defender.name}'s ${tag.tag_name} was bypassed by "${incoming_action.name}"!`, type: 'buff' });
+        // consumed — do not push back to remaining
+        continue;
+      }
+
       const result = entry.handlers['ON_INCOMING'](incoming_action, defender, tag, state);
       logs.push(...(result.logs ?? []));
       if (result.cancelled) {
@@ -298,15 +343,36 @@ export function ExecuteAction(action, interaction_result, state) {
     owner.resources[resourceType].current -= amount;
   }
 
+  // ── RESOLVE TAG INTERACTIONS ──
+  // Check if this action has tag_interactions that match any traits on the
+  // target's active tags. Result is passed into ON_INCOMING so handlers can
+  // decide to bypass/consume themselves, and used below for bonus multipliers.
+  const interactionResult = resolveTagInteractions(action, target);
+
   // ON_INCOMING phase — defender-side gate (dodge, parry, reflect, etc.)
   // Runs on the original target before any payload is built or damage dealt.
   // If cancelled: attacker resources are still spent (action was committed).
   if (target.health > 0) {
-    const onIncoming = runPhaseOnIncoming(target.active_tag_pool, action, target, newState);
+    const onIncoming = runPhaseOnIncoming(target.active_tag_pool, action, target, newState, interactionResult);
     logs.push(...onIncoming.logs);
     target.active_tag_pool = onIncoming.tag_pool;
     if (onIncoming.cancelled) {
       return { newState, logs, dodged: true, dodgerId: target.id, attackerId: owner.id };
+    }
+  }
+
+  // ── TAG INTERACTION BONUSES ──
+  // Apply bonus_multiplier from any matched tag interactions.
+  // Runs after ON_INCOMING (so cancelled actions never reach this) and before
+  // payload construction so DELIVERY uses the boosted damage values.
+  for (const interaction of interactionResult.activeInteractions) {
+    if (interaction.bonus_multiplier) {
+      for (const tag of (action.tags?.target || [])) {
+        if (tag.tag_name === 'DAMAGE' && tag.power != null) {
+          tag.power = Math.floor(tag.power * (1 + interaction.bonus_multiplier));
+        }
+      }
+      logs.push({ msg: `⚡ ${action.name} exploits ${target.name}'s stance! +${Math.round(interaction.bonus_multiplier * 100)}% damage`, type: 'dmg' });
     }
   }
 

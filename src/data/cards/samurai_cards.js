@@ -35,11 +35,16 @@ export const SAMURAI_CARDS = [
     icon: '⚔️',
     image: 'FOX_SUMMURAI_STREAM_SLASH',
     color: '#38bdf8',
-    desc: 'A flowing slash attack.',
+    desc: 'A flowing slash attack. Cannot be evaded. Deals 50% more damage to evasive targets.',
+    tag_interactions: [
+      { traits: ['EVASION'], bypass: true, bonus_multiplier: 0.5 },
+    ],
     animation: 'dual_heavy_slice',
-    animation_intensity: 1.0,
+    animation_intensity: 0.7,
     tags: {
-      self: [],
+      self: [
+        { tag_name: 'MOMENTUM', multiplier: 0.2, tier: 'advanced' },
+      ],
       target: [
         { tag_name: 'DAMAGE', type: 'PHYSICAL', power: 105 },
       ],

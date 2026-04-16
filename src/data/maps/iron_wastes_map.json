@@ -6,13 +6,13 @@
   "zones": [
     {
       "id": 0,
-      "name": "IRON GATE",
+      "name": "SNOWBOUND DOJO",
       "type": "COMBAT",
       "map_icon": "CITADEL_1",
       "levels": [
-        { "desc": "First contact. Light resistance.", "reward": { "general": { "type": "gold", "amount": 20 }, "unlocks": [{ "class": "samurai", "card_ids": ["freeze_slash", "magic_charge"] }] }, "scenario_id": "zone1_level1" },
-        { "desc": "Reinforcements arrive mid-fight.", "reward": "+30 Gold + card slot", "scenario_id": "ember_witch_test" },
-        { "desc": "The commander joins the battle.", "reward": { "unlocks": [{ "class": "samurai", "card_ids": ["fuel_to_the_flames"] }] }, "scenario_id": "ember_witch_test" }
+        { "desc": "First Snow! Slice, dodge, and burn! But watch out, the Ferrets are slippery!", "reward": { "general": { "type": "gold", "amount": 20 }, "unlocks": [{ "class": "samurai", "card_ids": ["stream_slash"] }] }, "scenario_id": "zone1_level1" },
+        { "desc": "Look out! The Rabbits store power before they strike. Learn their tempo.", "reward": { "general": { "type": "gold", "amount": 20 }, "unlocks": [{ "class": "samurai", "card_ids": ["battojutsu"] }] }, "scenario_id": "ember_witch_test" },
+        { "desc": "Sumurai Lesson: Quickdraw", "reward": { "unlocks": [{ "class": "samurai", "card_ids": ["fuel_to_the_flames"] }] }, "scenario_id": "ember_witch_test" }
       ]
     },
     {
