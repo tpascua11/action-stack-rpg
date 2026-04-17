@@ -67,6 +67,7 @@ export { default as STATUS_LIGHT_1 } from './STATUS/LIGHT_1.png';
 export { default as STATUS_LIGHT_2 } from './STATUS/LIGHT_2.png';
 export { default as STATUS_WATER_1 } from './STATUS/WATER_1.png';
 export { default as STATUS_WATER_2 } from './STATUS/WATER_2.png';
+export { default as STATUS_GOUKI_1 } from './STATUS/GOUKI_1.png';
 
 // --- Class Icons ---
 export { default as CLASS_ICON_WARRIOR } from './CLASS_ICONS/WARRIOR.png';

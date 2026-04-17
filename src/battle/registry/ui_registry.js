@@ -6,8 +6,8 @@
 //
 // ============================================================
 
-import { STATUS_NATURE_1, STATUS_FROST_1, STATUS_FIRE_1, FOX_QUICK_STEPS, FOX_SUMMURAI_STILL_WIND, FOX_SUMMURAI_BATTOJUTSU, FOX_SUMMURAI_HEAVY_STRIKE
-         , ENEMY_SPEED_UP
+import { STATUS_NATURE_1, STATUS_FROST_1, STATUS_FIRE_1, FOX_QUICK_STEPS, FOX_SUMMURAI_STILL_WIND, FOX_SUMMURAI_BATTOJUTSU, FOX_SUMMURAI_HEAVY_STRIKE,
+         ENEMY_SPEED_UP, STATUS_GOUKI_1,
  } from '../../assets';
 
 export const ui_registry = {
@@ -153,6 +153,17 @@ export const ui_registry = {
     icon: '🌩️',
     color: '#facc15',
     describe: () => '-20 speed (first action)',
+  },
+
+  GOUKI: {
+    icon: '🛡️',
+    color: '#34d399',
+    statusIcon: STATUS_GOUKI_1,
+    describe: (tag) => {
+      const s = tag.stacks ?? 3;
+      const pct = Math.min(s * 25, 75);
+      return `${pct}% damage reduction · ${s}/3 stack${s !== 1 ? 's' : ''} · Cleanses debuffs on gain`;
+    },
   },
 
 };

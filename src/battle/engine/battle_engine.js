@@ -189,17 +189,19 @@ function runPhasePostAttack(tag_pool, payload, character, hit_result) {
 
 function runPhaseDamageReduce(tag_pool, payload) {
   const remaining = [];
+  const logs = [];
   for (const tag of tag_pool) {
     const entry = battle_registry[tag.tag_name];
     if (entry?.phases?.includes('DAMAGE_REDUCE')) {
       const result = entry.handlers['DAMAGE_REDUCE'](payload, tag);
       payload = result.payload;
+      if (result.logs) logs.push(...result.logs);
       if (!result.consumed) remaining.push(tag);
     } else {
       remaining.push(tag);
     }
   }
-  return { tag_pool: remaining, payload };
+  return { tag_pool: remaining, payload, logs };
 }
 
 function runPhasePreAction(tag_pool, action, owner) {
@@ -447,6 +449,7 @@ export function ExecuteAction(action, interaction_result, state) {
       const damageReduceResult = runPhaseDamageReduce(defTarget.active_tag_pool, defPayload);
       defTarget.active_tag_pool = damageReduceResult.tag_pool;
       defPayload = damageReduceResult.payload;
+      logs.push(...(damageReduceResult.logs ?? []));
 
       // Deliver damage
       let dmg_this_target = 0;
