@@ -184,3 +184,4 @@ export { default as FOX_QUICK_STEPS } from './FOX_SUMMURAI/fox_quick_steps.png';
 export { default as FOX_GUARD_STANCE } from './FOX_SUMMURAI/fox_guard_stance.png';
 export { default as FOX_SUMMURAI_STREAM_SLASH } from './FOX_SUMMURAI/SUMURAI_STREAM_SLASH.png';
 export { default as FOX_STORM_STRIKE } from './FOX_SUMMURAI/fox_storm_strike.png';
+export { default as FOX_SHINSOKU} from './FOX_SUMMURAI/fox_shinsoku.png';
