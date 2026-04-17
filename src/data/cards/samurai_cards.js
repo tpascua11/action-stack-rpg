@@ -262,7 +262,7 @@ export const SAMURAI_CARDS = [
     name: 'Storm Strike',
     speed_mod: 0,
     tag_type: ['PHYSICAL', 'SLASH', 'STORM'],
-    cost: { BATTLE_SPIRIT: 1 },
+    cost: { BATTLE_SPIRIT: 0 },
     properties: ['AOE'],
     icon: '⚡',
     image: 'FOX_STORM_STRIKE',
@@ -274,6 +274,7 @@ export const SAMURAI_CARDS = [
       self: [],
       target: [
         { tag_name: 'DAMAGE', type: 'PHYSICAL', power: 100 },
+        { tag_name: 'ELECTRIFIED', stacks: 2 },
       ],
     },
   },

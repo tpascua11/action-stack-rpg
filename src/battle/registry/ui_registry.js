@@ -3,6 +3,7 @@
 //  Maps tag_name → { icon, color, statusIcon, describe(tag) }
 //  describe(tag) returns a human-readable string for display.
 //  This registry is UI-only — battle logic never touches it.
+//
 // ============================================================
 
 import { STATUS_NATURE_1, STATUS_FROST_1, STATUS_FIRE_1, FOX_QUICK_STEPS, FOX_SUMMURAI_STILL_WIND, FOX_SUMMURAI_BATTOJUTSU, FOX_SUMMURAI_HEAVY_STRIKE
@@ -137,6 +138,21 @@ export const ui_registry = {
     statusIcon: FOX_SUMMURAI_STILL_WIND,
     color: '#a78bfa',
     describe: () => '+1 Battle Spirit per action. Removed on damage.',
+  },
+
+  ELECTRIFIED: {
+    icon: '⚡',
+    color: '#facc15',
+    describe: (tag) => {
+      const s = tag.stacks ?? 10;
+      return `Injects SHOCKED each turn · ${s} stack${s !== 1 ? 's' : ''}`;
+    },
+  },
+
+  SHOCKED: {
+    icon: '🌩️',
+    color: '#facc15',
+    describe: () => '-20 speed (first action)',
   },
 
 };

@@ -106,7 +106,7 @@ export default function BattleScreen() {
         [anim.targetId]: { cssClass: config.cssClass, intensity: anim.intensity ?? 1.0 },
       }));
 
-      if (config.sfx) {
+      if (config.sfx && !anim.skipSfx) {
         const sfxList = Array.isArray(config.sfx)
           ? config.sfx
           : [{ src: config.sfx, delay: 0, volume: config.volume ?? 0.6 }];

@@ -1,5 +1,6 @@
 // ============================================================
 //  battleReducer — all battle state transitions
+//
 // ============================================================
 
 import { DEBUG_HAND_COST } from '../debug';
@@ -130,7 +131,7 @@ export function battleReducer(state, action) {
 
       if (interactionLog) newLogs.push(interactionLog);
 
-      const { newState: afterExec, logs: execLogs, actualTargetId, fizzled, dodged, dodgerId, isSelfBuff, animationHint, animationSelf, animationIntensity, damageDealt } = ExecuteAction(actionA, resultA, newState);
+      const { newState: afterExec, logs: execLogs, actualTargetId, aoeHits, fizzled, dodged, dodgerId, isSelfBuff, animationHint, animationSelf, animationIntensity, damageDealt } = ExecuteAction(actionA, resultA, newState);
       newState = afterExec;
       newLogs.push(...execLogs);
 
@@ -176,9 +177,16 @@ export function battleReducer(state, action) {
           // Self-buff: animate on owner, optionally also on target if animation_self is set on target side
           pendingAnimation.push({ type: animationHint, targetId: actionA.owner_id, intensity: animationIntensity });
         } else if (anyoneWasHit) {
-          // Attack: animate on target
-          pendingAnimation.push({ type: animationHint, targetId: actualTargetId, intensity: animationIntensity, value: damageDealt });
-          // Also animate on self if card defines animation_self
+          if (aoeHits?.length > 0) {
+            // AOE: one shake per hit enemy; SFX plays only on the first to avoid stacking
+            aoeHits.forEach(({ targetId, damage }, i) => {
+              pendingAnimation.push({ type: animationHint, targetId, intensity: animationIntensity, value: damage, skipSfx: i > 0 });
+            });
+          } else {
+            // Single-target: animate on target
+            pendingAnimation.push({ type: animationHint, targetId: actualTargetId, intensity: animationIntensity, value: damageDealt });
+          }
+          // Animate on self if card defines animation_self
           if (animationSelf) {
             pendingAnimation.push({ type: animationSelf, targetId: actionA.owner_id, intensity: animationIntensity });
           }

@@ -1,7 +1,7 @@
 // ============================================================
 //  BATTLE ENGINE
 //  Pure functions — take state in, return new state out.
-//  No direct mutation. Safe for React useReducer pattern.
+//  No direct mutation. Safe for React useReducer pattern. 
 // ============================================================
 
 import { battle_registry } from '../registry/battle_registry';
@@ -430,7 +430,7 @@ export function ExecuteAction(action, interaction_result, state) {
     : (resolvedTarget ? [resolvedTarget] : []);
 
   let total_damage = 0;
-  let firstHitTargetId = null;
+  const aoeHits = []; // { targetId, damage } — one entry per enemy hit, used for per-enemy animation
 
   if (deliveryTargets.length > 0) {
     for (const defTarget of deliveryTargets) {
@@ -456,7 +456,7 @@ export function ExecuteAction(action, interaction_result, state) {
         logs.push({ msg: `⚔️ ${owner.name} uses ${action.name} → ${defTarget.name} takes ${dmg.power} ${dmg.element} dmg`, type: 'dmg' });
       }
       total_damage += dmg_this_target;
-      if (firstHitTargetId === null) firstHitTargetId = defTarget.id;
+      aoeHits.push({ targetId: defTarget.id, damage: dmg_this_target });
 
       // APPLY STATUS TARGET TAGS
       for (const tag of (action.tags?.target || [])) {
@@ -501,7 +501,8 @@ export function ExecuteAction(action, interaction_result, state) {
   return {
     newState,
     logs,
-    actualTargetId: isAoe ? firstHitTargetId : (resolvedTarget?.id ?? null),
+    actualTargetId: isAoe ? (aoeHits[0]?.targetId ?? null) : (resolvedTarget?.id ?? null),
+    aoeHits: isAoe ? aoeHits : null,
     isSelfBuff,
     animationHint: action.animation ?? (action.payload_type === 'MAGIC' ? 'shake_magic' : 'shake'),
     animationSelf: action.animation_self ?? null,
@@ -538,6 +539,7 @@ export function runPhaseOnTurnStart(characters, field) {
         const result = entry.handlers['ON_TURN_START'](context, tag);
         logs.push(...(result.logs ?? []));
         if (!result.consumed) remaining.push(tag);
+        if (result.inject?.length) remaining.push(...result.inject);
       } else {
         remaining.push(tag);
       }
