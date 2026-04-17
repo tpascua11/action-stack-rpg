@@ -7,7 +7,7 @@ import { createPortal } from 'react-dom';
 import { CLASS_REGISTRY } from '../data/classes/class_registry';
 import { useGame } from '../context/GameContext';
 
-import { MUSIC_REGISTRY, VICTORY_MUSIC } from '../assets/MUSIC/index';
+import { MUSIC_REGISTRY, VICTORY_MUSIC, DEFEAT_MUSIC } from '../assets/MUSIC/index';
 import { ANIMATIONS, preloadedAudio, sfx } from '../battle/animationRegistry';
 import '../battle/animations.css';
 import EnemyZone from '../components/battle/EnemyZone';
@@ -67,8 +67,8 @@ export default function BattleScreen() {
       musicRef.current.pause();
       musicRef.current.currentTime = 0;
     }
-    if (gs.result !== 'WIN') return;
-    const trackId = VICTORY_MUSIC[player.class_id] ?? VICTORY_MUSIC.default;
+    const registry = gs.result === 'WIN' ? VICTORY_MUSIC : DEFEAT_MUSIC;
+    const trackId = registry[player.class_id] ?? registry.default;
     const src = MUSIC_REGISTRY[trackId];
     if (!src) return;
     const audio = new Audio(src);
@@ -289,6 +289,27 @@ export default function BattleScreen() {
         </div>
       )}
 
+      {gs.phase === 'RESULT' && gs.result !== 'WIN' && (
+        <>
+          {/* Dark background layer */}
+          <div className="fixed inset-0 pointer-events-none" style={{ zIndex: 9000, backgroundColor: 'rgba(0,0,0,0.72)' }} />
+          {/* DEFEATED text — above background */}
+          <div className="fixed inset-0 flex items-start justify-center pointer-events-none" style={{ zIndex: 9002, padding: '20%' }}>
+            <div style={{
+              fontFamily: "'Georgia', serif",
+              fontSize: '5rem',
+              fontWeight: 'bold',
+              color: '#a0a0b0',
+              textShadow: '0 0 30px #303040, 0 0 60px #1a1a28, 2px 2px 0 #000',
+              letterSpacing: '0.15em',
+              animation: 'victoryPulse 3s ease-in-out infinite',
+            }}>
+              DEFEATED
+            </div>
+          </div>
+        </>
+      )}
+
       <div
         className="w-full h-full flex flex-col overflow-hidden bg-[#0f0f1a]"
         onClick={() => setRetargetingSlot(null)}
@@ -343,6 +364,7 @@ export default function BattleScreen() {
                 onExecute={handleExecute}
                 isBattling={gs.phase === 'BATTLE'}
                 isResult={gs.phase === 'RESULT'}
+                result={gs.result}
                 fizzlingCard={gs.pendingAnimation?.find(a => a.type === 'fizzle') ? { name: gs.pendingAnimation.find(a => a.type === 'fizzle').cardName } : null}
               />
             </div>
