@@ -7,7 +7,7 @@ import { createPortal } from 'react-dom';
 import { CLASS_REGISTRY } from '../data/classes/class_registry';
 import { useGame } from '../context/GameContext';
 
-import { MUSIC_REGISTRY } from '../assets/MUSIC/index';
+import { MUSIC_REGISTRY, VICTORY_MUSIC } from '../assets/MUSIC/index';
 import { ANIMATIONS, preloadedAudio, sfx } from '../battle/animationRegistry';
 import '../battle/animations.css';
 import EnemyZone from '../components/battle/EnemyZone';
@@ -59,12 +59,28 @@ export default function BattleScreen() {
     };
   }, [gs.music]);
 
+  const victoryMusicRef = useRef(null);
+
   useEffect(() => {
-    if (gs.phase === 'RESULT' && musicRef.current) {
+    if (gs.phase !== 'RESULT') return;
+    if (musicRef.current) {
       musicRef.current.pause();
       musicRef.current.currentTime = 0;
     }
-  }, [gs.phase]);
+    if (gs.result !== 'WIN') return;
+    const trackId = VICTORY_MUSIC[player.class_id] ?? VICTORY_MUSIC.default;
+    const src = MUSIC_REGISTRY[trackId];
+    if (!src) return;
+    const audio = new Audio(src);
+    audio.volume = 0.35;
+    audio.play().catch(() => {});
+    victoryMusicRef.current = audio;
+    return () => {
+      audio.pause();
+      audio.currentTime = 0;
+      victoryMusicRef.current = null;
+    };
+  }, [gs.phase, gs.result]);
 
   // Drive battle loop with timed steps.
   // If pending animations define a battleDelay, use the longest one — otherwise fall back to duration.
@@ -255,6 +271,22 @@ export default function BattleScreen() {
           ))}
         </svg>,
         document.body
+      )}
+
+      {gs.phase === 'RESULT' && gs.result === 'WIN' && (
+        <div className="fixed inset-0 flex items-start justify-center pointer-events-none" style={{ zIndex: 9000, padding: '20%'}}>
+          <div style={{
+            fontFamily: "'Georgia', serif",
+            fontSize: '5rem',
+            fontWeight: 'bold',
+            color: '#f5d76e',
+            textShadow: '0 0 30px #f5d76e, 0 0 60px #c8a135, 2px 2px 0 #3a2800',
+            letterSpacing: '0.15em',
+            animation: 'victoryPulse 2s ease-in-out infinite',
+          }}>
+            VICTORY
+          </div>
+        </div>
       )}
 
       <div

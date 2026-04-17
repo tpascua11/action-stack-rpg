@@ -155,6 +155,18 @@ export const ANIMATIONS = {
     ], 
     floatingNumber: null,
   },
+  enemy_exit: {
+    cssClass: 'animate-enemy_exit',
+    duration: 500,
+    sfx: null,
+    floatingNumber: null,
+  },
+  enemy_enter: {
+    cssClass: 'animate-enemy_enter',
+    duration: 700,
+    sfx: null,
+    floatingNumber: null,
+  },
   // ── Coming soon ──────────────────────────────────────────
   // slam:   { cssClass: 'animate-slam',   duration: 500, sfx: null },
 };
